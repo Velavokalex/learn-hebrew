@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>אוֹצָר · Мой словарь иврита</title>
+<style>
+  :root{
+    --paper:#FCFBF7; --grid:#E7EBF2;
+    --ink:#16307A; --ink-soft:#4B5D8A; --ink-faint:#8A97B8;
+    --gold:#A9791C; --gold-soft:#F3E9CF; --danger:#9B2C2C; --ok:#2F7A3D;
+    --text:#1A2233; --card:#FFFFFF; --line:#DDE3EE; --radius:14px;
+    --he-font:'Frank Ruhl Libre','David Libre','Times New Roman','Arial Hebrew',serif;
+    --display:Georgia,'Times New Roman',serif;
+    --ui:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  }
+  *{box-sizing:border-box} html,body{margin:0;padding:0}
+  body{font-family:var(--ui);color:var(--text);background-color:var(--paper);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:26px 26px;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:880px;margin:0 auto;padding:22px 16px 90px}
+  header{margin-bottom:20px}
+  .brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .brand h1{font-family:var(--he-font);font-weight:700;color:var(--ink);font-size:clamp(30px,7vw,44px);margin:0;direction:rtl;letter-spacing:.5px}
+  .brand .sub{font-family:var(--display);color:var(--ink-soft);font-size:15px}
+  .stats{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 14px;min-width:78px}
+  .stat b{display:block;font-family:var(--display);font-size:22px;color:var(--ink);line-height:1.1}
+  .stat span{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-faint)}
+  .stat.gold b{color:var(--gold)}
+  .progress{height:7px;background:var(--line);border-radius:99px;margin-top:12px;overflow:hidden}
+  .progress i{display:block;height:100%;background:var(--gold);border-radius:99px;transition:width .4s ease}
+  .actions{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 6px}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0}
+  .toolbar input[type=search]{flex:1;min-width:150px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:15px;background:var(--card);font-family:var(--ui)}
+  .toolbar select{padding:10px 12px;border:1px solid var(--line);border-radius:10px;font-size:14px;background:var(--card);font-family:var(--ui);color:var(--ink-soft)}
+  .seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card)}
+  .seg button{border:0;background:transparent;padding:9px 12px;font-size:13px;cursor:pointer;color:var(--ink-soft);font-family:var(--ui)}
+  .seg button.on{background:var(--ink);color:#fff}
+  button{cursor:pointer;font-family:var(--ui)}
+  .btn{border:1px solid var(--ink);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:14px;font-weight:600}
+  .btn.ghost{background:transparent;color:var(--ink)} .btn.gold{background:var(--gold);border-color:var(--gold)}
+  .btn.small{padding:7px 11px;font-size:12.5px}
+  .btn:focus-visible,.seg button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .list{display:grid;gap:12px;margin-top:8px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 14px;transition:transform .12s ease,box-shadow .12s ease}
+  .card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(22,48,122,.08)}
+  .card.learned{border-color:var(--gold-soft);background:linear-gradient(#fff,#FFFDF6)}
+  .card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+  .he{font-family:var(--he-font);direction:rtl;text-align:right;font-size:clamp(30px,8vw,42px);color:var(--ink);line-height:1.15}
+  .tr{font-size:13px;color:var(--ink-faint);font-style:italic;direction:ltr}
+  .ru{font-size:16px;margin-top:3px;color:var(--text)}
+  .pos{font-size:11px;color:var(--ink-faint)}
+  .meta{flex:1;min-width:0}
+  .root-row{display:flex;align-items:center;gap:10px;margin-top:12px;flex-wrap:wrap}
+  .root{display:flex;gap:5px;direction:rtl;cursor:pointer}
+  .root .cell{width:34px;height:38px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--ink-soft);border-radius:7px;font-family:var(--he-font);font-size:23px;color:var(--ink);background:#F7F9FD}
+  .root .lbl{align-self:center;font-size:10px;color:var(--ink-faint);text-transform:uppercase;letter-spacing:.08em;margin-inline-end:6px;direction:ltr}
+  .rlinks{display:flex;gap:12px;flex-wrap:wrap;font-size:12.5px}
+  .rlinks a,.rlinks button.link{color:var(--ink-soft);text-decoration:none;border:0;background:0;padding:0;font-size:12.5px;font-family:var(--ui);cursor:pointer;border-bottom:1px dotted var(--ink-faint)}
+  .rlinks a:hover,.rlinks button.link:hover{color:var(--ink)}
+  .mnem{margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;font-size:14px;color:var(--ink-soft)}
+  .mnem .tag{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);font-weight:700;margin-inline-end:6px}
+  .mnem.empty{color:var(--ink-faint);font-style:italic}
+  .note{font-size:13px;color:var(--ink-faint);margin-top:6px}
+  .card-btns{display:flex;gap:6px;flex-shrink:0}
+  .icon{width:38px;height:38px;border:1px solid var(--line);background:var(--card);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--ink-soft)}
+  .icon.on{background:var(--gold);border-color:var(--gold);color:#fff}
+  .icon.del:hover{border-color:var(--danger);color:var(--danger)}
+  .empty-state{text-align:center;padding:50px 20px;color:var(--ink-faint)}
+  .empty-state b{display:block;font-family:var(--display);font-size:20px;color:var(--ink-soft);margin-bottom:6px}
+  .overlay{position:fixed;inset:0;background:rgba(20,30,60,.42);display:none;align-items:flex-start;justify-content:center;padding:24px 14px;z-index:50;overflow:auto}
+  .overlay.show{display:flex}
+  .sheet{background:var(--paper);border:1px solid var(--line);border-radius:16px;width:100%;max-width:560px;padding:22px;box-shadow:0 20px 60px rgba(20,30,60,.25)}
+  .sheet h2{font-family:var(--display);color:var(--ink);margin:0 0 4px;font-size:22px}
+  .sheet .hint{font-size:13px;color:var(--ink-faint);margin:0 0 16px}
+  .field{margin-bottom:13px}
+  .field label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-soft);margin-bottom:5px}
+  .field input,.field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font-size:15px;background:var(--card);font-family:var(--ui)}
+  .field .he-in{font-family:var(--he-font);direction:rtl;text-align:right;font-size:22px}
+  .field textarea{resize:vertical;min-height:56px}
+  .field .with-btn{display:flex;gap:8px} .field .with-btn input{flex:1}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .sheet-btns{display:flex;gap:8px;margin-top:18px} .sheet-btns .btn{flex:1;justify-content:center}
+  /* study */
+  .study{background:linear-gradient(160deg,#16307A,#0E1F52);color:#fff;border:0;text-align:center}
+  .study h2{color:#fff}.study .hint{color:#B9C4E4}
+  .study select{width:100%;padding:9px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;font-size:14px;font-family:var(--ui);margin-bottom:6px}
+  .study select option{color:#111}
+  .flash{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:34px 20px;margin:6px 0 4px;min-height:180px;display:flex;flex-direction:column;justify-content:center;cursor:pointer}
+  .flash .qhe{color:#fff;font-size:clamp(38px,12vw,60px);text-align:center;direction:rtl}
+  .flash .prompt{color:#9FB0DA;font-size:13px;margin-top:14px}
+  .flash .answer{border-top:1px solid rgba(255,255,255,.16);margin-top:16px;padding-top:14px}
+  .flash .answer .ru{color:#fff;font-size:20px}
+  .flash .answer .trl{color:#9FB0DA;font-size:14px;font-style:italic;margin-top:4px}
+  .flash .answer .rootline{color:#CBD5EE;font-family:var(--he-font);direction:rtl;font-size:24px;margin-top:8px;letter-spacing:6px}
+  .flash .answer .mn{color:#F0D89A;font-size:15px;margin-top:12px}
+  .qbig{color:#fff;font-family:var(--he-font);direction:rtl;font-size:clamp(38px,12vw,58px);text-align:center;margin:6px 0 2px}
+  .qru{color:#fff;font-size:22px;text-align:center;margin:10px 0 2px}
+  .qtr{color:#9FB0DA;font-size:14px;font-style:italic;text-align:center;margin-bottom:12px}
+  .opts{display:grid;gap:8px;margin-top:6px}
+  .opts button{padding:12px 14px;border-radius:11px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.05);color:#fff;font-size:16px;font-family:var(--ui)}
+  .opts button.he{font-family:var(--he-font);direction:rtl;font-size:24px}
+  .opts button:hover:not(:disabled){background:rgba(255,255,255,.12)}
+  .opts button.correct{background:rgba(47,180,90,.28);border-color:#5FCB7B}
+  .opts button.wrong{background:rgba(200,60,60,.28);border-color:#E58A8A}
+  .opts button:disabled{cursor:default}
+  .match-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+  .match-col{display:grid;gap:8px}
+  .match-col button{padding:12px 8px;border-radius:11px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.05);color:#fff;font-size:15px;font-family:var(--ui);min-height:52px}
+  .match-col button.he{font-family:var(--he-font);direction:rtl;font-size:24px}
+  .match-col button.sel{outline:2px solid #F0D89A;background:rgba(240,216,154,.14)}
+  .match-col button.done{opacity:.4;border-color:#5FCB7B;background:rgba(47,180,90,.18)}
+  .match-col button.bad{border-color:#E58A8A;background:rgba(200,60,60,.22)}
+  .build-slots{display:flex;gap:6px;direction:rtl;justify-content:center;min-height:52px;flex-wrap:wrap;margin:8px 0 14px}
+  .build-slots .s{min-width:38px;height:48px;border-bottom:2px solid rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;font-family:var(--he-font);font-size:30px;color:#fff;padding:0 4px}
+  .build-slots.ok .s{border-color:#5FCB7B;color:#CFF3D8}
+  .build-slots.no .s{border-color:#E58A8A}
+  .tiles{display:grid;gap:8px;justify-content:center;direction:rtl;margin:0 auto;max-width:320px}
+  .tiles button{width:48px;height:54px;font-family:var(--he-font);font-size:28px;border-radius:10px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.08);color:#fff;transition:background .12s,border-color .12s}
+  .tiles button:disabled{opacity:.2}
+  .tiles button.bad{border-color:#E58A8A!important;background:rgba(200,60,60,.4)!important;color:#FFE1E1;animation:shakeX .4s}
+  @keyframes shakeX{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}60%{transform:translateX(5px)}}
+  .build-slots .s.filled{border-color:#5FCB7B;color:#CFF3D8;cursor:pointer}
+  .build-slots .s.filled:hover{background:rgba(200,60,60,.18);border-color:#E58A8A}
+  .cloze-sent{color:#fff;font-family:var(--he-font);direction:rtl;font-size:26px;text-align:center;margin:8px 0 14px;line-height:1.7}
+  .cloze-sent .blank{color:#F0D89A;border-bottom:2px dashed #F0D89A;padding:0 20px;margin:0 4px}
+  .study-note{color:#B9C4E4;font-size:14px;padding:24px 8px}
+  .study-btns{display:flex;gap:8px;margin-top:10px}.study-btns .btn{flex:1;justify-content:center}
+  .study-btns .btn.ghost{color:#fff;border-color:rgba(255,255,255,.4)}
+  .study .counter{color:#9FB0DA;font-size:13px;margin-top:8px}
+  .study .close{background:transparent;border:0;color:#B9C4E4;font-size:14px;margin-top:12px;text-decoration:underline}
+  /* study setup / progress / summary */
+  .study h2{color:#fff;font-family:var(--display);font-size:22px}
+  .study .fld{margin:0 0 13px;text-align:left}
+  .study .fld label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:#9FB0DA;margin-bottom:6px}
+  .seg-dark{display:flex;gap:6px}
+  .seg-dark button{flex:1;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;padding:9px;border-radius:9px;font-size:13px;font-family:var(--ui)}
+  .seg-dark button.on{background:var(--gold);border-color:var(--gold)}
+  .study-topbar{margin:2px 0 10px}
+  .study-progress{height:9px;background:rgba(255,255,255,.14);border-radius:99px;overflow:hidden}
+  .study-progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,#5FCB7B,#A9791C);border-radius:99px;transition:width .3s ease}
+  .study-score{display:flex;gap:14px;justify-content:center;align-items:center;color:#9FB0DA;font-size:13px;margin-top:8px}
+  .study-score .ok{color:#8EE6A6}.study-score .bad{color:#F0A3A3}.study-score b{font-size:15px}
+  .quickmark{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+  .quickmark button{background:transparent;border:1px solid rgba(255,255,255,.3);color:#CBD5EE;border-radius:9px;padding:7px 12px;font-size:12.5px;font-family:var(--ui)}
+  .quickmark button.learn:hover{border-color:#5FCB7B;color:#CFF3D8}
+  .quickmark button.rev:hover{border-color:#F0D89A;color:#F0D89A}
+  .sum-stats{display:flex;gap:10px;justify-content:center;margin:8px 0 14px}
+  .sum-stats .b{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:12px;padding:12px 6px;text-align:center}
+  .sum-stats .b b{display:block;font-size:26px;color:#fff;line-height:1.1}
+  .sum-stats .b span{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#9FB0DA}
+  .sum-stats .b.ok b{color:#8EE6A6}.sum-stats .b.bad b{color:#F0A3A3}
+  .sum-list{display:grid;gap:6px;max-height:44vh;overflow:auto;text-align:left;margin-bottom:10px}
+  .sum-row{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:7px 10px}
+  .sum-row .res{width:16px;flex:0 0 auto;text-align:center}.sum-row .res.ok{color:#8EE6A6}.sum-row .res.bad{color:#F0A3A3}
+  .sum-row .he{font-family:var(--he-font);direction:rtl;font-size:22px;color:#fff;flex:0 0 auto}
+  .sum-row .ru{flex:1;color:#CBD5EE;font-size:13px;min-width:0}
+  .sum-row .mk{display:flex;gap:5px;flex:0 0 auto}
+  .sum-row .mk button{border:1px solid rgba(255,255,255,.25);background:transparent;color:#9FB0DA;border-radius:8px;padding:5px 8px;font-size:11.5px;font-family:var(--ui)}
+  .sum-row .mk button.on-learn{background:var(--gold);border-color:var(--gold);color:#fff}
+  .sum-row .mk button.on-rev{background:rgba(240,216,154,.18);border-color:#F0D89A;color:#F0D89A}
+  /* models */
+  .warn{background:#FFF7E6;border:1px solid var(--gold-soft);color:#7a5a12;font-size:12.5px;border-radius:9px;padding:9px 11px;margin:4px 0 14px}
+  .bin{border:1px solid var(--line);border-radius:11px;background:var(--card);padding:12px 14px;margin-bottom:9px}
+  .bin .bhead{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .bin .bname{font-weight:700;color:var(--ink);font-size:14px}
+  .bin .bmodel{font-size:11.5px;color:var(--ink-faint);font-style:italic}
+  .bin .bform{font-family:var(--he-font);direction:rtl;font-size:30px;margin:6px 0 4px;color:var(--ink-soft)}
+  .bin .bform .rad{color:var(--ink);background:#EAF0FB;border-radius:4px;padding:0 2px}
+  .bin .bmean{font-size:13px;color:var(--ink-soft)}
+  .modroot{display:flex;gap:6px;direction:rtl;justify-content:center;margin:6px 0 14px}
+  .modroot .cell{width:40px;height:44px;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--ink);border-radius:8px;font-family:var(--he-font);font-size:27px;color:var(--ink);background:#F7F9FD}
+  .subtabs{display:flex;gap:6px;margin-bottom:12px}
+  .subtabs button{flex:1;border:1px solid var(--line);background:var(--card);color:var(--ink-soft);padding:8px;border-radius:9px;font-size:13px}
+  .subtabs button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+  table.conj{width:100%;border-collapse:collapse;font-size:14px;margin-bottom:8px}
+  table.conj caption{text-align:right;font-weight:700;color:var(--ink);font-size:13px;padding:8px 2px 4px;font-family:var(--display)}
+  table.conj td{border-bottom:1px solid var(--line);padding:7px 6px;vertical-align:middle}
+  table.conj td.p{color:var(--ink-faint);font-size:12px;width:34%}
+  table.conj td.h{font-family:var(--he-font);direction:rtl;text-align:right;font-size:22px;color:var(--ink);width:38%}
+  table.conj td.t{color:var(--ink-soft);font-style:italic;font-size:12.5px}
+  .foot{margin-top:34px;font-size:12px;color:var(--ink-faint);text-align:center;line-height:1.6}
+  .foot code{background:#EEF1F7;padding:1px 5px;border-radius:4px;font-size:11px}
+  @media (max-width:520px){.row2{grid-template-columns:1fr}.card-btns{flex-direction:column}}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand"><h1>אוֹצָר מִילִים</h1><span class="sub">Мой словарь иврита · корни, биньяны, ассоциации</span></div>
+    <div class="stats">
+      <div class="stat"><b id="s-total">0</b><span>всего</span></div>
+      <div class="stat gold"><b id="s-learned">0</b><span>выучено</span></div>
+      <div class="stat"><b id="s-left">0</b><span>осталось</span></div>
+      <div class="stat"><b id="s-due">0</b><span>к повтору</span></div>
+    </div>
+    <div class="progress"><i id="s-bar" style="width:0%"></i></div>
+  </header>
+
+  <div class="actions">
+    <button class="btn" id="add-btn">＋ Добавить слово</button>
+    <button class="btn gold" id="study-btn">▶ Учить</button>
+    <button class="btn ghost" id="export-btn">↓ Экспорт</button>
+    <button class="btn ghost" id="import-btn">↑ Импорт</button>
+    <input type="file" id="import-file" accept="application/json" hidden>
+  </div>
+
+  <div class="toolbar">
+    <input type="search" id="search" placeholder="Поиск: слово, корень, перевод, транслит…" autocomplete="off">
+    <select id="pos-filter"><option value="all">Все части речи</option></select>
+    <div class="seg" id="filter">
+      <button data-f="all" class="on">Все</button>
+      <button data-f="learning">Учу</button>
+      <button data-f="learned">Выучено</button>
+      <button data-f="due">К повт.</button>
+    </div>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <p class="foot">
+    Данные хранятся только в этом браузере (localStorage). Делай <b>Экспорт</b> для бэкапа и переноса.<br>
+    Файл автономный, без внешних библиотек — открывается локально или заливается на статический сервер как <code>index.html</code>.<br>
+    Тренажёр учит ровно то, что сейчас отфильтровано (можно фильтром части речи учить только глаголы и т.п.).
+  </p>
+</div>
+
+<!-- ADD / EDIT -->
+<div class="overlay" id="form-overlay">
+  <div class="sheet">
+    <h2 id="form-title">Новое слово</h2>
+    <p class="hint">Заполни минимум: слово и перевод. Корень пиши через дефис: <span dir="rtl" style="font-family:var(--he-font)">ש-מ-ר</span></p>
+    <input type="hidden" id="f-id">
+    <div class="field"><label>Слово на иврите (с огласовками)</label>
+      <div class="with-btn"><input class="he-in" id="f-he" placeholder="מוֹשָׁב" dir="rtl">
+        <button class="btn ghost small" id="f-pealim" type="button" title="Открыть слово на Pealim, чтобы взять перевод/огласовки">Pealim ↗</button></div></div>
+    <div class="row2">
+      <div class="field"><label>Транслит (как читается)</label><input id="f-tr" placeholder="мошАв"></div>
+      <div class="field"><label>Часть речи</label><input id="f-pos" placeholder="глагол / сущ. / нареч." list="pos-list"><datalist id="pos-list"></datalist></div>
+    </div>
+    <div class="field"><label>Корень (שורש)</label><input class="he-in" id="f-root" placeholder="י-ש-ב" dir="rtl" style="font-size:18px"></div>
+    <div class="field"><label>Перевод</label><input id="f-ru" placeholder="Сельскохоз. сообщество в Земле Израиля"></div>
+    <div class="field"><label>Пример (предложение на иврите — для режима «Пропуск»)</label><input class="he-in" id="f-ex" placeholder="…" dir="rtl" style="font-size:18px"></div>
+    <div class="field"><label>Ассоциация / рифма / мнемоника <span style="color:var(--gold)">★</span></label><textarea id="f-mnem" placeholder="Напр.: «мошАв — там мОй шАлаш и грядки»"></textarea></div>
+    <div class="field"><label>Заметка / ссылка на песню</label><textarea id="f-note" placeholder="Управление предлогом, ссылка…"></textarea></div>
+    <div class="sheet-btns"><button class="btn ghost" id="form-cancel">Отмена</button><button class="btn" id="form-save">Сохранить</button></div>
+  </div>
+</div>
+
+<!-- STUDY -->
+<div class="overlay" id="study-overlay">
+  <div class="sheet study">
+    <!-- SETUP -->
+    <div id="study-setup">
+      <h2 style="margin:0 0 12px">Тренировка слов</h2>
+      <div class="fld"><label>Режим</label>
+        <select id="study-type">
+          <option value="mix">🎲 Интерактивная игра (режимы вперемешку)</option>
+          <option value="he2ru">Иврит → выбрать перевод</option>
+          <option value="ru2he">Перевод → выбрать иврит</option>
+          <option value="match">Соединить пары (4 слова)</option>
+          <option value="build">Собрать слово из букв</option>
+          <option value="cloze">Вставить слово в предложение</option>
+          <option value="recall">Карточка — вспомнить самому</option>
+        </select></div>
+      <div class="fld"><label>Что учить</label>
+        <div class="seg-dark" id="study-source">
+          <button data-s="filtered" class="on">Текущий фильтр</button>
+          <button data-s="due">Только к повторению</button>
+        </div></div>
+      <div class="fld"><label>Сколько слов за подход</label>
+        <select id="study-count">
+          <option value="5">5 слов</option>
+          <option value="10" selected>10 слов</option>
+          <option value="15">15 слов</option>
+          <option value="20">20 слов</option>
+          <option value="all">Все доступные</option>
+        </select></div>
+      <p class="hint" id="study-avail"></p>
+      <div class="study-btns"><button class="btn gold" id="study-start" style="flex:1;justify-content:center">Начать ▶</button></div>
+      <button class="close" id="study-close-setup">Закрыть</button>
+    </div>
+    <!-- RUN -->
+    <div id="study-run" hidden>
+      <div class="study-topbar">
+        <div class="study-progress"><i id="run-bar"></i></div>
+        <div class="study-score"><span class="ok">✓ <b id="sc-ok">0</b></span><span class="bad">✗ <b id="sc-bad">0</b></span><span id="run-count"></span></div>
+      </div>
+      <p class="hint" id="study-sub"></p>
+      <div id="study-body"></div>
+      <div class="counter" id="study-counter"></div>
+      <div class="study-btns" id="study-controls"></div>
+      <div class="quickmark" id="study-quick"></div>
+      <button class="close" id="study-close">Завершить и подвести итог</button>
+    </div>
+    <!-- SUMMARY -->
+    <div id="study-summary" hidden>
+      <h2 style="margin:0 0 12px">Итоги подхода</h2>
+      <div class="sum-stats" id="sum-stats"></div>
+      <p class="hint" style="margin:0 0 8px">Отметь слова: выучено или к повторению.</p>
+      <div class="sum-list" id="sum-list"></div>
+      <div class="study-btns"><button class="btn ghost" id="sum-again">Ещё подход ▶</button><button class="btn gold" id="sum-done">Готово</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODELS -->
+<div class="overlay" id="model-overlay">
+  <div class="sheet">
+    <h2>Корень в моделях</h2>
+    <p class="hint" id="model-sub"></p>
+    <div class="modroot" id="model-root"></div>
+    <div class="subtabs"><button id="tab-bin" class="on">Биньяны</button><button id="tab-conj">Спряжение (пааль)</button></div>
+    <div id="view-bin"><div class="warn" id="model-warn"></div><div id="model-list"></div></div>
+    <div id="view-conj" hidden><div class="warn" id="conj-warn"></div><div id="conj-list"></div></div>
+    <div class="sheet-btns">
+      <a class="btn ghost" id="model-pealim" target="_blank" rel="noopener" style="flex:1;text-align:center;text-decoration:none">Точные таблицы на Pealim ↗</a>
+      <button class="btn" id="model-close">Закрыть</button>
+    </div>
+  </div>
+</div>
+
+<script>
+"use strict";
+const KEY="hebrew-vocab-v1";
+/* he, root, pos, ru, tr */
+const SEED=[
+  ["מוֹשָׁב","י-ש-ב","сущ.","Сельскохоз. сообщество в Земле Израиля","мошАв"],
+  ["נִמְצָא","מ-צ-א","глагол","Находиться, оказываться","нимцА"],
+  ["מֶזֶג אֲוִיר","מ-ז-ג","сущ.","Погода","мЭзег авИр"],
+  ["יָבֵשׁ","י-ב-ש","прил.","Сухой","явЭш"],
+  ["לִפְעָמִים","","нареч.","Иногда","лифъамИм"],
+  ["לְהָקִים","ק-ו-מ","глагол","Основывать, воздвигать, осуществлять","леакИм"],
+  ["קְבוּצָה","ק-ב-צ","сущ.","Группа, набор, множество (мат.)","квуцА"],
+  ["צָעִיר","צ-ע-ר","прил.","Молодой","цаИр"],
+  ["הָיָה","ה-י-ה","глагол","Быть (לִהְיוֹת)","hайА"],
+  ["צֶמַח","צ-מ-ח","сущ.","Растение","цЭмах"],
+  ["לִשְׁמוֹר","ש-מ-ר","глагол","Беречь, сторожить, соблюдать, хранить (על)","лишмОр"],
+  ["לַעֲסוֹק","ע-ס-ק","глагол","Заниматься чем-либо (ב-)","лаасОк"],
+  ["חַקְלָאוּת","","сущ.","с/х, агрономия","хаклаУт"],
+  ["לְגַדֵּל","ג-ד-ל","глагол","Растить","легадЭль"],
+  ["הִתְחִיל","ת-ח-ל","глагол","Начинать (начинаю)","hитхИль"],
+  ["לִבְנוֹת","ב-נ-ה","глагол","Строить","ливнОт"],
+  ["חַדְרֵי אֹכֶל","א-כ-ל","сущ.","Бытовые комнаты / столовые","хадрЭй Охель"],
+  ["לְמַעַן","","предлог","Для, ради","лемАан"],
+  ["הִגִּיעַ","נ-ג-ע","глагол","Прибыть, достичь, наступить (о вр.)","hигИа"],
+  ["חֻפְשָׁה","ח-פ-ש","сущ.","Отпуск, каникулы (ב-)","хуфшА"],
+  ["בַּאֲוִיר","","сущ.","В атмосфере (воздух)","баавИр"],
+  ["שְׁהִיָּה","ש-ה-ה","сущ.","Пребывание, нахождение","шеhийА"],
+  ["אֹרֶךְ","א-ר-ך","сущ.","Рост / длина","Орех"],
+  ["לִשְׂחוֹת","ש-ח-ה","глагол","Плыть, плавать","лисхОт"],
+  ["צִמְחוֹנִי","צ-מ-ח","прил.","Вегетарианский","цимхонИ"],
+  ["מַדּוּעַ","","нареч.","Почему?","мадУа"],
+  ["הֶחְלִיט","ח-ל-ט","глагол","Принять решение (принимаю решение)","hехлИт"],
+  ["מְיֻחָד","י-ח-ד","прил.","Особенный, особый","меюхАд"],
+  ["הֶבְדֵּל","ב-ד-ל","сущ.","Разница, различие","hевдЭль"],
+  ["וְכֵן הָלְאָה","","","И так далее","вехЭн hалъА"],
+  ["וְכַדּוֹמֶה","","","И тому подобное","вехадомЭ"],
+  ["נָקִי","נ-ק-ה","прил.","Чистый","накИ"],
+  ["נוֹף","נ-ו-ף","сущ.","Вид, панорама, пейзаж","ноф"],
+  ["מַשְׁמָעוּת","ש-מ-ע","сущ.","Значение, смысл","машмаУт"],
+  ["מַפְתֵּחַ","פ-ת-ח","сущ.","Ключ (мн. -ות)","мафтЭах"],
+  ["שָׂם","ש-י-מ","глагол","Класть, надевать","сам"],
+  ["הֲכִי","","нареч.","Самый, наиболее (разг.)","hахИ"],
+  ["מַתְאִים","ת-א-מ","глагол","Соответствовать, быть подходящим","матъИм"]
+];
+
+let words=load(), filter="all", query="", posFilter="all";
+
+function load(){
+  try{const raw=localStorage.getItem(KEY);if(raw)return JSON.parse(raw);}catch(e){}
+  const seeded=SEED.map(s=>Object.assign(mk(),{he:s[0],root:s[1],pos:s[2],ru:s[3],tr:s[4]}));
+  try{localStorage.setItem(KEY,JSON.stringify(seeded));}catch(e){}
+  return seeded;
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(words));}catch(e){alert("Не удалось сохранить. Сделай Экспорт.");}}
+function mk(){return {id:Date.now().toString(36)+Math.random().toString(36).slice(2,7),he:"",root:"",pos:"",ru:"",tr:"",ex:"",mnem:"",note:"",learned:false,box:0,due:0,reps:0,created:Date.now()};}
+function esc(s){return (s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+const $=id=>document.getElementById(id);
+function radicals(root){return (root||"").split(/[-·\s]+/).filter(Boolean);}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function stripNikud(s){return (s||"").replace(/[\u0591-\u05C7]/g,"");}
+function pealimRootURL(r){return r.length!==3?"https://www.pealim.com/ru/dict/":
+  "https://www.pealim.com/ru/dict/?num-radicals=3&r1="+encodeURIComponent(r[0])+"&r2="+encodeURIComponent(r[1])+"&rf="+encodeURIComponent(r[2]);}
+function pealimSearchURL(q){return "https://www.pealim.com/ru/search/?q="+encodeURIComponent(q);}
+
+/* ===== Интервальное повторение (Leitner) + озвучка (Web Speech) ===== */
+const SR_DAYS=[0,1,3,7,16,35];
+function srKnow(w){w.box=Math.min(5,(w.box||0)+1);w.due=Date.now()+SR_DAYS[w.box]*86400000;w.reps=(w.reps||0)+1;}
+function srAgain(w){w.box=0;w.due=Date.now()+600000;w.reps=(w.reps||0)+1;}
+function srReview(w){w.learned=false;w.box=Math.max(0,(w.box||0));w.due=Date.now();w.reps=(w.reps||0)+1;}
+let _voices=[];
+function loadVoices(){try{_voices=speechSynthesis.getVoices()||[];}catch(e){_voices=[];}}
+if("speechSynthesis" in window){loadVoices();try{speechSynthesis.onvoiceschanged=loadVoices;}catch(e){}}
+function heVoice(){return _voices.find(v=>/^he/i.test(v.lang))||null;}
+function speak(t){
+  if(!t||!("speechSynthesis" in window))return;
+  try{const u=new SpeechSynthesisUtterance(stripNikud(t));u.lang="he-IL";const v=heVoice();if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}
+}
+
+/* ===== Hebrew helpers ===== */
+const VAV="\u05D5",ALEF="\u05D0",NUN="\u05E0",TAV="\u05EA",YOD="\u05D9",LAMED="\u05DC",HE_="\u05D4",MEMF="\u05DD";
+const FINAL={"\u05DB":"\u05DA","\u05DE":"\u05DD","\u05E0":"\u05DF","\u05E4":"\u05E3","\u05E6":"\u05E5"};
+const F=l=>FINAL[l]||l;
+const WEAK=new Set(["\u05D0","\u05D4","\u05D7","\u05E2","\u05E8","\u05E0","\u05D5","\u05D9"]);
+function isStrongPaal(r){
+  if(r.length!==3)return false;
+  const bad=new Set(["\u05D0","\u05D4","\u05D7","\u05E2","\u05D5","\u05D9"]);
+  if(r.some(x=>bad.has(x)))return false;
+  if(r[0]==="\u05E0")return false;
+  if(r[2]==="\u05D4"||r[2]==="\u05D0")return false;
+  return true;
+}
+const NK={kamatz:"\u05B8",patach:"\u05B7",hiriq:"\u05B4",tsere:"\u05B5",shva:"\u05B0",qubuts:"\u05BB",dagesh:"\u05BC"};
+function tk(c,n,root){return {c:c,n:n||[],root:!!root};}
+function binyanForms(r){
+  const [a,b,c0]=r,c=F(c0),P=NK;
+  return [
+    {name:"Пааль (קל)",model:"katal",mean:"базовое, простое действие: «он сделал».",f:[tk(a,[P.kamatz],1),tk(b,[P.patach],1),tk(c,[],1)]},
+    {name:"Нифъаль",model:"niktal",mean:"пассив / возвратное к паалю: «сделалось».",f:[tk(NUN,[P.hiriq]),tk(a,[P.shva],1),tk(b,[P.patach],1),tk(c,[],1)]},
+    {name:"Пиэль",model:"kittel",mean:"усиленное / часто каузативное (2-я корневая удваивается).",f:[tk(a,[P.hiriq],1),tk(b,[P.dagesh,P.tsere],1),tk(c,[],1)]},
+    {name:"Пуаль",model:"kuttal",mean:"пассив пиэля.",f:[tk(a,[P.qubuts],1),tk(b,[P.dagesh,P.patach],1),tk(c,[],1)]},
+    {name:"hифъиль",model:"hiktil",mean:"каузатив: «заставить / дать сделать».",f:[tk(HE_,[P.hiriq]),tk(a,[P.shva],1),tk(b,[P.hiriq],1),tk(YOD,[]),tk(c,[],1)]},
+    {name:"hуфъаль",model:"huktal",mean:"пассив hифъиля.",f:[tk(HE_,[P.qubuts]),tk(a,[P.shva],1),tk(b,[P.patach],1),tk(c,[],1)]},
+    {name:"hитпаэль",model:"hitkatel",mean:"возвратно-взаимное: «делать с собой / друг с другом».",f:[tk(HE_,[P.hiriq]),tk(TAV,[P.shva]),tk(a,[P.patach],1),tk(b,[P.dagesh,P.tsere],1),tk(c,[],1)]}
+  ];
+}
+function renderForm(t){return t.map(x=>'<span class="'+(x.root?'rad':'')+'">'+esc(x.c)+x.n.join("")+'</span>').join("");}
+const TRC={"\u05D0":"","\u05D1":"б","\u05D2":"г","\u05D3":"д","\u05D4":"h","\u05D5":"в","\u05D6":"з","\u05D7":"х","\u05D8":"т","\u05D9":"й","\u05DB":"к","\u05DA":"к","\u05DC":"л","\u05DE":"м","\u05DD":"м","\u05E0":"н","\u05DF":"н","\u05E1":"с","\u05E2":"","\u05E4":"п","\u05E3":"ф","\u05E6":"ц","\u05E5":"ц","\u05E7":"к","\u05E8":"р","\u05E9":"ш","\u05EA":"т"};
+const tc=l=>TRC[l]!==undefined?TRC[l]:l;
+function paalConj(r){
+  const [a,b,c0]=r,c=F(c0),A=tc(a),B=tc(b),C=tc(c0);
+  return {
+    past:{title:"Прошедшее",rows:[["я",a+b+c0+TAV+YOD,A+"а"+B+"а"+C+"ти"],["ты (м)",a+b+c0+TAV,A+"а"+B+"а"+C+"та"],["ты (ж)",a+b+c0+TAV,A+"а"+B+"а"+C+"т"],["он",a+b+c,A+"а"+B+"а"+C],["она",a+b+c0+HE_,A+"а"+B+C+"а"],["мы",a+b+c0+NUN+VAV,A+"а"+B+"а"+C+"ну"],["вы",a+b+c0+TAV+MEMF,A+B+"а"+C+"тэм"],["они",a+b+c0+VAV,A+"а"+B+C+"у"]]},
+    pres:{title:"Настоящее",rows:[["м. ед.",a+VAV+b+c,A+"о"+B+"е"+C],["ж. ед.",a+VAV+b+c0+TAV,A+"о"+B+"е"+C+"эт"],["м. мн.",a+VAV+b+c0+YOD+MEMF,A+"о"+B+C+"им"],["ж. мн.",a+VAV+b+c0+VAV+TAV,A+"о"+B+C+"от"]]},
+    fut:{title:"Будущее",rows:[["я",ALEF+a+b+VAV+c,"э"+A+B+"о"+C],["ты (м)",TAV+a+b+VAV+c,"ти"+A+B+"о"+C],["ты (ж)",TAV+a+b+c0+YOD,"ти"+A+B+"е"+C+"и"],["он",YOD+a+b+VAV+c,"йи"+A+B+"о"+C],["она",TAV+a+b+VAV+c,"ти"+A+B+"о"+C],["мы",NUN+a+b+VAV+c,"ни"+A+B+"о"+C],["вы",TAV+a+b+c0+VAV,"ти"+A+B+"е"+C+"у"],["они",YOD+a+b+c0+VAV,"йи"+A+B+"е"+C+"у"]]},
+    imp:{title:"Повелительное",rows:[["м. ед.",a+b+VAV+c,A+B+"о"+C],["ж. ед.",a+b+c0+YOD,A+"и"+B+C+"и"],["мн.",a+b+c0+VAV,A+"и"+B+C+"у"]]},
+    inf:{title:"Инфинитив",rows:[["",LAMED+a+b+VAV+c,"ли"+A+B+"о"+C]]}
+  };
+}
+function renderConj(r){
+  const cj=paalConj(r);
+  return ["past","pres","fut","imp","inf"].map(k=>{const s=cj[k];
+    return '<table class="conj"><caption>'+s.title+'</caption>'+s.rows.map(row=>'<tr><td class="p">'+esc(row[0])+'</td><td class="h" dir="rtl">'+esc(row[1])+'</td><td class="t">'+esc(row[2])+'</td></tr>').join("")+'</table>';
+  }).join("");
+}
+function openModels(w){
+  const r=radicals(w.root);
+  $("model-sub").textContent=(w.he?w.he+" · ":"")+w.ru;
+  $("model-pealim").href=pealimRootURL(r);
+  $("model-root").innerHTML=r.length===3?r.map(x=>'<span class="cell">'+esc(x)+'</span>').join(""):"";
+  if(r.length!==3){$("model-warn").innerHTML="Модели строятся только для 3-буквенных корней.";$("model-list").innerHTML="";}
+  else{
+    const weak=r.some(x=>WEAK.has(x));
+    $("model-warn").innerHTML="⚠ Формы <b>схематичные</b> (сильный корень, прош. вр. 3 л. м.р.). "+(weak?"Корень содержит гортанную/слабую букву — реальные огласовки отличаются. ":"")+"Существуют не все биньяны. Точные таблицы — на Pealim.";
+    $("model-list").innerHTML=binyanForms(r).map(bn=>'<div class="bin"><div class="bhead"><span class="bname">'+esc(bn.name)+'</span><span class="bmodel">модель «'+bn.model+'»</span></div><div class="bform" dir="rtl">'+renderForm(bn.f)+'</div><div class="bmean">'+esc(bn.mean)+'</div></div>').join("");
+  }
+  if(isStrongPaal(r)){$("conj-warn").innerHTML="Спряжение в биньяне <b>пааль</b> (сильный корень), письмо без огласовок. Транслит приблизительный. Точные огласовки/другие биньяны — на Pealim.";$("conj-list").innerHTML=renderConj(r);}
+  else{$("conj-warn").innerHTML="Полное офлайн-спряжение здесь только для <b>сильных корней в паале</b>. Этот корень слабый/не в паале — открой Pealim ниже.";$("conj-list").innerHTML="";}
+  showTab("bin");$("model-overlay").classList.add("show");
+}
+function showTab(t){$("tab-bin").classList.toggle("on",t==="bin");$("tab-conj").classList.toggle("on",t==="conj");$("view-bin").hidden=t!=="bin";$("view-conj").hidden=t!=="conj";}
+$("tab-bin").onclick=()=>showTab("bin");$("tab-conj").onclick=()=>showTab("conj");
+$("model-close").onclick=()=>$("model-overlay").classList.remove("show");
+$("model-overlay").addEventListener("click",e=>{if(e.target===$("model-overlay"))$("model-overlay").classList.remove("show");});
+
+/* ===== Filtering ===== */
+function currentFiltered(){
+  const q=query.trim().toLowerCase();
+  return words.filter(w=>{
+    if(filter==="learned"&&!w.learned)return false;
+    if(filter==="learning"&&w.learned)return false;
+    if(filter==="due"&&(w.due||0)>Date.now())return false;
+    if(posFilter!=="all"&&(w.pos||"").trim()!==posFilter)return false;
+    if(q){const hay=(w.he+" "+w.root+" "+w.ru+" "+w.tr+" "+w.mnem+" "+w.note).toLowerCase();if(!hay.includes(q))return false;}
+    return true;
+  });
+}
+function refreshPosOptions(){
+  const set=[...new Set(words.map(w=>(w.pos||"").trim()).filter(Boolean))].sort();
+  const sel=$("pos-filter"),cur=sel.value;
+  sel.innerHTML='<option value="all">Все части речи</option>'+set.map(p=>'<option value="'+esc(p)+'">'+esc(p)+'</option>').join("");
+  sel.value=[...sel.options].some(o=>o.value===cur)?cur:"all";posFilter=sel.value;
+  $("pos-list").innerHTML=set.map(p=>'<option value="'+esc(p)+'">').join("");
+}
+function render(){
+  refreshPosOptions();
+  const total=words.length,learned=words.filter(w=>w.learned).length;
+  const dueN=words.filter(w=>(w.due||0)<=Date.now()).length;
+  $("s-total").textContent=total;$("s-learned").textContent=learned;$("s-left").textContent=total-learned;$("s-due").textContent=dueN;
+  $("s-bar").style.width=total?Math.round(learned/total*100)+"%":"0%";
+  const items=currentFiltered(),list=$("list");
+  if(!items.length){list.innerHTML='<div class="empty-state"><b>Здесь пока пусто</b>'+(query||posFilter!=="all"?"Ничего не найдено по фильтру.":"Добавь первое слово.")+'</div>';return;}
+  list.innerHTML=items.map(w=>{
+    const r=radicals(w.root),has3=r.length===3;
+    return '<div class="card '+(w.learned?'learned':'')+'"><div class="card-top"><div class="meta">'+
+      '<div class="he">'+(esc(w.he)||'—')+'</div>'+(w.tr?'<div class="tr">'+esc(w.tr)+'</div>':'')+
+      '<div class="ru">'+esc(w.ru)+'</div>'+(w.pos?'<div class="pos">'+esc(w.pos)+'</div>':'')+
+      '</div><div class="card-btns">'+
+      (w.he?'<button class="icon" title="Озвучить" data-act="speak" data-id="'+w.id+'">🔊</button>':'')+
+      '<button class="icon toggle '+(w.learned?'on':'')+'" title="Выучено" data-act="toggle" data-id="'+w.id+'">✓</button>'+
+      (has3?'<button class="icon" title="Биньяны и спряжение" data-act="models" data-id="'+w.id+'">📐</button>':'')+
+      '<button class="icon" title="Изменить" data-act="edit" data-id="'+w.id+'">✎</button>'+
+      '<button class="icon del" title="Удалить" data-act="del" data-id="'+w.id+'">🗑</button></div></div>'+
+      (w.root?'<div class="root-row"><div class="root" data-act="filterroot" data-root="'+esc(w.root)+'" title="Слова этого корня"><span class="lbl">корень</span>'+
+        r.map(x=>'<span class="cell">'+esc(x)+'</span>').join("")+'</div><div class="rlinks">'+
+        (has3?'<a href="'+pealimRootURL(r)+'" target="_blank" rel="noopener">корень на Pealim ↗</a>':'')+
+        (has3?'<button class="link" data-act="models" data-id="'+w.id+'">биньяны / спряжение →</button>':'')+'</div></div>':'')+
+      '<div class="mnem '+(w.mnem?'':'empty')+'">'+(w.mnem?'<span class="tag">ассоциация</span>'+esc(w.mnem):'ассоциация не добавлена')+'</div>'+
+      (w.note?'<div class="note">'+esc(w.note)+'</div>':'')+'</div>';
+  }).join("");
+}
+$("list").addEventListener("click",e=>{
+  const b=e.target.closest("[data-act]");if(!b)return;
+  const act=b.dataset.act;
+  if(act==="filterroot"){query=b.dataset.root;$("search").value=query;render();return;}
+  const w=words.find(x=>x.id===b.dataset.id);if(!w)return;
+  if(act==="speak"){speak(w.he);return;}
+  if(act==="toggle"){w.learned=!w.learned;save();render();}
+  if(act==="models"){openModels(w);}
+  if(act==="edit"){openForm(w);}
+  if(act==="del"){if(confirm('Удалить «'+(w.he||w.ru)+'»?')){words=words.filter(x=>x.id!==w.id);save();render();}}
+});
+$("filter").addEventListener("click",e=>{const b=e.target.closest("button[data-f]");if(!b)return;filter=b.dataset.f;[...$("filter").children].forEach(x=>x.classList.toggle("on",x===b));render();});
+$("search").addEventListener("input",e=>{query=e.target.value;render();});
+$("pos-filter").addEventListener("change",e=>{posFilter=e.target.value;render();});
+
+/* ===== Form ===== */
+function openForm(w){
+  $("form-title").textContent=w?"Изменить слово":"Новое слово";
+  $("f-id").value=w?w.id:"";$("f-he").value=w?w.he:"";$("f-tr").value=w?(w.tr||""):"";$("f-root").value=w?w.root:"";
+  $("f-pos").value=w?w.pos:"";$("f-ru").value=w?w.ru:"";$("f-ex").value=w?(w.ex||""):"";$("f-mnem").value=w?w.mnem:"";$("f-note").value=w?w.note:"";
+  $("form-overlay").classList.add("show");setTimeout(()=>$("f-he").focus(),50);
+}
+function closeForm(){$("form-overlay").classList.remove("show");}
+$("add-btn").onclick=()=>openForm(null);
+$("form-cancel").onclick=closeForm;
+$("form-overlay").addEventListener("click",e=>{if(e.target===$("form-overlay"))closeForm();});
+$("f-pealim").onclick=()=>{
+  const rad=radicals($("f-root").value.trim());
+  if(rad.length===3){window.open(pealimRootURL(rad),"_blank","noopener");return;}
+  const q=$("f-he").value.trim()||$("f-ru").value.trim();
+  if(!q){alert("Введи корень (тогда открою все слова корня) или слово на иврите.");return;}
+  window.open(pealimSearchURL(q),"_blank","noopener");
+};
+$("form-save").onclick=()=>{
+  const he=$("f-he").value.trim(),ru=$("f-ru").value.trim();
+  if(!he&&!ru){alert("Заполни хотя бы слово или перевод.");return;}
+  const id=$("f-id").value;
+  const data={he,tr:$("f-tr").value.trim(),root:$("f-root").value.trim(),pos:$("f-pos").value.trim(),ru,ex:$("f-ex").value.trim(),mnem:$("f-mnem").value.trim(),note:$("f-note").value.trim()};
+  if(id){Object.assign(words.find(x=>x.id===id),data);}else{words.unshift(Object.assign(mk(),data));}
+  save();render();closeForm();
+};
+
+/* ===== Export / Import ===== */
+$("export-btn").onclick=()=>{
+  const blob=new Blob([JSON.stringify(words,null,2)],{type:"application/json"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download="ivrit-slovar-"+new Date().toISOString().slice(0,10)+".json";a.click();URL.revokeObjectURL(a.href);
+};
+$("import-btn").onclick=()=>$("import-file").click();
+$("import-file").addEventListener("change",e=>{
+  const file=e.target.files[0];if(!file)return;const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const data=JSON.parse(r.result);if(!Array.isArray(data))throw 0;
+      const clean=data.map(d=>({id:((d.id||"")+"")||mk().id,he:(d.he||"")+"",tr:(d.tr||"")+"",root:(d.root||"")+"",pos:(d.pos||"")+"",ru:(d.ru||"")+"",ex:(d.ex||"")+"",mnem:(d.mnem||"")+"",note:(d.note||"")+"",learned:!!d.learned,box:+d.box||0,due:+d.due||0,reps:+d.reps||0,created:d.created||Date.now()}));
+      const replace=confirm("OK — ЗАМЕНИТЬ весь словарь.\nОтмена — ДОБАВИТЬ к текущему.");
+      words=replace?clean:words.concat(clean);save();render();alert("Импортировано слов: "+clean.length);
+    }catch(err){alert("Не удалось прочитать файл. Нужен JSON из этого приложения.");}
+    e.target.value="";
+  };
+  r.readAsText(file);
+});
+
+/* ===== Study ===== */
+const AUTO_MS=1200;
+let studyType="mix",deck=[],di=0,answered=false,curMode="mix",lastMode="";
+let studySource="filtered",studyCount="10",session=null;
+let buildTarget=[],buildCur=[],buildTiles=[],matchSel=null,matchLeft=0;
+
+function canBuild(w){const t=stripNikud(w.he||"").replace(/\s+/g,"");return t.length>=2&&!/\s/.test((w.he||"").trim());}
+function canCloze(w){return !!(w.ex&&w.he)&&stripNikud(w.ex).indexOf(stripNikud(w.he))>=0;}
+function distractors(correct,key,n){
+  const pool=shuffle([...new Set(words.map(x=>x[key]).filter(v=>v&&v!==correct))]);
+  return pool.slice(0,n);
+}
+function poolFor(){
+  let base=currentFiltered().filter(w=>w.he&&w.ru);
+  if(studySource==="due")base=base.filter(w=>(w.due||0)<=Date.now());
+  if(studyType==="build")base=base.filter(canBuild);
+  else if(studyType==="cloze")base=base.filter(canCloze);
+  return base;
+}
+function pickMixMode(w){
+  let m=["he2ru","ru2he"];
+  if(canBuild(w))m.push("build");
+  if(canCloze(w))m.push("cloze");
+  if(deck.length-di>=2)m.push("match");
+  if(m.length>1&&lastMode){const f=m.filter(x=>x!==lastMode);if(f.length)m=f;}
+  return m[Math.floor(Math.random()*m.length)];
+}
+const MODE_LBL={mix:"Игра",he2ru:"Иврит→перевод",ru2he:"Перевод→иврит",match:"Пары",build:"Собери слово",cloze:"Пропуск",recall:"Карточка"};
+
+/* ---- setup ---- */
+function openSetup(){
+  studyType=$("study-type").value;
+  $("study-setup").hidden=false;$("study-run").hidden=true;$("study-summary").hidden=true;
+  updateAvail();$("study-overlay").classList.add("show");
+}
+function updateAvail(){
+  const n=poolFor().length;
+  $("study-avail").textContent="Доступно слов: "+n+(studySource==="due"?" (к повторению)":"")+(n?".":" — измени режим/фильтр/источник.");
+}
+$("study-btn").onclick=openSetup;
+$("study-type").addEventListener("change",()=>{studyType=$("study-type").value;updateAvail();});
+$("study-count").addEventListener("change",()=>{studyCount=$("study-count").value;});
+$("study-source").addEventListener("click",e=>{const b=e.target.closest("button[data-s]");if(!b)return;studySource=b.dataset.s;[...$("study-source").children].forEach(x=>x.classList.toggle("on",x===b));updateAvail();});
+$("study-start").onclick=startStudy;
+$("study-close-setup").onclick=()=>$("study-overlay").classList.remove("show");
+
+function startStudy(){
+  studyType=$("study-type").value;studyCount=$("study-count").value;
+  let base=shuffle(poolFor());
+  if(!base.length){alert("Нет подходящих слов. Измени режим, фильтр или источник.");return;}
+  const n=studyCount==="all"?base.length:Math.min(+studyCount,base.length);
+  deck=base.slice(0,n);di=0;lastMode="";
+  session={total:deck.length,correct:0,wrong:0,results:{},order:deck.map(w=>w.id)};
+  deck.forEach(w=>{if(!session.results[w.id])session.results[w.id]={id:w.id,he:w.he,ru:w.ru,res:null};});
+  $("study-setup").hidden=true;$("study-summary").hidden=true;$("study-run").hidden=false;
+  updateScore();showCard();
+}
+function recordResult(id,correct){
+  if(!session)return;const r=session.results[id];if(!r)return;
+  if(r.res===null){r.res=correct?"correct":"wrong";if(correct)session.correct++;else session.wrong++;}
+  updateScore();
+}
+function updateScore(){
+  if(!session)return;
+  const resolved=Object.values(session.results).filter(r=>r.res!==null).length;
+  $("run-bar").style.width=(session.total?Math.round(resolved/session.total*100):0)+"%";
+  $("sc-ok").textContent=session.correct;$("sc-bad").textContent=session.wrong;
+  $("run-count").textContent=resolved+" / "+session.total;
+}
+
+function showCard(){
+  const body=$("study-body"),ctl=$("study-controls");answered=false;$("study-quick").innerHTML="";
+  if(!deck.length){body.innerHTML='<div class="study-note">Нет слов для подхода.</div>';ctl.innerHTML="";$("study-counter").textContent="";return;}
+  if(di>=deck.length){showSummary();return;}
+  let mode=studyType;
+  if(studyType==="mix")mode=pickMixMode(deck[di]);
+  curMode=mode;lastMode=mode;
+  const tag=studyType==="mix"?"🎲 ":"";
+  if(mode==="he2ru"||mode==="ru2he"||mode==="cloze"||mode==="build")$("study-quick").innerHTML=quickBar();
+
+  if(mode==="match"){
+    const batch=deck.slice(di,di+4);
+    if(batch.length<2){showSummary();return;}
+    matchLeft=batch.length;matchSel=null;
+    const left=shuffle(batch.map(w=>({id:w.id,t:w.he})));
+    const right=shuffle(batch.map(w=>({id:w.id,t:w.ru})));
+    $("study-sub").textContent=tag+"Соедини слово и перевод";
+    body.innerHTML='<div class="match-cols"><div class="match-col" id="mL">'+
+      left.map(x=>'<button class="he" data-id="'+x.id+'" dir="rtl">'+esc(x.t)+'</button>').join("")+'</div><div class="match-col" id="mR">'+
+      right.map(x=>'<button data-id="'+x.id+'">'+esc(x.t)+'</button>').join("")+'</div></div>';
+    ctl.innerHTML='<button class="btn ghost" data-a="skip">Пропустить →</button>';
+    $("study-counter").textContent=(studyType==="mix"?"🎲 Игра · ":"")+"Пары";
+    return;
+  }
+
+  const w=deck[di];
+  $("study-counter").textContent=(studyType==="mix"?"🎲 "+MODE_LBL[mode]+" · ":"")+"Слово "+(di+1)+" из "+deck.length;
+
+  if(mode==="recall"){
+    $("study-sub").textContent="Вспомни перевод, нажми на карточку";
+    body.innerHTML='<div class="flash" id="flash"><div class="qhe" dir="rtl">'+esc(w.he)+'</div><div class="prompt">нажми, чтобы проверить</div>'+
+      '<div class="answer" hidden><div class="ru">'+esc(w.ru)+'</div>'+(w.tr?'<div class="trl">'+esc(w.tr)+'</div>':'')+
+      (w.root?'<div class="rootline" dir="rtl">'+radicals(w.root).join(" ")+'</div>':'')+(w.mnem?'<div class="mn">★ '+esc(w.mnem)+'</div>':'')+'</div></div>';
+    ctl.innerHTML=learnBtns();return;
+  }
+  if(mode==="he2ru"){
+    $("study-sub").textContent=tag+"Выбери правильный перевод";
+    const opts=shuffle([w.ru,...distractors(w.ru,"ru",3)]);
+    body.innerHTML='<div class="qbig" dir="rtl">'+esc(w.he)+'</div>'+(w.tr?'<div class="qtr">'+esc(w.tr)+'</div>':'')+
+      '<div class="opts">'+opts.map(o=>'<button data-v="'+esc(o)+'">'+esc(o)+'</button>').join("")+'</div>';
+    ctl.innerHTML=choiceBtns();return;
+  }
+  if(mode==="ru2he"){
+    $("study-sub").textContent=tag+"Выбери слово на иврите";
+    const opts=shuffle([w.he,...distractors(w.he,"he",3)]);
+    body.innerHTML='<div class="qru">'+esc(w.ru)+'</div>'+
+      '<div class="opts">'+opts.map(o=>'<button class="he" data-v="'+esc(o)+'" dir="rtl">'+esc(o)+'</button>').join("")+'</div>';
+    ctl.innerHTML=choiceBtns();return;
+  }
+  if(mode==="build"){
+    $("study-sub").textContent=tag+"Собери слово из букв · нажми на букву в слове, чтобы убрать";
+    buildTarget=[...stripNikud(w.he).replace(/\s+/g,"")];buildCur=[];
+    let letters=[...buildTarget];if(letters.length>1){let g=0;while(letters.join("")===buildTarget.join("")&&g<20){letters=shuffle(letters);g++;}}
+    buildTiles=letters.map(l=>({l:l,used:false}));
+    const cols=Math.ceil(Math.sqrt(letters.length));
+    body.innerHTML='<div class="qru">'+esc(w.ru)+'</div>'+(w.tr?'<div class="qtr">'+esc(w.tr)+'</div>':'')+
+      '<div class="build-slots" id="slots"></div>'+
+      '<div class="tiles" id="tiles" style="grid-template-columns:repeat('+cols+',1fr)">'+
+      buildTiles.map((t,i)=>'<button data-i="'+i+'">'+esc(t.l)+'</button>').join("")+'</div>';
+    ctl.innerHTML='<button class="btn ghost" data-a="clear">Стереть</button><button class="btn ghost" data-a="speak" title="Озвучить" style="flex:0 0 auto">🔊</button>';
+    renderSlots();return;
+  }
+  if(mode==="cloze"){
+    $("study-sub").textContent=tag+"Вставь пропущенное слово";
+    const exN=stripNikud(w.ex),heN=stripNikud(w.he);
+    const sent=esc(exN).split(esc(heN)).join('<span class="blank">?</span>');
+    const opts=shuffle([w.he,...distractors(w.he,"he",3)]);
+    body.innerHTML='<div class="cloze-sent" dir="rtl">'+sent+'</div>'+
+      '<div class="opts">'+opts.map(o=>'<button class="he" data-v="'+esc(o)+'" dir="rtl">'+esc(o)+'</button>').join("")+'</div>';
+    ctl.innerHTML=choiceBtns();return;
+  }
+}
+function learnBtns(){return '<button class="btn ghost" data-a="speak" title="Озвучить" style="flex:0 0 auto">🔊</button><button class="btn ghost" data-a="again">Ещё учу →</button><button class="btn gold" data-a="know">Знаю ✓</button>';}
+function choiceBtns(){return '<button class="btn ghost" data-a="speak" title="Озвучить" style="flex:0 0 auto">🔊</button>';}
+function quickBar(){return '<button class="learn" data-q="learn">✓ Уже выучил</button><button class="rev" data-q="rev">⟳ К повторению</button>';}
+
+function renderSlots(){
+  const el=$("slots");if(!el)return;
+  el.className="build-slots";
+  el.innerHTML=buildTarget.map((_,i)=>{
+    const l=buildCur[i]?buildCur[i].l:"";
+    return '<div class="s'+(l?" filled":"")+'" data-k="'+i+'">'+(l?esc(l):"")+'</div>';
+  }).join("");
+}
+function autoAdvance(w){
+  if(w)speak(w.he);
+  setTimeout(()=>{if($("study-overlay").classList.contains("show")&&!$("study-run").hidden)nextWord();},AUTO_MS);
+}
+function buildComplete(){
+  answered=true;
+  const w=deck[di],real=words.find(x=>x.id===w.id);
+  if(real){srKnow(real);save();render();}
+  recordResult(w.id,true);
+  autoAdvance(w);
+}
+/* quick marks (during play) */
+$("study-quick").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-q]");if(!b||answered)return;
+  const w=deck[di];if(!w)return;answered=true;
+  const real=words.find(x=>x.id===w.id);
+  if(b.dataset.q==="learn"){if(real){srKnow(real);real.learned=true;save();render();}recordResult(w.id,true);speak(w.he);}
+  else{if(real){srReview(real);save();render();}recordResult(w.id,false);}
+  const opts=$("study-body").querySelector(".opts");if(opts)[...opts.children].forEach(x=>x.disabled=true);
+  setTimeout(()=>{if($("study-overlay").classList.contains("show")&&!$("study-run").hidden)nextWord();},600);
+});
+/* body clicks */
+$("study-body").addEventListener("click",e=>{
+  const w=deck[di];
+  if(curMode==="recall"){const f=e.target.closest("#flash");if(f){const a=f.querySelector(".answer"),p=f.querySelector(".prompt");a.hidden=!a.hidden;if(p)p.style.visibility=a.hidden?"visible":"hidden";}return;}
+  if(curMode==="he2ru"||curMode==="ru2he"||curMode==="cloze"){
+    const b=e.target.closest(".opts button");if(!b||answered)return;answered=true;
+    const correct=(curMode==="he2ru")?w.ru:w.he;
+    const box=b.parentElement;
+    const isRight=b.dataset.v===correct;
+    [...box.children].forEach(x=>{x.disabled=true;if(x.dataset.v===correct)x.classList.add("correct");else if(x===b)x.classList.add("wrong");});
+    const real=words.find(x=>x.id===w.id);
+    if(isRight){if(real){srKnow(real);save();render();}recordResult(w.id,true);autoAdvance(w);}
+    else{if(real){srAgain(real);save();render();}recordResult(w.id,false);$("study-quick").innerHTML="";$("study-controls").innerHTML='<button class="btn ghost" data-a="speak" title="Озвучить" style="flex:0 0 auto">🔊</button><button class="btn gold" data-a="next">Дальше →</button>';}
+    return;
+  }
+  if(curMode==="build"){
+    const rm=e.target.closest("#slots .s.filled");
+    if(rm&&!answered){const k=+rm.dataset.k;for(let j=buildCur.length-1;j>=k;j--){buildTiles[buildCur[j].ti].used=false;const tb=document.querySelector('#tiles button[data-i="'+buildCur[j].ti+'"]');if(tb)tb.disabled=false;}buildCur=buildCur.slice(0,k);renderSlots();return;}
+    const t=e.target.closest("#tiles button");if(!t||t.disabled||answered)return;
+    const i=+t.dataset.i,expected=buildTarget[buildCur.length];
+    if(buildTiles[i].l===expected){buildTiles[i].used=true;t.disabled=true;buildCur.push({l:buildTiles[i].l,ti:i});renderSlots();if(buildCur.length===buildTarget.length)buildComplete();}
+    else{t.classList.add("bad");setTimeout(()=>t.classList.remove("bad"),450);}
+    return;
+  }
+  if(curMode==="match"){
+    const b=e.target.closest(".match-col button");if(!b||b.classList.contains("done"))return;
+    if(matchSel&&matchSel!==b&&matchSel.parentElement!==b.parentElement){
+      if(matchSel.dataset.id===b.dataset.id){
+        matchSel.classList.remove("sel");matchSel.classList.add("done");b.classList.add("done");
+        const heBtn=matchSel.classList.contains("he")?matchSel:b;speak(heBtn.textContent);
+        recordResult(b.dataset.id,true);
+        matchSel=null;matchLeft--;
+        if(matchLeft<=0){$("study-counter").textContent="Пары собраны ✓";$("study-controls").innerHTML="";setTimeout(()=>{if($("study-overlay").classList.contains("show")&&!$("study-run").hidden)nextWord();},AUTO_MS);}
+      }else{
+        const a=matchSel;a.classList.remove("sel");a.classList.add("bad");b.classList.add("bad");matchSel=null;
+        setTimeout(()=>{a.classList.remove("bad");b.classList.remove("bad");},550);
+      }
+    }else{
+      if(matchSel)matchSel.classList.remove("sel");
+      matchSel=b;b.classList.add("sel");
+    }
+    return;
+  }
+});
+/* controls */
+$("study-controls").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-a]");if(!b)return;
+  const a=b.dataset.a;
+  if(a==="clear"){for(const c of buildCur){buildTiles[c.ti].used=false;const tb=document.querySelector('#tiles button[data-i="'+c.ti+'"]');if(tb)tb.disabled=false;}buildCur=[];renderSlots();return;}
+  if(a==="speak"){const w=deck[di];if(w)speak(w.he);return;}
+  if(a==="next"){nextWord();return;}
+  if(a==="know"){const w=deck[di];const real=words.find(x=>x.id===w.id);if(real){srKnow(real);real.learned=true;save();render();}recordResult(w.id,true);if(w)speak(w.he);nextWord();return;}
+  if(a==="again"){const w=deck[di];const real=words.find(x=>x.id===w.id);if(real){srAgain(real);save();render();}recordResult(w.id,false);nextWord();return;}
+  if(a==="skip"){di+=(curMode==="match"?4:1);if(di>=deck.length){showSummary();return;}showCard();return;}
+});
+function nextWord(){di+=(curMode==="match"?4:1);if(di>=deck.length){showSummary();return;}showCard();}
+
+/* ---- summary ---- */
+function showSummary(){
+  $("study-run").hidden=true;$("study-setup").hidden=true;$("study-summary").hidden=false;
+  const pct=session&&session.total?Math.round(session.correct/session.total*100):0;
+  $("sum-stats").innerHTML='<div class="b ok"><b>'+(session?session.correct:0)+'</b><span>верно</span></div>'+
+    '<div class="b bad"><b>'+(session?session.wrong:0)+'</b><span>с ошибкой</span></div>'+
+    '<div class="b"><b>'+pct+'%</b><span>из '+(session?session.total:0)+'</span></div>';
+  renderSummaryList();
+}
+function renderSummaryList(){
+  if(!session){$("sum-list").innerHTML="";return;}
+  $("sum-list").innerHTML=session.order.map(id=>{
+    const r=session.results[id],w=words.find(x=>x.id===id);if(!r)return "";
+    const learned=w?!!w.learned:false;
+    const rev=w?((w.due||0)<=Date.now()&&!w.learned):false;
+    const badge=r.res==="correct"?'<span class="res ok">✓</span>':(r.res==="wrong"?'<span class="res bad">✗</span>':'<span class="res">·</span>');
+    return '<div class="sum-row">'+badge+'<span class="he" dir="rtl">'+esc(r.he)+'</span><span class="ru">'+esc(r.ru)+'</span>'+
+      '<span class="mk"><button data-m="learn" data-id="'+esc(id)+'" class="'+(learned?"on-learn":"")+'">Выучено</button>'+
+      '<button data-m="rev" data-id="'+esc(id)+'" class="'+(rev?"on-rev":"")+'">К повт.</button></span></div>';
+  }).join("");
+}
+$("sum-list").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-m]");if(!b)return;
+  const w=words.find(x=>x.id===b.dataset.id);if(!w)return;
+  if(b.dataset.m==="learn"){
+    if(w.learned){w.learned=false;w.due=Date.now();}
+    else{w.learned=true;w.box=Math.min(5,(w.box||0)+1);w.due=Date.now()+SR_DAYS[w.box]*86400000;}
+  }else{
+    const isRev=((w.due||0)<=Date.now()&&!w.learned);
+    if(isRev){w.box=Math.min(5,(w.box||0)+1);w.due=Date.now()+SR_DAYS[w.box]*86400000;}
+    else{srReview(w);}
+  }
+  save();render();renderSummaryList();
+});
+$("sum-again").onclick=()=>{$("study-summary").hidden=true;openSetup();};
+$("sum-done").onclick=()=>$("study-overlay").classList.remove("show");
+
+$("study-close").onclick=()=>{if(session)showSummary();else $("study-overlay").classList.remove("show");};
+$("study-overlay").addEventListener("click",e=>{if(e.target===$("study-overlay"))$("study-overlay").classList.remove("show");});
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="Escape"){closeForm();$("study-overlay").classList.remove("show");$("model-overlay").classList.remove("show");}
+  if($("study-overlay").classList.contains("show")&&curMode==="recall"){
+    if(e.key===" "){e.preventDefault();const f=$("flash");if(f)f.click();}
+    if(e.key==="ArrowRight")nextWord();
+  }
+});
+
+render();
+</script>
+</body>
+</html>

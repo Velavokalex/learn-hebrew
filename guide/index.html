@@ -1,0 +1,1472 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Корни иврита — учебная платформа</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Heebo:wght@300;400;500;600;700;800&family=Assistant:wght@300;400;500;600;700&family=Frank+Ruhl+Libre:wght@400;500;700;900&family=Noto+Sans+Hebrew:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Базовая типографика */
+  :root{
+    --font-ui: 'Inter','Heebo','Assistant',system-ui,-apple-system,sans-serif;
+    --font-he: 'Heebo','Assistant','Noto Sans Hebrew','Frank Ruhl Libre',sans-serif;
+    --font-he-display: 'Frank Ruhl Libre','Heebo','Noto Sans Hebrew',serif;
+  }
+  html{font-size:17px}                          /* база чуть крупнее обычного 16px */
+  body{font-family:var(--font-ui);background:#0b1020;color:#e5e7eb;margin:0;font-size:1rem;line-height:1.55}
+  /* Любой ивритский текст в обычных абзацах тоже получает Heebo вместо Times-fallback */
+  body,p,span,div,td,th,li,a,button,input,textarea,select{font-family:var(--font-ui)}
+  .he{font-family:var(--font-he);direction:rtl;font-size:1.45em;line-height:1.6;font-weight:500;letter-spacing:0}
+  .he-lg{font-family:var(--font-he-display);direction:rtl;font-size:2em;line-height:1.4;font-weight:500}
+  /* Чтобы серый русский/латинский текст использовал тот же UI-шрифт */
+  .text-gray-200,.text-gray-300,.text-gray-400,.text-gray-500{font-family:inherit}
+  /* Чуть крупнее служебные xs/sm — иначе мелко на больших экранах */
+  .text-xs{font-size:.82rem}
+  .text-sm{font-size:.95rem}
+  .glass{background:rgba(20,25,45,.7);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08)}
+  .scroll-hide::-webkit-scrollbar{display:none}
+  .scroll-hide{-ms-overflow-style:none;scrollbar-width:none}
+  /* Кастомный скролл-бар */
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:#0b1020}
+  ::-webkit-scrollbar-thumb{background:#374151;border-radius:5px}
+  ::-webkit-scrollbar-thumb:hover{background:#4b5563}
+  .lesson-img{max-width:100%;height:auto;background:white;border-radius:8px;margin:.5rem 0;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+  .pulse-ring{animation:pulse 1.4s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,.7)}70%{box-shadow:0 0 0 18px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+  .card-flip{perspective:1000px}
+  .card-flip-inner{transition:transform .5s;transform-style:preserve-3d;position:relative;width:100%;height:100%}
+  .card-flip.flipped .card-flip-inner{transform:rotateY(180deg)}
+  .card-face{position:absolute;width:100%;height:100%;backface-visibility:hidden;display:flex;align-items:center;justify-content:center;border-radius:1rem}
+  .card-back{transform:rotateY(180deg)}
+  .gradient-text{background:linear-gradient(90deg,#a78bfa,#f0abfc,#7dd3fc);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hover-lift{transition:transform .2s,box-shadow .2s}
+  .hover-lift:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  .nav-link.active{background:rgba(124,58,237,.25);border-left:3px solid #a78bfa}
+  .chip{display:inline-flex;align-items:center;padding:2px 10px;border-radius:9999px;font-size:.75rem;background:rgba(99,102,241,.15);color:#a5b4fc;border:1px solid rgba(99,102,241,.3)}
+  .chip-binyan{padding:4px 12px;font-weight:600;font-size:.85rem}
+  details>summary{cursor:pointer;list-style:none}
+  details>summary::-webkit-details-marker{display:none}
+  .lesson-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem}
+  .heb-table{border-collapse:collapse;font-family:'Frank Ruhl Libre',serif;direction:rtl}
+  .heb-table th,.heb-table td{border:1px solid #374151;padding:6px 12px;text-align:center}
+  .heb-table th{background:rgba(124,58,237,.2);font-weight:600}
+  @media (max-width:768px){.sidebar{position:fixed;z-index:50;transform:translateX(-100%);transition:transform .3s} .sidebar.open{transform:translateX(0)} .main{margin-left:0!important}}
+  kbd{background:#1f2937;border:1px solid #374151;border-radius:4px;padding:2px 6px;font-size:.75rem;font-family:ui-monospace,monospace}
+</style>
+</head>
+<body>
+<div id="root"><div class="flex items-center justify-center h-screen text-gray-400">Загрузка платформы…</div></div>
+
+<script src="./data/data.js"></script>
+<script src="./engine/grammar.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script src="./tracks.js"></script>
+
+<script type="text/babel" data-presets="env,react">
+const { useState, useEffect, useRef, useMemo, useCallback, createContext, useContext, useReducer } = React;
+const DATA = window.__APP_DATA__ || {manifest:{course_modules:[],tables:[],kornev:[]},vocab:{words:[],binyans:[],gzarot:[]},homework:[]};
+
+// =========================
+// Глобальное состояние прогресса (localStorage)
+// =========================
+const STORAGE_KEY = 'korni_progress_v1';
+function loadProgress(){
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{}'); } catch(e){ return {}; }
+}
+function saveProgress(p){ localStorage.setItem(STORAGE_KEY, JSON.stringify(p)); }
+
+const AppCtx = createContext({});
+
+function useRoute(){
+  const [hash, setHash] = useState(window.location.hash || '#/');
+  useEffect(()=>{
+    const f = ()=>setHash(window.location.hash || '#/');
+    window.addEventListener('hashchange', f); return ()=>window.removeEventListener('hashchange', f);
+  },[]);
+  const parts = hash.replace(/^#\/?/,'').split('/').filter(Boolean);
+  return { hash, parts, navigate: (p)=>{ window.location.hash = '#/' + p; } };
+}
+
+// =========================
+// Web Speech (озвучка иврита)
+// =========================
+function speak(text, lang='he-IL', rate=0.85){
+  try{
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang; u.rate = rate;
+    const v = window.speechSynthesis.getVoices().find(v=>v.lang.startsWith('he')) || null;
+    if(v) u.voice = v;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  } catch(e){ console.warn('TTS error', e); }
+}
+
+// =========================
+// Распознавание речи
+// =========================
+function getSpeechRecognition(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SR) return null;
+  const r = new SR();
+  r.lang = 'he-IL'; r.continuous = false; r.interimResults = false;
+  return r;
+}
+
+// Простая мера близости (Левенштейн)
+function levenshtein(a,b){
+  const m=a.length, n=b.length; if(!m) return n; if(!n) return m;
+  const d = Array.from({length:m+1},()=>new Array(n+1).fill(0));
+  for(let i=0;i<=m;i++) d[i][0]=i; for(let j=0;j<=n;j++) d[0][j]=j;
+  for(let i=1;i<=m;i++) for(let j=1;j<=n;j++){
+    d[i][j] = Math.min(d[i-1][j]+1, d[i][j-1]+1, d[i-1][j-1] + (a[i-1]===b[j-1]?0:1));
+  }
+  return d[m][n];
+}
+function stripNiqqud(s){ return (s||'').replace(/[֑-ׇ]/g,''); }
+function similarity(a,b){
+  a = stripNiqqud(a).trim(); b = stripNiqqud(b).trim();
+  if(!a || !b) return 0;
+  const d = levenshtein(a,b);
+  return Math.max(0, 1 - d / Math.max(a.length, b.length));
+}
+
+// =========================
+// Шапка + сайдбар
+// =========================
+function Sidebar({open, setOpen, route}){
+  const links = [
+    {p:'',         t:'Главная',   i:'🏠'},
+    {p:'track',    t:'Треки',     i:'🧭', section:'top'},
+    {p:'course',   t:'Курс',      i:'📚'},
+    {p:'binyans',  t:'Биньяны',   i:'🌳'},
+    {p:'roots',    t:'Корни',     i:'🌱'},
+    {p:'dictionary',t:'Словарь',  i:'🔤'},
+    {p:'tables',   t:'Таблицы',   i:'📊'},
+    {p:'practice', t:'Тренажёр',  i:'🎯'},
+    {p:'homework', t:'Домашки',   i:'📝'},
+    {p:'search',   t:'Поиск',     i:'🔍'},
+  ];
+  const cur = route.parts[0] || '';
+  return (
+    <aside className={"sidebar w-64 glass h-screen sticky top-0 p-4 flex flex-col gap-1 " + (open?'open':'')}>
+      <div className="mb-4">
+        <div className="text-2xl font-bold gradient-text">קוֹרְנֵי הַעִבְרִית</div>
+        <div className="text-xs text-gray-400 mt-1">Корни иврита · учебная платформа</div>
+      </div>
+      <button onClick={()=>setOpen(false)} className="md:hidden self-end text-gray-400 text-sm mb-2">✕ закрыть</button>
+      {links.map(l=>(
+        <a key={l.p} href={'#/'+l.p}
+           onClick={()=>setOpen(false)}
+           className={'nav-link px-3 py-2 rounded-lg text-sm hover:bg-white/5 transition flex items-center gap-3 '+(cur===l.p?'active':'')}>
+          <span className="text-lg">{l.i}</span> {l.t}
+        </a>
+      ))}
+      <div className="mt-auto pt-4 border-t border-white/10 text-xs text-gray-500">
+        <div>Поиск: <kbd>Ctrl</kbd> + <kbd>K</kbd></div>
+        <div className="mt-1">Уроков: {DATA.manifest.stats?.lessons_total} · Таблиц: {DATA.manifest.stats?.tables_total}</div>
+      </div>
+    </aside>
+  );
+}
+
+function TopBar({setSidebar, openSearch}){
+  return (
+    <div className="flex items-center justify-between p-4 glass border-b border-white/10 sticky top-0 z-30">
+      <div className="flex items-center gap-3">
+        <button className="md:hidden text-2xl" onClick={()=>setSidebar(true)}>☰</button>
+        <div className="text-sm text-gray-400">Уровень Бет · по методике д-ра И. Раковской</div>
+      </div>
+      <button onClick={openSearch} className="px-4 py-1.5 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 text-sm flex items-center gap-2">
+        <span>🔍</span><span className="hidden sm:inline">Поиск</span> <kbd>Ctrl+K</kbd>
+      </button>
+    </div>
+  );
+}
+
+// =========================
+// Главная
+// =========================
+function Home({progress, navigate}){
+  const total = DATA.manifest.stats?.lessons_total || 0;
+  const done = Object.keys(progress.lessons||{}).length;
+  const lastLesson = progress.lastLesson;
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-4xl font-bold mb-2">Шалом, <span className="gradient-text">учим иврит</span></h1>
+      <p className="text-gray-400 mb-8">132 урока курса «Корни иврита», 68 грамматических таблиц, интерактивный гайд по биньянам и шесть механик практики.</p>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="glass rounded-xl p-5 hover-lift">
+          <div className="text-3xl mb-2">📚</div>
+          <div className="text-2xl font-bold">{done}/{total}</div>
+          <div className="text-sm text-gray-400">Уроков пройдено</div>
+          <div className="mt-2 h-2 bg-white/5 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500" style={{width:(total?(done/total*100):0)+'%'}}/>
+          </div>
+        </div>
+        <div className="glass rounded-xl p-5 hover-lift">
+          <div className="text-3xl mb-2">🎯</div>
+          <div className="text-2xl font-bold">{Object.keys(progress.words||{}).length}</div>
+          <div className="text-sm text-gray-400">Слов в активной памяти</div>
+        </div>
+        <div className="glass rounded-xl p-5 hover-lift">
+          <div className="text-3xl mb-2">🔥</div>
+          <div className="text-2xl font-bold">{progress.streak||0}</div>
+          <div className="text-sm text-gray-400">Дней подряд</div>
+        </div>
+      </div>
+
+      {lastLesson && (
+        <div className="glass rounded-xl p-5 mb-6 flex items-center justify-between">
+          <div>
+            <div className="text-sm text-gray-400">Продолжить</div>
+            <div className="font-semibold">{lastLesson.title}</div>
+          </div>
+          <a href={'#/lesson/'+encodeURIComponent(lastLesson.id)} className="px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded-lg">Открыть →</a>
+        </div>
+      )}
+
+      <div className="glass rounded-xl p-5 mb-6 hover-lift" style={{background:'linear-gradient(90deg, rgba(124,58,237,.18), rgba(236,72,153,.18))', borderColor:'#a78bfa'}}>
+        <div className="flex items-center justify-between gap-4 flex-wrap">
+          <div>
+            <div className="text-xs uppercase text-purple-300 mb-1">Новое</div>
+            <div className="text-xl font-bold">🧭 Учебные треки</div>
+            <div className="text-sm text-gray-300 mt-1">3 трека под разные типы восприятия: <strong>Logical</strong> (как код), <strong>Visual</strong> (mind-map, цвета), <strong>Kinesthetic</strong> (drag-drop, печать).</div>
+          </div>
+          <a href="#/track" className="px-4 py-2 bg-purple-600 hover:bg-purple-500 rounded">Открыть →</a>
+        </div>
+      </div>
+
+      <h2 className="text-xl font-bold mb-4 mt-8">С чего начать</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Card icon="🧮" title="Logical-трек" desc="Иврит как код: REPL, decision tree, diff" href="#/track"/>
+        <Card icon="📖" title="Все уроки" desc="132 урока курса в удобном порядке" href="#/course"/>
+        <Card icon="🌳" title="Гайд по биньянам" desc="Интерактивная схема, конструктор слова, определитель" href="#/binyans"/>
+        <Card icon="🌱" title="Корни" desc="Исследуйте слова, образованные от одного корня" href="#/roots"/>
+        <Card icon="🎯" title="Тренажёр" desc="Карточки, квизы, аудирование, произношение" href="#/practice"/>
+        <Card icon="📝" title="Домашки" desc="Упражнения интенсива с автопроверкой" href="#/homework"/>
+        <Card icon="📊" title="Грамм. таблицы" desc="68 таблиц спряжений по всем биньянам" href="#/tables"/>
+      </div>
+    </div>
+  );
+}
+function Card({icon,title,desc,href}){
+  return (
+    <a href={href} className="glass rounded-xl p-5 hover-lift block">
+      <div className="text-3xl mb-2">{icon}</div>
+      <div className="font-semibold mb-1">{title}</div>
+      <div className="text-sm text-gray-400">{desc}</div>
+    </a>
+  );
+}
+
+// =========================
+// Список уроков курса
+// =========================
+function CoursePage(){
+  const [q, setQ] = useState('');
+  const modules = DATA.manifest.course_modules;
+  const filter = (l)=> !q || l.title.toLowerCase().includes(q.toLowerCase()) || l.topics.includes(q.toLowerCase());
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-2">Курс «Корни иврита»</h1>
+      <p className="text-gray-400 mb-4">Уровень Бет — {DATA.manifest.stats?.lessons_total} уроков, разбитых на {modules.length} модулей.</p>
+      <input type="text" value={q} onChange={e=>setQ(e.target.value)}
+        placeholder="Фильтр по теме урока…"
+        className="w-full md:w-96 bg-white/5 border border-white/10 rounded-lg px-3 py-2 mb-6 outline-none focus:border-purple-500"/>
+      {modules.map(mod=>{
+        const list = mod.lessons.filter(filter);
+        if(!list.length) return null;
+        return (
+          <details key={mod.module} open className="mb-4">
+            <summary className="text-lg font-semibold py-2 px-3 bg-white/5 rounded-lg flex items-center justify-between hover:bg-white/10">
+              <span>Модуль {mod.module}</span>
+              <span className="text-xs text-gray-400">{list.length} {list.length===1?'урок':'уроков'}</span>
+            </summary>
+            <div className="lesson-grid mt-3">
+              {list.map(l=><LessonCard key={l.id} l={l}/>)}
+            </div>
+          </details>
+        );
+      })}
+    </div>
+  );
+}
+
+function LessonCard({l}){
+  return (
+    <a href={'#/lesson/'+encodeURIComponent(l.id)} className="glass rounded-xl p-4 hover-lift block">
+      <div className="text-xs text-gray-500 mb-1">Модуль {l.module} · Урок {l.lesson_num}</div>
+      <div className="font-semibold mb-2 leading-snug">{l.title}</div>
+      <div className="flex flex-wrap gap-1">
+        {l.topics.slice(0,3).map(t=><span key={t} className="chip">{t}</span>)}
+      </div>
+      <div className="text-xs text-gray-500 mt-3 flex gap-3">
+        <span>🖼️ {l.images.length}</span>
+        <span>🔊 {l.audios.length}</span>
+      </div>
+    </a>
+  );
+}
+
+// =========================
+// Просмотр урока: SVG-слайды + аудио + табы
+// =========================
+function LessonViewer(){
+  const route = useRoute();
+  const id = decodeURIComponent(route.parts[1]||'');
+  const lesson = useMemo(()=>{
+    let arr = [];
+    DATA.manifest.course_modules.forEach(m=>arr=arr.concat(m.lessons));
+    arr = arr.concat(DATA.manifest.tables, DATA.manifest.kornev);
+    return arr.find(x=>x.id===id);
+  },[id]);
+
+  const [tab, setTab] = useState('theory'); // theory | practice | homework
+  const ctx = useContext(AppCtx);
+
+  useEffect(()=>{
+    if(lesson) ctx.updateProgress(p=>{
+      p.lessons = p.lessons || {};
+      p.lessons[lesson.id] = {ts: Date.now()};
+      p.lastLesson = {id: lesson.id, title: lesson.title};
+      return p;
+    });
+  }, [lesson?.id]);
+
+  if(!lesson) return <div className="p-6">Урок не найден.</div>;
+
+  // подбираем словарь по теме урока
+  const vocab = DATA.vocab.words.filter(w=>{
+    return w.lessons?.includes(lesson.lesson_num) || lesson.topics.some(t=>w.topic===t);
+  });
+  // подбираем ДЗ
+  const hw = DATA.homework.find(h=>h.lesson_num===lesson.lesson_num);
+
+  return (
+    <div className="max-w-6xl mx-auto p-6">
+      <div className="mb-4 flex items-center gap-2 text-sm text-gray-400">
+        <a href="#/course" className="hover:text-white">← Все уроки</a>
+      </div>
+      <h1 className="text-3xl font-bold mb-2">{lesson.title}</h1>
+      <div className="text-sm text-gray-400 mb-4">
+        Модуль {lesson.module} · Урок {lesson.lesson_num} · {lesson.topics.map(t=><span key={t} className="chip mr-1">{t}</span>)}
+      </div>
+
+      <div className="flex gap-1 mb-4 border-b border-white/10">
+        <TabBtn id="theory" cur={tab} setT={setTab}>📖 Теория</TabBtn>
+        <TabBtn id="practice" cur={tab} setT={setTab}>🎯 Практика ({vocab.length})</TabBtn>
+        {hw && <TabBtn id="homework" cur={tab} setT={setTab}>📝 ДЗ</TabBtn>}
+      </div>
+
+      {tab==='theory' && <TheoryView lesson={lesson}/>}
+      {tab==='practice' && <PracticeHub vocab={vocab} lesson={lesson}/>}
+      {tab==='homework' && hw && <HomeworkView hw={hw}/>}
+    </div>
+  );
+}
+function TabBtn({id,cur,setT,children}){
+  return <button onClick={()=>setT(id)} className={'px-4 py-2 text-sm rounded-t-lg '+(cur===id?'bg-white/10 border-b-2 border-purple-500':'text-gray-400 hover:text-white')}>{children}</button>;
+}
+
+function TheoryView({lesson}){
+  const imgs = lesson.images || [];
+  const auds = lesson.audios || [];
+  const [cur, setCur] = useState(0);
+
+  if(imgs.length===0){
+    return (
+      <div className="glass rounded-xl p-8 text-center text-gray-400">
+        <div className="text-4xl mb-2">📄</div>
+        <div>В этом уроке нет картинок-слайдов.</div>
+        {lesson.text_inline && <div className="mt-4 text-left text-sm max-h-96 overflow-y-auto p-3 bg-black/30 rounded">{lesson.text_inline}</div>}
+      </div>
+    );
+  }
+
+  const audSrc = auds[cur] ? (lesson.asset_base + auds[cur]) : null;
+  const imgSrc = lesson.asset_base + imgs[cur];
+
+  return (
+    <div className="space-y-4">
+      <div className="glass rounded-xl p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="text-sm text-gray-400">Слайд {cur+1} из {imgs.length}</div>
+          <div className="flex gap-2">
+            <button onClick={()=>setCur(c=>Math.max(0,c-1))} disabled={cur===0}
+              className="px-3 py-1 bg-white/5 hover:bg-white/10 rounded disabled:opacity-30">← Назад</button>
+            <button onClick={()=>setCur(c=>Math.min(imgs.length-1,c+1))} disabled={cur===imgs.length-1}
+              className="px-3 py-1 bg-purple-600 hover:bg-purple-500 rounded disabled:opacity-30">Далее →</button>
+          </div>
+        </div>
+        <img className="lesson-img" src={imgSrc} alt={'Слайд '+(cur+1)}
+             onError={(e)=>{e.target.outerHTML='<div class=\"p-8 text-center text-gray-400 bg-gray-900 rounded\">Изображение не загрузилось.<br>Путь: '+imgSrc+'</div>';}}/>
+        {audSrc && (
+          <div className="mt-3 flex items-center gap-3">
+            <audio controls src={audSrc} className="flex-1"></audio>
+          </div>
+        )}
+      </div>
+
+      {/* Миниатюры */}
+      <div className="glass rounded-xl p-3 overflow-x-auto scroll-hide">
+        <div className="flex gap-2">
+          {imgs.map((img,i)=>(
+            <button key={i} onClick={()=>setCur(i)}
+              className={'flex-shrink-0 w-16 h-16 rounded border-2 ' + (i===cur?'border-purple-500':'border-white/10 hover:border-white/30')}>
+              <img src={lesson.asset_base + img} alt={i+1} className="w-full h-full object-cover rounded"/>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =========================
+// Хаб практики: 6 механик
+// =========================
+function PracticeHub({vocab, lesson}){
+  const [mode, setMode] = useState(null);
+  const v = vocab.length ? vocab : DATA.vocab.words.slice(0, 30);
+
+  if(v.length===0){
+    return <div className="glass rounded-xl p-8 text-center text-gray-400">Для этого урока пока нет словаря. Откройте раздел «Тренажёр» для общего набора.</div>;
+  }
+
+  const modes = [
+    {id:'flash', name:'Флеш-карточки', icon:'🃏', desc:'Spaced repetition (SM-2)'},
+    {id:'quiz',  name:'Квиз перевода',  icon:'❓', desc:'Выбери правильный перевод'},
+    {id:'match', name:'Соедини пары',   icon:'🔗', desc:'Иврит ↔ Русский'},
+    {id:'build', name:'Собери предложение', icon:'🧩', desc:'Из перемешанных слов'},
+    {id:'listen',name:'Аудирование',    icon:'👂', desc:'Услышать → распознать'},
+    {id:'speak', name:'Произношение',   icon:'🎙️', desc:'Произнести → проверить'},
+  ];
+
+  if(mode){
+    const M = {flash:FlashCards, quiz:QuizMode, match:MatchMode, build:BuildMode, listen:ListenMode, speak:SpeakMode}[mode];
+    return (
+      <div>
+        <button onClick={()=>setMode(null)} className="mb-3 text-sm text-gray-400 hover:text-white">← Все механики</button>
+        <M words={v}/>
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+      {modes.map(m=>(
+        <button key={m.id} onClick={()=>setMode(m.id)}
+          className="glass rounded-xl p-5 hover-lift text-left">
+          <div className="text-3xl mb-2">{m.icon}</div>
+          <div className="font-semibold">{m.name}</div>
+          <div className="text-xs text-gray-400 mt-1">{m.desc}</div>
+        </button>
+      ))}
+    </div>
+  );
+}
+
+// --- Механика 1: Флеш-карточки с SM-2 ---
+function FlashCards({words}){
+  const [i, setI] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const ctx = useContext(AppCtx);
+  const cur = words[i];
+
+  const grade = (q)=>{ // q: 0 (не знаю) … 5 (отлично)
+    ctx.updateProgress(p=>{
+      p.words = p.words || {};
+      const s = p.words[cur.id] || {ef:2.5, n:0, interval:0, due:0};
+      // SM-2
+      if(q < 3){ s.n = 0; s.interval = 1; }
+      else {
+        s.n = (s.n||0) + 1;
+        if(s.n===1) s.interval = 1;
+        else if(s.n===2) s.interval = 6;
+        else s.interval = Math.round(s.interval * s.ef);
+        s.ef = Math.max(1.3, s.ef + (0.1 - (5-q)*(0.08 + (5-q)*0.02)));
+      }
+      s.due = Date.now() + s.interval * 86400000;
+      p.words[cur.id] = s;
+      return p;
+    });
+    setFlipped(false);
+    setI(x => (x+1) % words.length);
+  };
+
+  if(!cur) return null;
+  return (
+    <div className="max-w-2xl mx-auto">
+      <div className="text-center text-sm text-gray-400 mb-2">{i+1} / {words.length}</div>
+      <div className="card-flip h-72 mb-4" style={{cursor:'pointer'}} onClick={()=>setFlipped(f=>!f)}>
+        <div className={"card-flip-inner "+(flipped?'flipped':'')} style={{height:'100%'}}>
+          <div className="card-face glass">
+            <div className="text-center">
+              <div className="he-lg mb-3" style={{fontSize:'3em'}}>{cur.he}</div>
+              <button onClick={(e)=>{e.stopPropagation(); speak(cur.he);}}
+                className="px-3 py-1 bg-white/5 rounded hover:bg-white/10 text-sm">🔊 Произнести</button>
+              {cur.translit && <div className="text-gray-400 mt-2 text-sm">[{cur.translit}]</div>}
+              <div className="text-xs text-gray-500 mt-4">Нажмите, чтобы перевернуть</div>
+            </div>
+          </div>
+          <div className="card-face card-back glass">
+            <div className="text-center">
+              <div className="text-3xl mb-2">{cur.ru}</div>
+              {cur.root && <div className="text-sm text-gray-400 he">корень: {cur.root}</div>}
+              {cur.binyan && <div className="text-sm text-gray-400 mt-1">биньян: {cur.binyan}</div>}
+            </div>
+          </div>
+        </div>
+      </div>
+      {flipped && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <button onClick={()=>grade(0)} className="py-3 bg-red-600/30 hover:bg-red-600/50 rounded">😣 Не знал</button>
+          <button onClick={()=>grade(3)} className="py-3 bg-yellow-600/30 hover:bg-yellow-600/50 rounded">🤔 С трудом</button>
+          <button onClick={()=>grade(4)} className="py-3 bg-blue-600/30 hover:bg-blue-600/50 rounded">🙂 Хорошо</button>
+          <button onClick={()=>grade(5)} className="py-3 bg-green-600/30 hover:bg-green-600/50 rounded">🤩 Легко</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- Механика 2: Квиз ---
+function QuizMode({words}){
+  const [i, setI] = useState(0);
+  const [choice, setChoice] = useState(null);
+  const [score, setScore] = useState({correct:0, total:0});
+
+  const cur = words[i];
+  const options = useMemo(()=>{
+    if(!cur) return [];
+    const wrong = [...DATA.vocab.words].filter(w=>w.id!==cur.id && w.ru!==cur.ru).sort(()=>Math.random()-0.5).slice(0,3);
+    return [...wrong, cur].sort(()=>Math.random()-0.5);
+  }, [i, cur?.id]);
+
+  if(!cur) return null;
+  const next = ()=>{ setChoice(null); setI(x=>(x+1)%words.length); };
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <div className="text-center text-sm text-gray-400 mb-2">{i+1} / {words.length} · Очки: {score.correct}/{score.total}</div>
+      <div className="glass rounded-xl p-8 text-center mb-4">
+        <div className="text-sm text-gray-400 mb-3">Как переводится?</div>
+        <div className="he-lg" style={{fontSize:'2.5em'}}>{cur.he}</div>
+        <button onClick={()=>speak(cur.he)} className="mt-3 px-3 py-1 bg-white/5 rounded text-sm">🔊</button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {options.map((opt, k)=>{
+          const correct = opt.id===cur.id;
+          const picked = choice===opt.id;
+          let cls = 'glass hover:bg-white/10';
+          if(choice){
+            if(correct) cls='bg-green-600/30 border-green-500';
+            else if(picked) cls='bg-red-600/30 border-red-500';
+            else cls='opacity-40';
+          }
+          return (
+            <button key={k} disabled={!!choice}
+              onClick={()=>{setChoice(opt.id); setScore(s=>({correct:s.correct+(correct?1:0), total:s.total+1}));}}
+              className={'p-4 rounded-xl border border-white/10 text-left transition '+cls}>
+              {opt.ru}
+            </button>
+          );
+        })}
+      </div>
+      {choice && (
+        <div className="mt-4 text-center">
+          <button onClick={next} className="px-6 py-2 bg-purple-600 hover:bg-purple-500 rounded">Дальше →</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// --- Механика 3: Соедини пары ---
+function MatchMode({words}){
+  const N = Math.min(6, words.length);
+  const [pool, setPool] = useState([]);
+  const [sel, setSel] = useState(null);
+  const [matched, setMatched] = useState({});
+  const [errors, setErrors] = useState(0);
+
+  const reshuffle = ()=>{
+    const w = [...words].sort(()=>Math.random()-0.5).slice(0, N);
+    const heItems = w.map(x=>({id:x.id, side:'he', text:x.he}));
+    const ruItems = w.map(x=>({id:x.id, side:'ru', text:x.ru}));
+    setPool([...heItems, ...ruItems].sort(()=>Math.random()-0.5));
+    setMatched({}); setSel(null); setErrors(0);
+  };
+  useEffect(reshuffle, []);
+
+  const click = (item)=>{
+    if(matched[item.id]) return;
+    if(!sel){ setSel(item); return; }
+    if(sel.id===item.id && sel.side!==item.side){
+      setMatched(m=>({...m, [item.id]:true}));
+      setSel(null);
+    } else if(sel.id===item.id && sel.side===item.side){
+      setSel(item);
+    } else {
+      setErrors(e=>e+1);
+      setSel(null);
+    }
+  };
+
+  const allDone = pool.length && Object.keys(matched).length === pool.length/2;
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      <div className="text-center text-sm text-gray-400 mb-4">Совпадений: {Object.keys(matched).length}/{N} · Ошибок: {errors}</div>
+      {allDone && (
+        <div className="bg-green-600/20 border border-green-500 rounded p-4 mb-4 text-center">
+          🎉 Готово! Ошибок: {errors}.
+          <button onClick={reshuffle} className="ml-3 px-3 py-1 bg-purple-600 rounded">Ещё раунд</button>
+        </div>
+      )}
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+        {pool.map((it, k)=>{
+          const done = matched[it.id];
+          const selected = sel && sel===it;
+          let cls = 'glass hover:bg-white/10';
+          if(done) cls = 'bg-green-600/30 opacity-50';
+          else if(selected) cls = 'bg-purple-600/40 border-purple-400';
+          return (
+            <button key={k} onClick={()=>click(it)}
+              className={'p-4 rounded-xl border border-white/10 transition '+cls + (it.side==='he'?' he':'')}>
+              {it.text}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// --- Механика 4: Собери предложение ---
+function BuildMode({words}){
+  // Сгенерируем простые шаблоны "Я ... [глагол]"
+  const verbs = words.filter(w=>w.pos==='verb');
+  const pronouns = DATA.vocab.words.filter(w=>w.pos==='pronoun');
+  const sentences = useMemo(()=>{
+    const list = [];
+    verbs.forEach(v=>{
+      list.push({
+        he: ['אֲנִי', v.he].join(' '),
+        ru: 'Я ' + v.ru.replace(/^[а-я]+ /, ''), // упрощённо
+        tokens: ['אֲנִי', v.he]
+      });
+    });
+    return list.slice(0,10);
+  }, []);
+  const [i, setI] = useState(0);
+  const cur = sentences[i] || sentences[0];
+  const [picked, setPicked] = useState([]);
+  const [shuffled, setShuffled] = useState([]);
+  const [result, setResult] = useState(null);
+
+  useEffect(()=>{
+    if(!cur) return;
+    setShuffled([...cur.tokens].sort(()=>Math.random()-0.5));
+    setPicked([]); setResult(null);
+  }, [i]);
+
+  if(!cur) return <div className="text-gray-400 text-center p-8">В этом наборе мало глаголов для генерации предложений.</div>;
+
+  const pick = (tok, idx)=>{
+    setPicked(p=>[...p, tok]);
+    setShuffled(s=>s.filter((_,k)=>k!==idx));
+  };
+  const unpick = (idx)=>{
+    const tok = picked[idx];
+    setPicked(p=>p.filter((_,k)=>k!==idx));
+    setShuffled(s=>[...s, tok]);
+  };
+  const check = ()=>{
+    const ok = picked.join(' ') === cur.tokens.join(' ');
+    setResult(ok ? 'correct' : 'wrong');
+  };
+  const next = ()=>{ setI(x=>(x+1)%sentences.length); };
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      <div className="text-center text-sm text-gray-400 mb-2">{i+1}/{sentences.length}</div>
+      <div className="glass rounded-xl p-5 mb-4">
+        <div className="text-sm text-gray-400 mb-2">Соберите фразу: «{cur.ru}»</div>
+        <div className="min-h-[80px] border-2 border-dashed border-white/10 rounded-xl p-3 flex flex-wrap gap-2 he" dir="rtl">
+          {picked.map((t,k)=>(
+            <button key={k} onClick={()=>unpick(k)} className="px-3 py-2 bg-purple-600/30 rounded">{t}</button>
+          ))}
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-2 justify-center mb-4 he" dir="rtl">
+        {shuffled.map((t,k)=>(
+          <button key={k} onClick={()=>pick(t,k)} className="px-3 py-2 glass rounded hover:bg-white/10">{t}</button>
+        ))}
+      </div>
+      {!result && shuffled.length===0 && <button onClick={check} className="block mx-auto px-6 py-2 bg-purple-600 hover:bg-purple-500 rounded">Проверить</button>}
+      {result==='correct' && <div className="bg-green-600/20 border border-green-500 rounded p-3 text-center">✓ Верно! <button onClick={next} className="ml-3 px-3 py-1 bg-purple-600 rounded">Дальше</button></div>}
+      {result==='wrong' && <div className="bg-red-600/20 border border-red-500 rounded p-3 text-center">✗ Не так. Правильно: <span className="he">{cur.tokens.join(' ')}</span> <button onClick={next} className="ml-3 px-3 py-1 bg-purple-600 rounded">Дальше</button></div>}
+    </div>
+  );
+}
+
+// --- Механика 5: Аудирование ---
+function ListenMode({words}){
+  const [i, setI] = useState(0);
+  const cur = words[i];
+  const [choice, setChoice] = useState(null);
+  const options = useMemo(()=>{
+    if(!cur) return [];
+    const wrong = [...words].filter(w=>w.id!==cur.id).sort(()=>Math.random()-0.5).slice(0,3);
+    return [...wrong, cur].sort(()=>Math.random()-0.5);
+  },[i, cur?.id]);
+
+  if(!cur) return null;
+  return (
+    <div className="max-w-2xl mx-auto">
+      <div className="text-center text-sm text-gray-400 mb-2">{i+1} / {words.length}</div>
+      <div className="glass rounded-xl p-8 text-center mb-4">
+        <div className="text-sm text-gray-400 mb-3">Что вы слышите?</div>
+        <button onClick={()=>speak(cur.he)} className="text-6xl">🔊</button>
+        <div className="text-xs text-gray-500 mt-2">Нажмите, чтобы услышать ещё раз</div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 he" dir="rtl">
+        {options.map((opt,k)=>{
+          const correct = opt.id===cur.id;
+          const picked = choice===opt.id;
+          let cls = 'glass hover:bg-white/10';
+          if(choice){
+            if(correct) cls='bg-green-600/30 border-green-500';
+            else if(picked) cls='bg-red-600/30 border-red-500';
+            else cls='opacity-40';
+          }
+          return (
+            <button key={k} disabled={!!choice} onClick={()=>setChoice(opt.id)}
+              className={'p-4 rounded-xl border border-white/10 transition text-xl '+cls}>{opt.he}</button>
+          );
+        })}
+      </div>
+      {choice && <div className="mt-4 text-center"><button onClick={()=>{setChoice(null); setI(x=>(x+1)%words.length);}}
+        className="px-6 py-2 bg-purple-600 hover:bg-purple-500 rounded">Дальше →</button></div>}
+    </div>
+  );
+}
+
+// --- Механика 6: Произношение ---
+function SpeakMode({words}){
+  const [i, setI] = useState(0);
+  const [listening, setListening] = useState(false);
+  const [result, setResult] = useState(null);
+  const recRef = useRef(null);
+  const cur = words[i];
+
+  const start = ()=>{
+    const r = getSpeechRecognition();
+    if(!r){ setResult({error:'Распознавание речи недоступно в этом браузере. Используйте Chrome или Edge.'}); return; }
+    recRef.current = r;
+    setResult(null); setListening(true);
+    r.onresult = (e)=>{
+      const heard = e.results[0][0].transcript;
+      const sim = similarity(heard, cur.he);
+      setResult({heard, similarity: sim});
+      setListening(false);
+    };
+    r.onerror = (e)=>{ setResult({error:'Ошибка: '+e.error}); setListening(false); };
+    r.onend = ()=> setListening(false);
+    r.start();
+  };
+
+  if(!cur) return null;
+  const score = result?.similarity != null ? Math.round(result.similarity*100) : null;
+
+  return (
+    <div className="max-w-2xl mx-auto">
+      <div className="text-center text-sm text-gray-400 mb-2">{i+1} / {words.length}</div>
+      <div className="glass rounded-xl p-8 text-center mb-4">
+        <div className="text-sm text-gray-400 mb-2">Произнесите вслух:</div>
+        <div className="he-lg" style={{fontSize:'3em'}}>{cur.he}</div>
+        <div className="text-sm text-gray-400 mt-2">[{cur.translit}] — {cur.ru}</div>
+        <div className="mt-4 flex justify-center gap-3">
+          <button onClick={()=>speak(cur.he)} className="px-4 py-2 bg-white/5 hover:bg-white/10 rounded">🔊 Послушать образец</button>
+          <button onClick={start} disabled={listening}
+            className={'px-4 py-2 rounded ' + (listening?'bg-red-600 pulse-ring':'bg-purple-600 hover:bg-purple-500')}>
+            {listening?'🎙️ Слушаю…':'🎙️ Записать'}
+          </button>
+        </div>
+      </div>
+      {result && (
+        <div className="glass rounded-xl p-5 mb-4">
+          {result.error && <div className="text-red-300">{result.error}</div>}
+          {result.heard && (
+            <>
+              <div className="text-sm text-gray-400">Услышано:</div>
+              <div className="he text-2xl mb-2">{result.heard}</div>
+              <div className="text-sm text-gray-400">Совпадение:</div>
+              <div className="h-3 bg-white/5 rounded-full overflow-hidden mb-1">
+                <div className={'h-full '+(score>80?'bg-green-500':score>50?'bg-yellow-500':'bg-red-500')} style={{width:score+'%'}}/>
+              </div>
+              <div className="text-sm">{score}%</div>
+              <div className="mt-2 text-xs text-gray-400">
+                {score>85?'🤩 Отлично!':score>65?'🙂 Неплохо.':score>40?'🤔 Стоит повторить.':'😣 Попробуйте снова, медленнее.'}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+      <div className="text-center"><button onClick={()=>{setResult(null); setI(x=>(x+1)%words.length);}}
+        className="px-6 py-2 bg-purple-600 hover:bg-purple-500 rounded">Следующее →</button></div>
+    </div>
+  );
+}
+
+// =========================
+// Биньяны: интерактивный гайд
+// =========================
+function BinyansPage(){
+  const [sel, setSel] = useState(null);
+  const [tab, setTab] = useState('family');
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-2">Гайд по биньянам</h1>
+      <p className="text-gray-400 mb-6">Семь моделей глаголов в иврите. Каждый биньян задаёт оттенок значения корня: активный/пассивный, простой/усиленный/каузативный.</p>
+
+      <div className="flex gap-1 mb-6 border-b border-white/10 overflow-x-auto">
+        <TabBtn id="family" cur={tab} setT={setTab}>🌳 Семья биньянов</TabBtn>
+        <TabBtn id="builder" cur={tab} setT={setTab}>🛠 Конструктор слова</TabBtn>
+        <TabBtn id="detector" cur={tab} setT={setTab}>🔍 Определитель</TabBtn>
+        <TabBtn id="gzarot" cur={tab} setT={setTab}>📑 Гзарот</TabBtn>
+      </div>
+
+      {tab==='family' && <BinyanFamily sel={sel} setSel={setSel}/>}
+      {tab==='builder' && <RootBuilder/>}
+      {tab==='detector' && <BinyanDetector/>}
+      {tab==='gzarot' && <GzarotView/>}
+    </div>
+  );
+}
+
+function BinyanFamily({sel, setSel}){
+  // Сетка 3x3: voice (active/passive/reflexive) × intensity (simple/intensive/causative)
+  const map = {};
+  DATA.vocab.binyans.forEach(b=>{
+    const k = b.voice + ':' + b.intensity;
+    map[k] = b;
+  });
+  const voices = [
+    {id:'active', name:'Активный', icon:'➡️'},
+    {id:'passive_or_reflexive', name:'Пассив/возврат', icon:'↩️'},
+    {id:'passive', name:'Пассив', icon:'⬅️'},
+    {id:'reflexive', name:'Возвратный', icon:'🔄'},
+  ];
+  const intensities = [
+    {id:'simple', name:'Простое'},
+    {id:'intensive', name:'Усиленное'},
+    {id:'causative', name:'Каузатив'},
+  ];
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="lg:col-span-2 glass rounded-xl p-5">
+        <h3 className="font-semibold mb-3">Карта семейства</h3>
+        <div className="text-xs text-gray-400 mb-3">По вертикали — интенсивность действия, по горизонтали — залог.</div>
+        <table className="w-full">
+          <thead><tr>
+            <th className="text-left text-xs text-gray-500 p-2"></th>
+            <th className="text-xs text-gray-400 p-2">Активный</th>
+            <th className="text-xs text-gray-400 p-2">Пассив</th>
+            <th className="text-xs text-gray-400 p-2">Возвратный</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td className="text-xs text-gray-400 p-2">Простое</td>
+              <td><BinyanTile b={DATA.vocab.binyans.find(x=>x.id==='paal')} onClick={setSel}/></td>
+              <td><BinyanTile b={DATA.vocab.binyans.find(x=>x.id==='nifal')} onClick={setSel} label="Нифъаль"/></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td className="text-xs text-gray-400 p-2">Усиленное</td>
+              <td><BinyanTile b={DATA.vocab.binyans.find(x=>x.id==='piel')} onClick={setSel}/></td>
+              <td><BinyanTile b={DATA.vocab.binyans.find(x=>x.id==='pual')} onClick={setSel}/></td>
+              <td><BinyanTile b={DATA.vocab.binyans.find(x=>x.id==='hitpael')} onClick={setSel}/></td>
+            </tr>
+            <tr>
+              <td className="text-xs text-gray-400 p-2">Каузатив</td>
+              <td><BinyanTile b={DATA.vocab.binyans.find(x=>x.id==='hifil')} onClick={setSel}/></td>
+              <td><BinyanTile b={DATA.vocab.binyans.find(x=>x.id==='hufal')} onClick={setSel}/></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div className="glass rounded-xl p-5 min-h-[400px]">
+        {sel ? <BinyanDetail b={sel}/> : (
+          <div className="text-gray-400 text-center mt-12">
+            <div className="text-4xl mb-3">👆</div>
+            Нажмите на любой биньян слева, чтобы увидеть модель, примеры и логику определения.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function BinyanTile({b, onClick, label}){
+  if(!b) return null;
+  return (
+    <button onClick={()=>onClick(b)} className="w-full p-3 rounded-lg text-center transition hover:scale-105"
+      style={{background:b.color+'33', border:'1px solid '+b.color}}>
+      <div className="he text-2xl">{b.name_he}</div>
+      <div className="text-xs">{label || b.name_ru}</div>
+    </button>
+  );
+}
+
+function BinyanDetail({b}){
+  return (
+    <div>
+      <div className="mb-3" style={{borderLeft:'4px solid '+b.color, paddingLeft:'12px'}}>
+        <div className="he text-3xl">{b.name_he}</div>
+        <div className="text-lg font-semibold">{b.name_ru}</div>
+      </div>
+      <p className="text-sm text-gray-300 mb-4">{b.meaning}</p>
+
+      <h4 className="text-xs uppercase text-gray-400 mb-2">Как определить</h4>
+      <div className="text-sm mb-4 bg-white/5 rounded p-3">{b.how_to_detect}</div>
+
+      <h4 className="text-xs uppercase text-gray-400 mb-2">Модель спряжения</h4>
+      <table className="heb-table w-full mb-4 text-sm">
+        <tbody>
+          {Object.entries(b.model).map(([k,v])=>(
+            <tr key={k}>
+              <td className="text-xs text-gray-400" style={{direction:'ltr'}}>{labelRu(k)}</td>
+              <td className="he">{v}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h4 className="text-xs uppercase text-gray-400 mb-2">Примеры</h4>
+      <ul className="space-y-1">
+        {b.examples.map((e,i)=><li key={i} className="text-sm">{e}</li>)}
+      </ul>
+    </div>
+  );
+}
+function labelRu(k){ return {
+  present_m_sg:'наст. м.р.', present_f_sg:'наст. ж.р.', present_m_pl:'наст. мн.м.', present_f_pl:'наст. мн.ж.',
+  past_3m_sg:'прош. 3 м.р.', future_3m_sg:'буд. 3 м.р.', infinitive:'инфинитив'
+}[k] || k; }
+
+// Конструктор слова: корень → биньян → форма
+function RootBuilder(){
+  const [root, setRoot] = useState('כ.ת.ב');
+  const [bid, setBid] = useState('paal');
+  const [tense, setTense] = useState('present_m_sg');
+  const b = DATA.vocab.binyans.find(x=>x.id===bid);
+
+  // Подставляем буквы корня в модель
+  const letters = root.replace(/[.\-\s]/g,'').split('');
+  function applyRoot(model){
+    // Упрощённая замена: в модели פ заменим на 1-ю букву, ע на 2-ю, ל на 3-ю.
+    // Это работает для основ типа פּוֹעֵל, פָּעַל и т.д.
+    if(letters.length < 3) return model;
+    return model.replace(/פ/, letters[0]).replace(/ע/, letters[1]).replace(/ל/, letters[2]);
+  }
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="glass rounded-xl p-5">
+        <h3 className="font-semibold mb-3">1. Введите корень (3 буквы)</h3>
+        <input type="text" value={root} onChange={e=>setRoot(e.target.value)}
+          className="he text-2xl bg-white/5 border border-white/10 rounded px-3 py-2 w-full mb-4 text-center" placeholder="כ.ת.ב"/>
+        <div className="text-xs text-gray-400 mb-3">Примеры: כ.ת.ב (писать), ל.מ.ד (учить), ד.ב.ר (говорить)</div>
+
+        <h3 className="font-semibold mb-3 mt-5">2. Выберите биньян</h3>
+        <div className="grid grid-cols-4 gap-2">
+          {DATA.vocab.binyans.map(x=>(
+            <button key={x.id} onClick={()=>setBid(x.id)}
+              className={'p-2 rounded text-xs '+(bid===x.id?'ring-2 ring-white':'')}
+              style={{background:x.color+'33', border:'1px solid '+x.color}}>
+              <div className="he">{x.name_he}</div>
+              <div>{x.name_ru}</div>
+            </button>
+          ))}
+        </div>
+
+        <h3 className="font-semibold mb-3 mt-5">3. Выберите форму</h3>
+        <select value={tense} onChange={e=>setTense(e.target.value)}
+          className="bg-white/5 border border-white/10 rounded px-3 py-2 w-full">
+          {Object.keys(b.model).map(k=><option key={k} value={k}>{labelRu(k)}</option>)}
+        </select>
+      </div>
+
+      <div className="glass rounded-xl p-5">
+        <h3 className="font-semibold mb-2">Результат</h3>
+        <div className="bg-black/30 rounded-xl p-6 text-center my-4">
+          <div className="text-xs text-gray-400 mb-2">Модель</div>
+          <div className="he text-2xl mb-3" style={{color:b.color}}>{b.model[tense]}</div>
+          <div className="text-xs text-gray-400 mb-2">→ С корнем {letters.join('-')}:</div>
+          <div className="he" style={{fontSize:'3em', color:'#fff'}}>{applyRoot(b.model[tense])}</div>
+          <button onClick={()=>speak(applyRoot(b.model[tense]))}
+            className="mt-3 px-3 py-1 bg-white/10 rounded text-sm">🔊 Произнести</button>
+        </div>
+        <div className="text-sm text-gray-300">
+          <div className="font-semibold mb-1">Как читать модель:</div>
+          <ul className="space-y-1 text-xs text-gray-400">
+            <li>פ — первая буква корня</li>
+            <li>ע — вторая буква корня</li>
+            <li>ל — третья буква корня</li>
+          </ul>
+        </div>
+        <div className="mt-4 text-xs text-gray-500">
+          ⚠️ Конструктор показывает базовую модель. Для гзарот (גרוניות, ל"ה и др.) огласовки могут отличаться — см. раздел «Гзарот».
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Определитель биньяна
+function BinyanDetector(){
+  const [word, setWord] = useState('מְדַבֵּר');
+  const detect = (w)=>{
+    const s = stripNiqqud(w).trim();
+    const candidates = [];
+    if(/^מת/.test(s)) candidates.push({id:'hitpael', conf:0.9, reason:'Префикс מִתְ (мит-) → hитпаэль (возвратное действие)'});
+    else if(/^נ/.test(s)) candidates.push({id:'nifal', conf:0.85, reason:'Префикс נ → Нифъаль (пассив/возвратное к Паалю)'});
+    else if(/^מ/.test(s)){
+      candidates.push({id:'piel', conf:0.6, reason:'Префикс מְ может быть Пиэль (мэ-, активный)'});
+      candidates.push({id:'pual', conf:0.4, reason:'Префикс מְ может быть Пуаль (му-, пассив)'});
+      candidates.push({id:'hifil', conf:0.6, reason:'Префикс מַ может быть hифъиль (ма-, каузатив)'});
+      candidates.push({id:'hufal', conf:0.3, reason:'Префикс מֻ может быть hуфъаль (му-, пассив каузатива)'});
+    }
+    else if(/^ה/.test(s)) candidates.push({id:'hifil', conf:0.7, reason:'Префикс הִ в прошедшем — hифъиль'});
+    else if(/^י/.test(s) && s.length>3) candidates.push({id:'paal', conf:0.6, reason:'Префикс יִ часто указывает на буд. время Пааль'});
+    else candidates.push({id:'paal', conf:0.7, reason:'Корень без префикса — вероятно Пааль (наст. время м.р.)'});
+    return candidates.sort((a,b)=>b.conf-a.conf);
+  };
+
+  const cands = detect(word);
+  return (
+    <div className="max-w-3xl mx-auto">
+      <div className="glass rounded-xl p-5 mb-4">
+        <h3 className="font-semibold mb-3">Введите глагол (с огласовками или без)</h3>
+        <input type="text" value={word} onChange={e=>setWord(e.target.value)}
+          className="he text-3xl bg-white/5 border border-white/10 rounded px-4 py-3 w-full text-center" dir="rtl"/>
+        <div className="text-xs text-gray-400 mt-2">Примеры: מְדַבֵּר (говорит, Пиэль), מַתְחִיל (начинает, hифъиль), נִכְנָס (входит, Нифъаль), מִתְלַבֵּשׁ (одевается, hитпаэль)</div>
+      </div>
+      <h4 className="text-xs uppercase text-gray-400 mb-2">Возможные биньяны:</h4>
+      <div className="space-y-2">
+        {cands.map((c,i)=>{
+          const b = DATA.vocab.binyans.find(x=>x.id===c.id);
+          return (
+            <div key={i} className="glass rounded-xl p-4 flex gap-4 items-center" style={{borderLeft:'4px solid '+b.color}}>
+              <div className="he text-3xl" style={{color:b.color}}>{b.name_he}</div>
+              <div className="flex-1">
+                <div className="font-semibold">{b.name_ru}</div>
+                <div className="text-sm text-gray-400">{c.reason}</div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs text-gray-400">Уверенность</div>
+                <div className="text-lg">{Math.round(c.conf*100)}%</div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function GzarotView(){
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {DATA.vocab.gzarot.map(g=>(
+        <div key={g.id} className="glass rounded-xl p-5">
+          <div className="flex items-baseline justify-between mb-2">
+            <h3 className="font-semibold">{g.name_ru}</h3>
+            <div className="he chip-binyan chip">{g.short}</div>
+          </div>
+          <p className="text-sm text-gray-300 mb-3">{g.desc}</p>
+          <div className="text-xs text-gray-400">Примеры:</div>
+          <div className="he flex gap-2 mt-1">{g.examples.join(' · ')}</div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// =========================
+// Корни — обзор
+// =========================
+function RootsPage(){
+  // Группируем слова по корню
+  const byRoot = {};
+  DATA.vocab.words.forEach(w=>{
+    if(w.root){ (byRoot[w.root] = byRoot[w.root] || []).push(w); }
+  });
+  const roots = Object.entries(byRoot).sort((a,b)=>b[1].length - a[1].length);
+  const [sel, setSel] = useState(roots[0]?.[0] || null);
+  const cur = sel ? byRoot[sel] : [];
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-2">Корни</h1>
+      <p className="text-gray-400 mb-6">Каждое слово в иврите построено вокруг корня из 3 (иногда 4) букв. Изучая корень, вы получаете доступ к семье родственных слов.</p>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="glass rounded-xl p-3 max-h-[600px] overflow-y-auto">
+          {roots.map(([r,ws])=>(
+            <button key={r} onClick={()=>setSel(r)}
+              className={'w-full text-left p-3 rounded mb-1 flex justify-between '+(sel===r?'bg-purple-600/30':'hover:bg-white/5')}>
+              <span className="he text-lg">{r}</span>
+              <span className="text-xs text-gray-400">{ws.length} слов</span>
+            </button>
+          ))}
+        </div>
+        <div className="lg:col-span-2 glass rounded-xl p-5">
+          {sel && (
+            <>
+              <div className="he text-5xl text-center mb-2">{sel}</div>
+              <div className="text-center text-sm text-gray-400 mb-4">Корень · {cur.length} производных слов</div>
+              <div className="space-y-2">
+                {cur.map(w=>(
+                  <div key={w.id} className="bg-white/5 rounded-lg p-3 flex justify-between items-center">
+                    <div>
+                      <div className="he text-xl">{w.he}</div>
+                      <div className="text-sm text-gray-400">{w.ru} · [{w.translit}]</div>
+                    </div>
+                    <div className="text-right text-xs">
+                      {w.binyan && <div className="chip">{w.binyan}</div>}
+                      <button onClick={()=>speak(w.he)} className="mt-1 px-2 py-1 bg-white/5 rounded">🔊</button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =========================
+// Словарь
+// =========================
+function DictionaryPage(){
+  const [q, setQ] = useState('');
+  const [topic, setTopic] = useState('all');
+  const words = useMemo(()=>{
+    const qn = stripNiqqud(q.toLowerCase().trim());
+    return DATA.vocab.words.filter(w=>{
+      if(topic!=='all' && w.topic !== topic) return false;
+      if(!qn) return true;
+      return stripNiqqud(w.he).toLowerCase().includes(qn) ||
+             (w.translit||'').toLowerCase().includes(qn) ||
+             w.ru.toLowerCase().includes(qn) ||
+             (w.root||'').includes(qn);
+    });
+  }, [q, topic]);
+  const topics = ['all', ...new Set(DATA.vocab.words.map(w=>w.topic))];
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-2">Словарь</h1>
+      <p className="text-gray-400 mb-4">{DATA.vocab.words.length} слов уровня Алеф–Бет.</p>
+      <div className="flex gap-2 mb-4 flex-wrap">
+        <input value={q} onChange={e=>setQ(e.target.value)}
+          placeholder="Поиск: иврит / транслит / русский / корень…"
+          className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 outline-none focus:border-purple-500"/>
+        <select value={topic} onChange={e=>setTopic(e.target.value)}
+          className="bg-white/5 border border-white/10 rounded-lg px-3 py-2">
+          {topics.map(t=><option key={t} value={t}>{t==='all'?'все темы':t}</option>)}
+        </select>
+      </div>
+      <div className="text-sm text-gray-400 mb-3">Найдено: {words.length}</div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        {words.map(w=>(
+          <div key={w.id} className="glass rounded-xl p-4 hover-lift">
+            <div className="flex justify-between items-start mb-1">
+              <div className="he text-2xl">{w.he}</div>
+              <button onClick={()=>speak(w.he)} className="text-lg">🔊</button>
+            </div>
+            <div className="text-sm text-gray-400">[{w.translit}]</div>
+            <div className="text-base mt-1">{w.ru}</div>
+            <div className="flex gap-1 mt-2 flex-wrap">
+              {w.binyan && <span className="chip">{w.binyan}</span>}
+              {w.root && <span className="chip he">{w.root}</span>}
+              <span className="chip">{w.topic}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// =========================
+// Таблицы
+// =========================
+function TablesPage(){
+  const [q, setQ] = useState('');
+  const t = DATA.manifest.tables.filter(x=>!q || x.title.toLowerCase().includes(q.toLowerCase()));
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-4">Грамматические таблицы</h1>
+      <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Фильтр…"
+        className="bg-white/5 border border-white/10 rounded px-3 py-2 w-full md:w-96 mb-4"/>
+      <div className="lesson-grid">
+        {t.map(l=><LessonCard key={l.id} l={l}/>)}
+      </div>
+    </div>
+  );
+}
+
+// =========================
+// Тренажёр (общий)
+// =========================
+function PracticePage(){
+  const all = DATA.vocab.words;
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-2">Тренажёр</h1>
+      <p className="text-gray-400 mb-6">Шесть механик из общего словаря ({all.length} слов).</p>
+      <PracticeHub vocab={all} lesson={null}/>
+    </div>
+  );
+}
+
+// =========================
+// Домашки
+// =========================
+function HomeworkPage(){
+  const list = DATA.homework;
+  return (
+    <div className="p-6 max-w-6xl mx-auto">
+      <h1 className="text-3xl font-bold mb-2">Домашние задания</h1>
+      <p className="text-gray-400 mb-6">Упражнения интенсива «Бесплатный интенсив Бет». Тексты ДЗ извлечены из PDF, эталонные решения учеников приложены.</p>
+      <div className="space-y-3">
+        {list.map(h=><HomeworkView key={h.lesson_num} hw={h}/>)}
+      </div>
+    </div>
+  );
+}
+
+function HomeworkView({hw}){
+  const [showSol, setShowSol] = useState(false);
+  return (
+    <details className="glass rounded-xl p-4">
+      <summary className="font-semibold py-2">
+        Урок {hw.lesson_num} · {hw.exercises_count} упражнений
+      </summary>
+      <div className="mt-3 space-y-3">
+        {hw.exercises_preview.map((ex, i)=>(
+          <ExerciseChecker key={i} text={ex} solutions={hw.solutions} index={i}/>
+        ))}
+      </div>
+      {hw.solutions?.length>0 && (
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <button onClick={()=>setShowSol(s=>!s)}
+            className="px-3 py-1 bg-white/5 rounded text-sm hover:bg-white/10">
+            {showSol?'Скрыть':'Показать'} эталонные решения ({hw.solutions.length})
+          </button>
+          {showSol && (
+            <div className="mt-3 space-y-2">
+              {hw.solutions.map((s,i)=>(
+                <details key={i} className="bg-black/30 rounded p-3">
+                  <summary className="text-sm">{s.file}</summary>
+                  <pre className="text-xs mt-2 whitespace-pre-wrap text-gray-300">{s.text}</pre>
+                </details>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </details>
+  );
+}
+
+function ExerciseChecker({text, solutions, index}){
+  const [ans, setAns] = useState('');
+  const [check, setCheck] = useState(null);
+  const doCheck = ()=>{
+    // Простое сравнение по совпадениям ключевых ивритских слов из эталонов
+    if(!solutions || !solutions.length){
+      setCheck({ok:null, msg:'Эталонных решений для этого ДЗ нет. Сравните с разбором на видео или с примерами в теории урока.'});
+      return;
+    }
+    const myHe = new Set((ans.match(/[֐-׿]+/g) || []));
+    let bestMatch = 0;
+    let bestText = '';
+    solutions.forEach(s=>{
+      const refHe = new Set((s.text.match(/[֐-׿]+/g) || []));
+      let m=0; refHe.forEach(w=>{if(myHe.has(w)) m++;});
+      if(m>bestMatch){ bestMatch=m; bestText=s.file; }
+    });
+    if(bestMatch===0){
+      setCheck({ok:false, msg:'В вашем ответе не нашли ивритских слов из эталонов. Попробуйте писать ответы на иврите.'});
+    } else {
+      setCheck({ok:true, msg:`Совпадает ${bestMatch} ивритских слов с решением «${bestText}». Это хороший сигнал — но финальный разбор лучше посмотреть на видео.`});
+    }
+  };
+  return (
+    <div className="bg-white/5 rounded-lg p-3">
+      <div className="text-xs text-gray-400 mb-1">Упражнение {index+1}</div>
+      <pre className="text-sm whitespace-pre-wrap text-gray-200 mb-2">{text}</pre>
+      <textarea value={ans} onChange={e=>setAns(e.target.value)} rows={3}
+        placeholder="Ваш ответ (можно на иврите и/или русском)…"
+        className="w-full bg-black/30 border border-white/10 rounded p-2 text-sm"/>
+      <button onClick={doCheck} className="mt-2 px-3 py-1 bg-purple-600 hover:bg-purple-500 rounded text-sm">Проверить</button>
+      {check && (
+        <div className={'mt-2 p-2 rounded text-sm ' + (check.ok===true?'bg-green-600/20':'bg-yellow-600/20')}>
+          {check.msg}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// =========================
+// Глобальный поиск (Ctrl+K)
+// =========================
+function SearchModal({open, onClose}){
+  const [q, setQ] = useState('');
+  const ref = useRef();
+  useEffect(()=>{ if(open && ref.current) ref.current.focus(); },[open]);
+  if(!open) return null;
+  const qn = stripNiqqud(q.toLowerCase());
+  let lessons = [];
+  if(qn){
+    DATA.manifest.course_modules.forEach(m=>m.lessons.forEach(l=>{
+      if(l.title.toLowerCase().includes(qn)) lessons.push(l);
+    }));
+  }
+  const words = qn ? DATA.vocab.words.filter(w=>
+    stripNiqqud(w.he).includes(qn) || (w.translit||'').toLowerCase().includes(qn) || w.ru.toLowerCase().includes(qn)
+  ).slice(0,15) : [];
+
+  return (
+    <div className="fixed inset-0 bg-black/60 z-50 flex items-start justify-center pt-20" onClick={onClose}>
+      <div className="glass rounded-xl w-full max-w-2xl p-4 mx-4" onClick={e=>e.stopPropagation()}>
+        <input ref={ref} value={q} onChange={e=>setQ(e.target.value)}
+          placeholder="Поиск по урокам, словам, корням…"
+          className="w-full bg-white/5 border border-white/10 rounded px-4 py-3 text-lg outline-none focus:border-purple-500"/>
+        <div className="mt-4 max-h-96 overflow-y-auto">
+          {lessons.length>0 && <div className="text-xs uppercase text-gray-400 mb-2">Уроки</div>}
+          {lessons.slice(0,8).map(l=>(
+            <a key={l.id} href={'#/lesson/'+encodeURIComponent(l.id)} onClick={onClose}
+              className="block p-2 hover:bg-white/5 rounded">
+              <div className="text-sm">{l.title}</div>
+              <div className="text-xs text-gray-500">Модуль {l.module} · Урок {l.lesson_num}</div>
+            </a>
+          ))}
+          {words.length>0 && <div className="text-xs uppercase text-gray-400 mb-2 mt-3">Слова</div>}
+          {words.map(w=>(
+            <div key={w.id} className="p-2 hover:bg-white/5 rounded flex justify-between items-center">
+              <div>
+                <span className="he text-xl">{w.he}</span>
+                <span className="text-sm text-gray-400 ml-3">{w.ru}</span>
+              </div>
+              <button onClick={()=>speak(w.he)} className="text-lg">🔊</button>
+            </div>
+          ))}
+          {qn && !lessons.length && !words.length && <div className="text-gray-400 text-center py-6">Ничего не найдено</div>}
+          {!qn && <div className="text-gray-500 text-sm text-center py-6">Введите запрос для поиска по 132 урокам и 135 словам.</div>}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// =========================
+// Главное приложение
+// =========================
+function App(){
+  const route = useRoute();
+  const [progress, setProgress] = useState(loadProgress());
+  const [sidebar, setSidebar] = useState(false);
+  const [search, setSearch] = useState(false);
+
+  const updateProgress = (fn)=>{
+    setProgress(p=>{ const np = fn({...p}); saveProgress(np); return np; });
+  };
+
+  useEffect(()=>{
+    const h = (e)=>{
+      if((e.ctrlKey||e.metaKey) && e.key==='k'){ e.preventDefault(); setSearch(true); }
+      if(e.key==='Escape') setSearch(false);
+    };
+    window.addEventListener('keydown', h); return ()=>window.removeEventListener('keydown', h);
+  },[]);
+
+  const cur = route.parts[0] || '';
+  const TR = window.HEB_TRACKS || {};
+  let page;
+  if(cur==='') page = <Home progress={progress} navigate={route.navigate}/>;
+  else if(cur==='course') page = <CoursePage/>;
+  else if(cur==='lesson') page = <LessonViewer/>;
+  else if(cur==='binyans') page = <BinyansPage/>;
+  else if(cur==='roots') page = <RootsPage/>;
+  else if(cur==='dictionary') page = <DictionaryPage/>;
+  else if(cur==='tables') page = <TablesPage/>;
+  else if(cur==='practice') page = <PracticePage/>;
+  else if(cur==='homework') page = <HomeworkPage/>;
+  else if(cur==='track'){
+    const sub = route.parts[1];
+    if(!sub) page = TR.TrackHub ? <TR.TrackHub/> : <div className="p-6">Треки загружаются…</div>;
+    else if(sub==='repl')     page = <TR.ReplPage/>;
+    else if(sub==='tree')     page = <TR.DecisionTreePage/>;
+    else if(sub==='diff')     page = <TR.DiffPage/>;
+    else if(sub==='mindmap')  page = <TR.MindMapPage/>;
+    else if(sub==='colorize') page = <TR.ColorizePage/>;
+    else if(sub==='paradigm') page = <TR.AnimatedConjugationPage/>;
+    else if(sub==='builder')  page = <TR.DragDropPage/>;
+    else if(sub==='typing')   page = <TR.TypingRacePage/>;
+    else if(sub==='connect')  page = <TR.ConnectLinesPage/>;
+    else page = <div className="p-6">Раздел трека не найден.</div>;
+  }
+  else if(cur==='search') page = <div className="p-6 max-w-4xl mx-auto"><h1 className="text-2xl font-bold mb-4">Поиск</h1><button onClick={()=>setSearch(true)} className="px-4 py-2 bg-purple-600 rounded">Открыть поиск</button></div>;
+  else page = <div className="p-6">Страница не найдена.</div>;
+
+  return (
+    <AppCtx.Provider value={{progress, updateProgress}}>
+      <div className="flex min-h-screen">
+        <Sidebar open={sidebar} setOpen={setSidebar} route={route}/>
+        <div className="flex-1 main">
+          <TopBar setSidebar={setSidebar} openSearch={()=>setSearch(true)}/>
+          {page}
+        </div>
+      </div>
+      <SearchModal open={search} onClose={()=>setSearch(false)}/>
+    </AppCtx.Provider>
+  );
+}
+
+// Render
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App/>);
+</script>
+<script>
+/* Онлайн-версия: слайды и аудио уроков не публикуются (размер + авторские права).
+   Скрываем вкладку «Уроки», оставляя рабочими гайд по биньянам, таблицы и поиск.
+   Локально (file://) всё остаётся как есть. */
+(function(){
+  if(location.protocol==="file:")return;
+  function hide(){
+    document.querySelectorAll("button,a,[role=tab],.tab,nav *").forEach(function(el){
+      if(el.children.length)return;
+      var t=(el.textContent||"").trim();
+      if(t==="Уроки"||t==="Уроков"){var b=el.closest("button,a,[role=tab],.tab")||el;b.style.display="none";}
+    });
+  }
+  var n=0,iv=setInterval(function(){hide();if(++n>25)clearInterval(iv);},250);
+  if(document.readyState!=="loading")hide();else document.addEventListener("DOMContentLoaded",hide);
+})();
+</script>
+</body>
+</html>

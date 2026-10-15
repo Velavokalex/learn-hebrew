@@ -1,0 +1,2285 @@
+{
+  "words": [
+    {
+      "he": "כּוֹתֵב",
+      "translit": "котев",
+      "ru": "пишет",
+      "root": "כ.ת.ב",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0001"
+    },
+    {
+      "he": "אוֹכֵל",
+      "translit": "охель",
+      "ru": "ест",
+      "root": "א.כ.ל",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0002"
+    },
+    {
+      "he": "הוֹרֵג",
+      "translit": "hopeг",
+      "ru": "убивает",
+      "root": "ה.ר.ג",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0003"
+    },
+    {
+      "he": "חוֹשֵב",
+      "translit": "хошев",
+      "ru": "думает",
+      "root": "ח.ש.ב",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0004"
+    },
+    {
+      "he": "עוֹמֵד",
+      "translit": "омед",
+      "ru": "стоит",
+      "root": "ע.מ.ד",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0005"
+    },
+    {
+      "he": "יוֹשֵב",
+      "translit": "йошев",
+      "ru": "сидит",
+      "root": "י.ש.ב",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0006"
+    },
+    {
+      "he": "קוֹרֵא",
+      "translit": "корэ",
+      "ru": "читает",
+      "root": "ק.ר.א",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0007"
+    },
+    {
+      "he": "שוֹאֵל",
+      "translit": "шоэль",
+      "ru": "спрашивает",
+      "root": "ש.א.ל",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0008"
+    },
+    {
+      "he": "אוֹהֵב",
+      "translit": "оhев",
+      "ru": "любит",
+      "root": "א.ה.ב",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0009"
+    },
+    {
+      "he": "פּוֹעֵל",
+      "translit": "поэль",
+      "ru": "действует",
+      "root": "פ.ע.ל",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0010"
+    },
+    {
+      "he": "יוֹדֵעַ",
+      "translit": "йодеа",
+      "ru": "знает",
+      "root": "י.ד.ע",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0011"
+    },
+    {
+      "he": "נוֹסֵעַ",
+      "translit": "носеа",
+      "ru": "едет",
+      "root": "נ.ס.ע",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0012"
+    },
+    {
+      "he": "לוֹקֵחַ",
+      "translit": "локеах",
+      "ru": "берёт",
+      "root": "ל.ק.ח",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0013"
+    },
+    {
+      "he": "שוֹמֵעַ",
+      "translit": "шомеа",
+      "ru": "слышит, слушает",
+      "root": "ש.מ.ע",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0014"
+    },
+    {
+      "he": "פּוֹתֵחַ",
+      "translit": "потеах",
+      "ru": "открывает",
+      "root": "פ.ת.ח",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0015"
+    },
+    {
+      "he": "גָר",
+      "translit": "гар",
+      "ru": "живёт",
+      "root": "ג.ו.ר",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0016"
+    },
+    {
+      "he": "בָּא",
+      "translit": "ба",
+      "ru": "приходит",
+      "root": "ב.ו.א",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0017"
+    },
+    {
+      "he": "רָץ",
+      "translit": "рац",
+      "ru": "бежит",
+      "root": "ר.ו.ץ",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0018"
+    },
+    {
+      "he": "שָר",
+      "translit": "шар",
+      "ru": "поёт",
+      "root": "ש.י.ר",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0019"
+    },
+    {
+      "he": "קוֹנֶה",
+      "translit": "конэ",
+      "ru": "покупает",
+      "root": "ק.נ.ה",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0020"
+    },
+    {
+      "he": "רוֹצֶה",
+      "translit": "роцэ",
+      "ru": "хочет",
+      "root": "ר.צ.ה",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0021"
+    },
+    {
+      "he": "עוֹשֶׂה",
+      "translit": "осэ",
+      "ru": "делает",
+      "root": "ע.ש.ה",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0022"
+    },
+    {
+      "he": "שוֹתֶה",
+      "translit": "шотэ",
+      "ru": "пьёт",
+      "root": "ש.ת.ה",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0023"
+    },
+    {
+      "he": "רוֹאֶה",
+      "translit": "роэ",
+      "ru": "видит",
+      "root": "ר.א.ה",
+      "binyan": "paal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0024"
+    },
+    {
+      "he": "מְדַבֵּר",
+      "translit": "медабер",
+      "ru": "говорит",
+      "root": "ד.ב.ר",
+      "binyan": "piel",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0025"
+    },
+    {
+      "he": "מְלַמֵּד",
+      "translit": "меламед",
+      "ru": "учит, преподаёт",
+      "root": "ל.מ.ד",
+      "binyan": "piel",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0026"
+    },
+    {
+      "he": "מְבַקֵּשׁ",
+      "translit": "мевакеш",
+      "ru": "просит",
+      "root": "ב.ק.ש",
+      "binyan": "piel",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0027"
+    },
+    {
+      "he": "מְסַפֵּר",
+      "translit": "месапер",
+      "ru": "рассказывает",
+      "root": "ס.פ.ר",
+      "binyan": "piel",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0028"
+    },
+    {
+      "he": "מְטַיֵּל",
+      "translit": "метаель",
+      "ru": "гуляет, путешествует",
+      "root": "ט.י.ל",
+      "binyan": "piel",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0029"
+    },
+    {
+      "he": "מְשַׂחֵק",
+      "translit": "месахек",
+      "ru": "играет",
+      "root": "ש.ח.ק",
+      "binyan": "piel",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0030"
+    },
+    {
+      "he": "מְבַשֵּׁל",
+      "translit": "мевашель",
+      "ru": "варит, готовит",
+      "root": "ב.ש.ל",
+      "binyan": "piel",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0031"
+    },
+    {
+      "he": "מְקַבֵּל",
+      "translit": "мекабель",
+      "ru": "получает",
+      "root": "ק.ב.ל",
+      "binyan": "piel",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0032"
+    },
+    {
+      "he": "מַתְחִיל",
+      "translit": "матхиль",
+      "ru": "начинает",
+      "root": "ת.ח.ל",
+      "binyan": "hifil",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0033"
+    },
+    {
+      "he": "מַזְמִין",
+      "translit": "мазмин",
+      "ru": "приглашает, заказывает",
+      "root": "ז.מ.ן",
+      "binyan": "hifil",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0034"
+    },
+    {
+      "he": "מַסְבִּיר",
+      "translit": "масбир",
+      "ru": "объясняет",
+      "root": "ס.ב.ר",
+      "binyan": "hifil",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0035"
+    },
+    {
+      "he": "מַכִּיר",
+      "translit": "макир",
+      "ru": "знаком, узнаёт",
+      "root": "נ.כ.ר",
+      "binyan": "hifil",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0036"
+    },
+    {
+      "he": "מַרְגִּיש",
+      "translit": "маргиш",
+      "ru": "чувствует",
+      "root": "ר.ג.ש",
+      "binyan": "hifil",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0037"
+    },
+    {
+      "he": "נִכְנָס",
+      "translit": "нихнас",
+      "ru": "входит",
+      "root": "כ.נ.ס",
+      "binyan": "nifal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0038"
+    },
+    {
+      "he": "נִשְׁאָר",
+      "translit": "нишар",
+      "ru": "остаётся",
+      "root": "ש.א.ר",
+      "binyan": "nifal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0039"
+    },
+    {
+      "he": "נִפְגָּשׁ",
+      "translit": "нифгаш",
+      "ru": "встречается",
+      "root": "פ.ג.ש",
+      "binyan": "nifal",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0040"
+    },
+    {
+      "he": "מִתְלַבֵּשׁ",
+      "translit": "митлабеш",
+      "ru": "одевается",
+      "root": "ל.ב.ש",
+      "binyan": "hitpael",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0041"
+    },
+    {
+      "he": "מִתְרַחֵץ",
+      "translit": "митрахец",
+      "ru": "моется",
+      "root": "ר.ח.ץ",
+      "binyan": "hitpael",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0042"
+    },
+    {
+      "he": "מִתְכַּתֵּב",
+      "translit": "миткатев",
+      "ru": "переписывается",
+      "root": "כ.ת.ב",
+      "binyan": "hitpael",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0043"
+    },
+    {
+      "he": "מִשְׁתַּמֵּשׁ",
+      "translit": "миштамеш",
+      "ru": "пользуется",
+      "root": "ש.מ.ש",
+      "binyan": "hitpael",
+      "pos": "verb",
+      "tense": "present",
+      "topic": "verbs",
+      "lessons": [
+        4,
+        6,
+        9,
+        10,
+        11,
+        18
+      ],
+      "id": "v0044"
+    },
+    {
+      "he": "בַּיִת",
+      "translit": "баит",
+      "ru": "дом",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0045"
+    },
+    {
+      "he": "סֵפֶר",
+      "translit": "сефер",
+      "ru": "книга",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0046"
+    },
+    {
+      "he": "שֻׁלְחָן",
+      "translit": "шульхан",
+      "ru": "стол",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0047"
+    },
+    {
+      "he": "כִּסֵּא",
+      "translit": "кисэ",
+      "ru": "стул",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0048"
+    },
+    {
+      "he": "חֲבֵר",
+      "translit": "хавер",
+      "ru": "друг",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0049"
+    },
+    {
+      "he": "חֲבֵרָה",
+      "translit": "хавера",
+      "ru": "подруга",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0050"
+    },
+    {
+      "he": "מוֹרֶה",
+      "translit": "морэ",
+      "ru": "учитель",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0051"
+    },
+    {
+      "he": "מוֹרָה",
+      "translit": "мора",
+      "ru": "учительница",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0052"
+    },
+    {
+      "he": "תַּלְמִיד",
+      "translit": "тальмид",
+      "ru": "ученик",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0053"
+    },
+    {
+      "he": "תַּלְמִידָה",
+      "translit": "тальмида",
+      "ru": "ученица",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0054"
+    },
+    {
+      "he": "יֶלֶד",
+      "translit": "елед",
+      "ru": "мальчик, ребёнок",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0055"
+    },
+    {
+      "he": "יַלְדָּה",
+      "translit": "ялда",
+      "ru": "девочка",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0056"
+    },
+    {
+      "he": "אִישׁ",
+      "translit": "иш",
+      "ru": "мужчина, человек",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0057"
+    },
+    {
+      "he": "אִשָּׁה",
+      "translit": "иша",
+      "ru": "женщина",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "nouns",
+      "lessons": [
+        2,
+        3,
+        6,
+        13,
+        18
+      ],
+      "id": "v0058"
+    },
+    {
+      "he": "אַבָּא",
+      "translit": "аба",
+      "ru": "папа",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "family",
+      "lessons": [
+        3
+      ],
+      "id": "v0059"
+    },
+    {
+      "he": "אִמָּא",
+      "translit": "има",
+      "ru": "мама",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "family",
+      "lessons": [
+        3
+      ],
+      "id": "v0060"
+    },
+    {
+      "he": "אָח",
+      "translit": "ах",
+      "ru": "брат",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "family",
+      "lessons": [
+        3
+      ],
+      "id": "v0061"
+    },
+    {
+      "he": "אָחוֹת",
+      "translit": "ахот",
+      "ru": "сестра",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "family",
+      "lessons": [
+        3
+      ],
+      "id": "v0062"
+    },
+    {
+      "he": "בֵּן",
+      "translit": "бен",
+      "ru": "сын",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "family",
+      "lessons": [
+        3
+      ],
+      "id": "v0063"
+    },
+    {
+      "he": "בַּת",
+      "translit": "бат",
+      "ru": "дочь",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "family",
+      "lessons": [
+        3
+      ],
+      "id": "v0064"
+    },
+    {
+      "he": "מַיִם",
+      "translit": "майим",
+      "ru": "вода",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "food",
+      "lessons": [
+        17
+      ],
+      "id": "v0065"
+    },
+    {
+      "he": "לֶחֶם",
+      "translit": "лехем",
+      "ru": "хлеб",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "food",
+      "lessons": [
+        17
+      ],
+      "id": "v0066"
+    },
+    {
+      "he": "חָלָב",
+      "translit": "халав",
+      "ru": "молоко",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "food",
+      "lessons": [
+        17
+      ],
+      "id": "v0067"
+    },
+    {
+      "he": "גְּבִינָה",
+      "translit": "гвина",
+      "ru": "сыр",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "food",
+      "lessons": [
+        17
+      ],
+      "id": "v0068"
+    },
+    {
+      "he": "עוּגָה",
+      "translit": "уга",
+      "ru": "торт",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "food",
+      "lessons": [
+        17
+      ],
+      "id": "v0069"
+    },
+    {
+      "he": "קָפֶה",
+      "translit": "кафэ",
+      "ru": "кофе",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "food",
+      "lessons": [
+        17
+      ],
+      "id": "v0070"
+    },
+    {
+      "he": "תֵּה",
+      "translit": "тэ",
+      "ru": "чай",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "food",
+      "lessons": [
+        17
+      ],
+      "id": "v0071"
+    },
+    {
+      "he": "רְחוֹב",
+      "translit": "рехов",
+      "ru": "улица",
+      "pos": "noun",
+      "gender": "m",
+      "topic": "city",
+      "lessons": [
+        4,
+        5
+      ],
+      "id": "v0072"
+    },
+    {
+      "he": "עִיר",
+      "translit": "ир",
+      "ru": "город",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "city",
+      "lessons": [
+        4,
+        5
+      ],
+      "id": "v0073"
+    },
+    {
+      "he": "מְדִינָה",
+      "translit": "медина",
+      "ru": "страна",
+      "pos": "noun",
+      "gender": "f",
+      "topic": "city",
+      "lessons": [
+        4,
+        5
+      ],
+      "id": "v0074"
+    },
+    {
+      "he": "אֲנִי",
+      "translit": "ани",
+      "ru": "я",
+      "pos": "pronoun",
+      "topic": "pronouns",
+      "lessons": [
+        2,
+        12
+      ],
+      "id": "v0075"
+    },
+    {
+      "he": "אַתָּה",
+      "translit": "ата",
+      "ru": "ты (м.р.)",
+      "pos": "pronoun",
+      "topic": "pronouns",
+      "lessons": [
+        2,
+        12
+      ],
+      "id": "v0076"
+    },
+    {
+      "he": "אַתְּ",
+      "translit": "ат",
+      "ru": "ты (ж.р.)",
+      "pos": "pronoun",
+      "topic": "pronouns",
+      "lessons": [
+        2,
+        12
+      ],
+      "id": "v0077"
+    },
+    {
+      "he": "הוּא",
+      "translit": "hу",
+      "ru": "он",
+      "pos": "pronoun",
+      "topic": "pronouns",
+      "lessons": [
+        2,
+        12
+      ],
+      "id": "v0078"
+    },
+    {
+      "he": "הִיא",
+      "translit": "hи",
+      "ru": "она",
+      "pos": "pronoun",
+      "topic": "pronouns",
+      "lessons": [
+        2,
+        12
+      ],
+      "id": "v0079"
+    },
+    {
+      "he": "אֲנַחְנוּ",
+      "translit": "анахну",
+      "ru": "мы",
+      "pos": "pronoun",
+      "topic": "pronouns",
+      "lessons": [
+        2,
+        12
+      ],
+      "id": "v0080"
+    },
+    {
+      "he": "אַתֶּם",
+      "translit": "атем",
+      "ru": "вы (м.р.)",
+      "pos": "pronoun",
+      "topic": "pronouns",
+      "lessons": [
+        2,
+        12
+      ],
+      "id": "v0081"
+    },
+    {
+      "he": "אַתֶּן",
+      "translit": "атен",
+      "ru": "вы (ж.р.)",
+      "pos": "pronoun",
+      "topic": "pronouns",
+      "lessons": [
+        2,
+        12
+      ],
+      "id": "v0082"
+    },
+    {
+      "he": "הֵם",
+      "translit": "hем",
+      "ru": "они (м.р.)",
+      "pos": "pronoun",
+      "topic": "pronouns",
+      "lessons": [
+        2,
+        12
+      ],
+      "id": "v0083"
+    },
+    {
+      "he": "הֵן",
+      "translit": "hен",
+      "ru": "они (ж.р.)",
+      "pos": "pronoun",
+      "topic": "pronouns",
+      "lessons": [
+        2,
+        12
+      ],
+      "id": "v0084"
+    },
+    {
+      "he": "אֶחָד",
+      "translit": "эхад",
+      "ru": "один",
+      "pos": "number",
+      "topic": "numbers",
+      "lessons": [
+        12
+      ],
+      "id": "v0085"
+    },
+    {
+      "he": "שְׁנַיִם",
+      "translit": "шнайим",
+      "ru": "два",
+      "pos": "number",
+      "topic": "numbers",
+      "lessons": [
+        12
+      ],
+      "id": "v0086"
+    },
+    {
+      "he": "שְׁלוֹשָׁה",
+      "translit": "шлоша",
+      "ru": "три",
+      "pos": "number",
+      "topic": "numbers",
+      "lessons": [
+        12
+      ],
+      "id": "v0087"
+    },
+    {
+      "he": "אַרְבָּעָה",
+      "translit": "арбаа",
+      "ru": "четыре",
+      "pos": "number",
+      "topic": "numbers",
+      "lessons": [
+        12
+      ],
+      "id": "v0088"
+    },
+    {
+      "he": "חֲמִשָּׁה",
+      "translit": "хамиша",
+      "ru": "пять",
+      "pos": "number",
+      "topic": "numbers",
+      "lessons": [
+        12
+      ],
+      "id": "v0089"
+    },
+    {
+      "he": "שִׁשָּׁה",
+      "translit": "шиша",
+      "ru": "шесть",
+      "pos": "number",
+      "topic": "numbers",
+      "lessons": [
+        12
+      ],
+      "id": "v0090"
+    },
+    {
+      "he": "שִׁבְעָה",
+      "translit": "шивъа",
+      "ru": "семь",
+      "pos": "number",
+      "topic": "numbers",
+      "lessons": [
+        12
+      ],
+      "id": "v0091"
+    },
+    {
+      "he": "שְׁמוֹנָה",
+      "translit": "шмона",
+      "ru": "восемь",
+      "pos": "number",
+      "topic": "numbers",
+      "lessons": [
+        12
+      ],
+      "id": "v0092"
+    },
+    {
+      "he": "תִּשְׁעָה",
+      "translit": "тишъа",
+      "ru": "девять",
+      "pos": "number",
+      "topic": "numbers",
+      "lessons": [
+        12
+      ],
+      "id": "v0093"
+    },
+    {
+      "he": "עֲשָׂרָה",
+      "translit": "асара",
+      "ru": "десять",
+      "pos": "number",
+      "topic": "numbers",
+      "lessons": [
+        12
+      ],
+      "id": "v0094"
+    },
+    {
+      "he": "גָּדוֹל",
+      "translit": "гадоль",
+      "ru": "большой",
+      "pos": "adj",
+      "topic": "adjectives",
+      "lessons": [
+        13
+      ],
+      "id": "v0095"
+    },
+    {
+      "he": "קָטָן",
+      "translit": "катан",
+      "ru": "маленький",
+      "pos": "adj",
+      "topic": "adjectives",
+      "lessons": [
+        13
+      ],
+      "id": "v0096"
+    },
+    {
+      "he": "טוֹב",
+      "translit": "тов",
+      "ru": "хороший",
+      "pos": "adj",
+      "topic": "adjectives",
+      "lessons": [
+        13
+      ],
+      "id": "v0097"
+    },
+    {
+      "he": "רַע",
+      "translit": "ра",
+      "ru": "плохой",
+      "pos": "adj",
+      "topic": "adjectives",
+      "lessons": [
+        13
+      ],
+      "id": "v0098"
+    },
+    {
+      "he": "חָדָשׁ",
+      "translit": "хадаш",
+      "ru": "новый",
+      "pos": "adj",
+      "topic": "adjectives",
+      "lessons": [
+        13
+      ],
+      "id": "v0099"
+    },
+    {
+      "he": "יָשָׁן",
+      "translit": "яшан",
+      "ru": "старый",
+      "pos": "adj",
+      "topic": "adjectives",
+      "lessons": [
+        13
+      ],
+      "id": "v0100"
+    },
+    {
+      "he": "יָפֶה",
+      "translit": "яфэ",
+      "ru": "красивый",
+      "pos": "adj",
+      "topic": "adjectives",
+      "lessons": [
+        13
+      ],
+      "id": "v0101"
+    },
+    {
+      "he": "קָשֶׁה",
+      "translit": "кашэ",
+      "ru": "трудный",
+      "pos": "adj",
+      "topic": "adjectives",
+      "lessons": [
+        13
+      ],
+      "id": "v0102"
+    },
+    {
+      "he": "קַל",
+      "translit": "каль",
+      "ru": "лёгкий",
+      "pos": "adj",
+      "topic": "adjectives",
+      "lessons": [
+        13
+      ],
+      "id": "v0103"
+    },
+    {
+      "he": "בְּ",
+      "translit": "бэ",
+      "ru": "в, внутри",
+      "pos": "prep",
+      "topic": "prepositions",
+      "lessons": [
+        5,
+        7,
+        8,
+        15,
+        17,
+        18,
+        21
+      ],
+      "id": "v0104"
+    },
+    {
+      "he": "לְ",
+      "translit": "лэ",
+      "ru": "к, для",
+      "pos": "prep",
+      "topic": "prepositions",
+      "lessons": [
+        5,
+        7,
+        8,
+        15,
+        17,
+        18,
+        21
+      ],
+      "id": "v0105"
+    },
+    {
+      "he": "מִ",
+      "translit": "ми",
+      "ru": "из, от",
+      "pos": "prep",
+      "topic": "prepositions",
+      "lessons": [
+        5,
+        7,
+        8,
+        15,
+        17,
+        18,
+        21
+      ],
+      "id": "v0106"
+    },
+    {
+      "he": "עַל",
+      "translit": "аль",
+      "ru": "на, о",
+      "pos": "prep",
+      "topic": "prepositions",
+      "lessons": [
+        5,
+        7,
+        8,
+        15,
+        17,
+        18,
+        21
+      ],
+      "id": "v0107"
+    },
+    {
+      "he": "עִם",
+      "translit": "им",
+      "ru": "с",
+      "pos": "prep",
+      "topic": "prepositions",
+      "lessons": [
+        5,
+        7,
+        8,
+        15,
+        17,
+        18,
+        21
+      ],
+      "id": "v0108"
+    },
+    {
+      "he": "שֶׁל",
+      "translit": "шель",
+      "ru": "принадлежности (чей?)",
+      "pos": "prep",
+      "topic": "prepositions",
+      "lessons": [
+        5,
+        7,
+        8,
+        15,
+        17,
+        18,
+        21
+      ],
+      "id": "v0109"
+    },
+    {
+      "he": "אֵצֶל",
+      "translit": "эцель",
+      "ru": "у (кого-то)",
+      "pos": "prep",
+      "topic": "prepositions",
+      "lessons": [
+        5,
+        7,
+        8,
+        15,
+        17,
+        18,
+        21
+      ],
+      "id": "v0110"
+    },
+    {
+      "he": "לִפְנֵי",
+      "translit": "лифней",
+      "ru": "перед, до",
+      "pos": "prep",
+      "topic": "prepositions",
+      "lessons": [
+        5,
+        7,
+        8,
+        15,
+        17,
+        18,
+        21
+      ],
+      "id": "v0111"
+    },
+    {
+      "he": "אַחֲרֵי",
+      "translit": "ахарей",
+      "ru": "после",
+      "pos": "prep",
+      "topic": "prepositions",
+      "lessons": [
+        5,
+        7,
+        8,
+        15,
+        17,
+        18,
+        21
+      ],
+      "id": "v0112"
+    },
+    {
+      "he": "אֶת",
+      "translit": "эт",
+      "ru": "показатель прямого дополнения",
+      "pos": "prep",
+      "topic": "prepositions",
+      "lessons": [
+        5,
+        7,
+        8,
+        15,
+        17,
+        18,
+        21
+      ],
+      "id": "v0113"
+    },
+    {
+      "he": "שָׁלוֹם",
+      "translit": "шалом",
+      "ru": "привет, мир",
+      "pos": "phrase",
+      "topic": "greetings",
+      "lessons": [
+        10,
+        16
+      ],
+      "id": "v0114"
+    },
+    {
+      "he": "בּוֹקֶר טוֹב",
+      "translit": "бокер тов",
+      "ru": "доброе утро",
+      "pos": "phrase",
+      "topic": "greetings",
+      "lessons": [
+        10,
+        16
+      ],
+      "id": "v0115"
+    },
+    {
+      "he": "עֶרֶב טוֹב",
+      "translit": "эрев тов",
+      "ru": "добрый вечер",
+      "pos": "phrase",
+      "topic": "greetings",
+      "lessons": [
+        10,
+        16
+      ],
+      "id": "v0116"
+    },
+    {
+      "he": "לַיְלָה טוֹב",
+      "translit": "лайла тов",
+      "ru": "спокойной ночи",
+      "pos": "phrase",
+      "topic": "greetings",
+      "lessons": [
+        10,
+        16
+      ],
+      "id": "v0117"
+    },
+    {
+      "he": "לְהִתְרָאוֹת",
+      "translit": "леhитраот",
+      "ru": "до свидания",
+      "pos": "phrase",
+      "topic": "greetings",
+      "lessons": [
+        10,
+        16
+      ],
+      "id": "v0118"
+    },
+    {
+      "he": "תּוֹדָה",
+      "translit": "тода",
+      "ru": "спасибо",
+      "pos": "phrase",
+      "topic": "greetings",
+      "lessons": [
+        10,
+        16
+      ],
+      "id": "v0119"
+    },
+    {
+      "he": "בְּבַקָּשָׁה",
+      "translit": "бевакаша",
+      "ru": "пожалуйста",
+      "pos": "phrase",
+      "topic": "greetings",
+      "lessons": [
+        10,
+        16
+      ],
+      "id": "v0120"
+    },
+    {
+      "he": "סְלִיחָה",
+      "translit": "слиха",
+      "ru": "извини, прости",
+      "pos": "phrase",
+      "topic": "greetings",
+      "lessons": [
+        10,
+        16
+      ],
+      "id": "v0121"
+    },
+    {
+      "he": "מָה שְׁלוֹמְךָ?",
+      "translit": "ма шломха?",
+      "ru": "как дела? (м.р.)",
+      "pos": "phrase",
+      "topic": "greetings",
+      "lessons": [
+        10,
+        16
+      ],
+      "id": "v0122"
+    },
+    {
+      "he": "מָה שְׁלוֹמֵךְ?",
+      "translit": "ма шломех?",
+      "ru": "как дела? (ж.р.)",
+      "pos": "phrase",
+      "topic": "greetings",
+      "lessons": [
+        10,
+        16
+      ],
+      "id": "v0123"
+    },
+    {
+      "he": "כֵּן",
+      "translit": "кен",
+      "ru": "да",
+      "pos": "phrase",
+      "topic": "basic",
+      "lessons": [
+        1
+      ],
+      "id": "v0124"
+    },
+    {
+      "he": "לֹא",
+      "translit": "ло",
+      "ru": "нет",
+      "pos": "phrase",
+      "topic": "basic",
+      "lessons": [
+        1
+      ],
+      "id": "v0125"
+    },
+    {
+      "he": "יוֹם רִאשׁוֹן",
+      "translit": "йом ришон",
+      "ru": "воскресенье",
+      "pos": "phrase",
+      "topic": "time",
+      "lessons": [
+        12,
+        16,
+        21
+      ],
+      "id": "v0126"
+    },
+    {
+      "he": "יוֹם שֵׁנִי",
+      "translit": "йом шени",
+      "ru": "понедельник",
+      "pos": "phrase",
+      "topic": "time",
+      "lessons": [
+        12,
+        16,
+        21
+      ],
+      "id": "v0127"
+    },
+    {
+      "he": "יוֹם שְׁלִישִׁי",
+      "translit": "йом шлиши",
+      "ru": "вторник",
+      "pos": "phrase",
+      "topic": "time",
+      "lessons": [
+        12,
+        16,
+        21
+      ],
+      "id": "v0128"
+    },
+    {
+      "he": "יוֹם רְבִיעִי",
+      "translit": "йом рвии",
+      "ru": "среда",
+      "pos": "phrase",
+      "topic": "time",
+      "lessons": [
+        12,
+        16,
+        21
+      ],
+      "id": "v0129"
+    },
+    {
+      "he": "יוֹם חֲמִישִׁי",
+      "translit": "йом хамиши",
+      "ru": "четверг",
+      "pos": "phrase",
+      "topic": "time",
+      "lessons": [
+        12,
+        16,
+        21
+      ],
+      "id": "v0130"
+    },
+    {
+      "he": "יוֹם שִׁשִּׁי",
+      "translit": "йом шиши",
+      "ru": "пятница",
+      "pos": "phrase",
+      "topic": "time",
+      "lessons": [
+        12,
+        16,
+        21
+      ],
+      "id": "v0131"
+    },
+    {
+      "he": "שַׁבָּת",
+      "translit": "шабат",
+      "ru": "суббота",
+      "pos": "phrase",
+      "topic": "time",
+      "lessons": [
+        12,
+        16,
+        21
+      ],
+      "id": "v0132"
+    },
+    {
+      "he": "הַיּוֹם",
+      "translit": "hайом",
+      "ru": "сегодня",
+      "pos": "phrase",
+      "topic": "time",
+      "lessons": [
+        12,
+        16,
+        21
+      ],
+      "id": "v0133"
+    },
+    {
+      "he": "אֶתְמוֹל",
+      "translit": "этмоль",
+      "ru": "вчера",
+      "pos": "phrase",
+      "topic": "time",
+      "lessons": [
+        12,
+        16,
+        21
+      ],
+      "id": "v0134"
+    },
+    {
+      "he": "מָחָר",
+      "translit": "махар",
+      "ru": "завтра",
+      "pos": "phrase",
+      "topic": "time",
+      "lessons": [
+        12,
+        16,
+        21
+      ],
+      "id": "v0135"
+    }
+  ],
+  "binyans": [
+    {
+      "id": "paal",
+      "name_he": "פָּעַל",
+      "name_ru": "Пааль (Каль)",
+      "voice": "active",
+      "intensity": "simple",
+      "meaning": "Простое активное действие. Основной, «лёгкий» биньян.",
+      "examples": [
+        "כּוֹתֵב — пишет",
+        "אוֹכֵל — ест",
+        "יוֹשֵב — сидит"
+      ],
+      "model": {
+        "present_m_sg": "פּוֹעֵל (קוֹטֵל)",
+        "present_f_sg": "פּוֹעֶלֶת",
+        "present_m_pl": "פּוֹעֲלִים",
+        "present_f_pl": "פּוֹעֲלוֹת",
+        "past_3m_sg": "פָּעַל",
+        "future_3m_sg": "יִפְעַל / יִפְעוֹל",
+        "infinitive": "לִפְעוֹל / לִפְעַל"
+      },
+      "how_to_detect": "В наст. времени м.р. — модель «קוֹטֵל» (две огласовки холам-цере). В прошедшем 3 л. м.р. — «פָּעַל». В инфинитиве — לִפְעוֹל. Корень виден чисто, без префиксов.",
+      "color": "#4F46E5"
+    },
+    {
+      "id": "nifal",
+      "name_he": "נִפְעַל",
+      "name_ru": "Нифъаль",
+      "voice": "passive_or_reflexive",
+      "intensity": "simple",
+      "meaning": "Пассив или возвратное действие к Паалю. «Делается» / «делает сам себе».",
+      "examples": [
+        "נִכְנָס — входит",
+        "נִשְׁאָר — остаётся",
+        "נִפְגָּשׁ — встречается"
+      ],
+      "model": {
+        "present_m_sg": "נִפְעָל",
+        "present_f_sg": "נִפְעֶלֶת",
+        "past_3m_sg": "נִפְעַל",
+        "future_3m_sg": "יִפָּעֵל",
+        "infinitive": "לְהִפָּעֵל"
+      },
+      "how_to_detect": "Префикс נ- в настоящем и прошедшем времени. В будущем — без נ, но с дагешем (יִפָּעֵל). Инфинитив с לְהִפָּ-.",
+      "color": "#0EA5E9"
+    },
+    {
+      "id": "piel",
+      "name_he": "פִּעֵל",
+      "name_ru": "Пиэль",
+      "voice": "active",
+      "intensity": "intensive",
+      "meaning": "Усиленное / интенсивное действие. Часто — переходный глагол.",
+      "examples": [
+        "מְדַבֵּר — говорит",
+        "מְלַמֵּד — учит",
+        "מְבַשֵּׁל — варит"
+      ],
+      "model": {
+        "present_m_sg": "מְפַעֵל",
+        "present_f_sg": "מְפַעֶלֶת",
+        "past_3m_sg": "פִּעֵל",
+        "future_3m_sg": "יְפַעֵל",
+        "infinitive": "לְפַעֵל"
+      },
+      "how_to_detect": "Префикс מְ- в настоящем (мэ-). Удвоение средней буквы корня (дагеш в פ ע ל). В прошедшем — без префикса, с патах/цере.",
+      "color": "#F59E0B"
+    },
+    {
+      "id": "pual",
+      "name_he": "פֻּעַל",
+      "name_ru": "Пуаль",
+      "voice": "passive",
+      "intensity": "intensive",
+      "meaning": "Пассив к Пиэлю. «Был усиленно сделан». Не имеет инфинитива.",
+      "examples": [
+        "מְדֻבָּר — говорится",
+        "מְלֻמָּד — обучаемый"
+      ],
+      "model": {
+        "present_m_sg": "מְפֻעָל",
+        "past_3m_sg": "פֻּעַל",
+        "future_3m_sg": "יְפֻעַל",
+        "infinitive": "—"
+      },
+      "how_to_detect": "Префикс מְ- в настоящем + кубуц (ֻ) под первой буквой. Похож на Пиэль, но огласовка — «у-а» вместо «и-е».",
+      "color": "#DC2626"
+    },
+    {
+      "id": "hifil",
+      "name_he": "הִפְעִיל",
+      "name_ru": "hифъиль",
+      "voice": "active",
+      "intensity": "causative",
+      "meaning": "Каузатив — «заставить кого-то делать», вызывать действие.",
+      "examples": [
+        "מַתְחִיל — начинает",
+        "מַזְמִין — приглашает",
+        "מַסְבִּיר — объясняет"
+      ],
+      "model": {
+        "present_m_sg": "מַפְעִיל",
+        "present_f_sg": "מַפְעִילָה",
+        "past_3m_sg": "הִפְעִיל",
+        "future_3m_sg": "יַפְעִיל",
+        "infinitive": "לְהַפְעִיל"
+      },
+      "how_to_detect": "Префикс מַ- в настоящем (ма-) + י (хирик-йуд) после средней буквы. В прошедшем — הִ-. В инфинитиве — לְהַ-.",
+      "color": "#10B981"
+    },
+    {
+      "id": "hufal",
+      "name_he": "הֻפְעַל",
+      "name_ru": "hуфъаль",
+      "voice": "passive",
+      "intensity": "causative",
+      "meaning": "Пассив к hифъилю. «Был заставлен делать». Без инфинитива.",
+      "examples": [
+        "מֻזְמָן — приглашённый",
+        "מֻסְבָּר — объяснённый"
+      ],
+      "model": {
+        "present_m_sg": "מֻפְעָל",
+        "past_3m_sg": "הֻפְעַל",
+        "future_3m_sg": "יֻפְעַל",
+        "infinitive": "—"
+      },
+      "how_to_detect": "Префикс מֻ- в настоящем (му-) + камац под второй буквой. Прошедшее — הֻ-.",
+      "color": "#7C3AED"
+    },
+    {
+      "id": "hitpael",
+      "name_he": "הִתְפַּעֵל",
+      "name_ru": "hитпаэль",
+      "voice": "reflexive",
+      "intensity": "intensive",
+      "meaning": "Возвратное усиленное действие. «Делать сам себе» или «становиться кем-то».",
+      "examples": [
+        "מִתְלַבֵּשׁ — одевается",
+        "מִתְרַחֵץ — моется",
+        "מִשְׁתַּמֵּשׁ — пользуется"
+      ],
+      "model": {
+        "present_m_sg": "מִתְפַּעֵל",
+        "present_f_sg": "מִתְפַּעֶלֶת",
+        "past_3m_sg": "הִתְפַּעֵל",
+        "future_3m_sg": "יִתְפַּעֵל",
+        "infinitive": "לְהִתְפַּעֵל"
+      },
+      "how_to_detect": "Префикс מִתְ- в настоящем (мит-). В прошедшем — הִתְ-. Двойной согласный (дагеш) в средней букве. Если первая буква корня шипящая (ש,ס,ז,צ) — перестановка с ת.",
+      "color": "#EC4899"
+    }
+  ],
+  "gzarot": [
+    {
+      "id": "shlemim",
+      "name_ru": "Шлемим (полные)",
+      "short": "שלמים",
+      "desc": "Все три буквы корня — обычные согласные. Без особенностей.",
+      "examples": [
+        "כתב",
+        "למד",
+        "שמר"
+      ]
+    },
+    {
+      "id": "py",
+      "name_ru": "פּ\"י (1-я буква י)",
+      "short": "פ\"י",
+      "desc": "Первая буква корня — י. Часто выпадает или превращается в долгий гласный.",
+      "examples": [
+        "ישב",
+        "יצא",
+        "ידע"
+      ]
+    },
+    {
+      "id": "pn",
+      "name_ru": "פּ\"נ (1-я буква נ)",
+      "short": "פ\"נ",
+      "desc": "Первая буква — נ. В будущем времени и инфинитиве часто ассимилируется и компенсируется дагешем.",
+      "examples": [
+        "נפל",
+        "נסע",
+        "נתן"
+      ]
+    },
+    {
+      "id": "pa",
+      "name_ru": "פּ\"א (1-я буква א)",
+      "short": "פ\"א",
+      "desc": "Первая буква — א. Влияет на огласовки: огласовка хатаф-патах.",
+      "examples": [
+        "אכל",
+        "אהב",
+        "אמר"
+      ]
+    },
+    {
+      "id": "ay",
+      "name_ru": "ע\"ו / ע\"י (полые)",
+      "short": "ע\"ו/ע\"י",
+      "desc": "Средняя буква — ו или י (полые корни). Двухбуквенные на вид. Особое спряжение.",
+      "examples": [
+        "גור",
+        "קום",
+        "שיר"
+      ]
+    },
+    {
+      "id": "lh",
+      "name_ru": "ל\"ה/ל\"י (3-я буква ה/י)",
+      "short": "ל\"ה/ל\"י",
+      "desc": "Третья буква — ה или י. В наст. времени м.р. оканчивается на ֶה (-э).",
+      "examples": [
+        "קנה",
+        "עשה",
+        "רצה"
+      ]
+    },
+    {
+      "id": "la",
+      "name_ru": "ל\"א (3-я буква א)",
+      "short": "ל\"א",
+      "desc": "Третья буква — א. В прошедшем времени א не произносится.",
+      "examples": [
+        "קרא",
+        "מצא",
+        "ברא"
+      ]
+    },
+    {
+      "id": "egor",
+      "name_ru": "גרוניות (гортанные)",
+      "short": "ע\"גר'/פ\"גר'",
+      "desc": "Корень содержит гортанную (א,ה,ח,ע,ר). Меняются огласовки на хатафы.",
+      "examples": [
+        "שמע",
+        "אהב",
+        "חשב"
+      ]
+    },
+    {
+      "id": "kfulim",
+      "name_ru": "כפולים (удвоенные)",
+      "short": "כפולים",
+      "desc": "Вторая и третья буквы корня совпадают. Сокращение в спряжении.",
+      "examples": [
+        "סבב",
+        "חגג",
+        "תמם"
+      ]
+    }
+  ]
+}

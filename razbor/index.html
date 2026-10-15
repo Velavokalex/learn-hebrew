@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Разбор текстов — иврит</title>
+<style>
+  :root{
+    --bg:#0f1420; --bg2:#151c2c; --card:#1b2233; --card2:#222b40;
+    --line:#2c3650; --txt:#e8edf7; --dim:#9aa7c2; --dim2:#6c7896;
+    --acc:#5b9dff; --acc2:#7bd88f; --warn:#e5b45f; --bad:#e58a8a;
+    --he:#ffe9b8; --root:#9ad0ff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.5}
+  .rtl{direction:rtl;text-align:right}
+  .he{font-family:"Times New Roman","David","SBL Hebrew",serif;direction:rtl}
+  a{color:var(--acc)}
+  button{font-family:inherit;cursor:pointer}
+  .btn{background:var(--card2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-size:14px;transition:.15s}
+  .btn:hover{border-color:var(--acc);background:#28324a}
+  .btn.primary{background:var(--acc);border-color:var(--acc);color:#08101f;font-weight:600}
+  .btn.primary:hover{background:#75b0ff}
+  .btn.good{background:var(--acc2);border-color:var(--acc2);color:#07160c;font-weight:600}
+  .btn.ghost{background:transparent}
+  .btn.sm{padding:5px 10px;font-size:13px;border-radius:8px}
+  .btn.danger:hover{border-color:var(--bad);color:var(--bad)}
+
+  header{position:sticky;top:0;z-index:20;background:rgba(15,20,32,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .hwrap{max-width:1000px;margin:0 auto;padding:12px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .brand{font-weight:700;font-size:18px;letter-spacing:.2px}
+  .brand small{color:var(--dim2);font-weight:400;font-size:12px;display:block}
+  nav{display:flex;gap:6px;margin-left:auto;flex-wrap:wrap}
+  nav .tab{background:transparent;border:1px solid transparent;color:var(--dim);border-radius:9px;padding:7px 12px;font-size:14px}
+  nav .tab.active{background:var(--card2);border-color:var(--line);color:var(--txt)}
+  nav .tab:hover{color:var(--txt)}
+
+  main{max-width:1000px;margin:0 auto;padding:20px 18px 80px}
+  h2{font-size:20px;margin:0 0 4px}
+  .muted{color:var(--dim)}
+  .sub{color:var(--dim2);font-size:13px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+  .spacer{flex:1}
+
+  /* library */
+  .txtcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;transition:.15s;cursor:pointer}
+  .txtcard:hover{border-color:var(--acc);transform:translateY(-1px)}
+  .txtcard .t{font-size:17px;font-weight:600}
+  .txtcard .m{color:var(--dim2);font-size:13px;margin-top:4px}
+  .txtcard .chips{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+  .pill{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:3px 10px;font-size:12px;color:var(--dim)}
+  .empty{text-align:center;color:var(--dim2);padding:50px 20px;border:1px dashed var(--line);border-radius:14px}
+
+  /* reader */
+  .doc{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px 26px}
+  .doc-head{border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:18px}
+  .doc-head .d{color:var(--dim2);font-size:13px}
+  .sent{margin:0 0 20px;padding:14px 16px;border-radius:12px;background:var(--bg2);border:1px solid transparent}
+  .sent:hover{border-color:var(--line)}
+  .sent .heline{font-size:26px;line-height:2.05;color:var(--he)}
+  .w{cursor:pointer;padding:1px 3px;border-radius:6px;transition:.12s;display:inline-block}
+  .w:hover{background:#37425f}
+  .w.active{background:var(--acc);color:#08101f}
+  .w .tl{display:block;font-size:11px;color:var(--dim2);text-align:center;direction:ltr;font-family:-apple-system,sans-serif;margin-top:-2px}
+  .sent .ru{color:var(--dim);margin-top:8px;font-size:15px;display:none}
+  .sent.showru .ru{display:block}
+  .sent .note{color:var(--warn);font-size:13px;margin-top:6px;display:none}
+  .sent.showru .note{display:block}
+  .sctl{display:flex;gap:6px;margin-top:10px}
+
+  /* word panel */
+  .sheet{position:fixed;right:0;top:0;height:100%;width:380px;max-width:92vw;background:var(--card);border-left:1px solid var(--line);box-shadow:-14px 0 40px rgba(0,0,0,.4);transform:translateX(100%);transition:.22s;z-index:40;overflow-y:auto;padding:22px}
+  .sheet.open{transform:none}
+  .sheet .x{position:absolute;top:14px;left:14px;background:var(--card2);border:1px solid var(--line);border-radius:8px;width:34px;height:34px;color:var(--txt);font-size:18px}
+  .sheet .bighe{font-size:40px;color:var(--he);direction:rtl;text-align:right;margin:6px 0 2px}
+  .sheet .btl{color:var(--dim2);direction:ltr;font-size:15px;text-align:right;direction:rtl}
+  .sheet .ru{font-size:19px;margin:12px 0}
+  .kv{display:grid;grid-template-columns:96px 1fr;gap:6px 12px;margin:14px 0;font-size:14px}
+  .kv .k{color:var(--dim2)}
+  .kv .v{color:var(--txt)}
+  .kv .v.he{color:var(--root);direction:rtl;text-align:right;font-size:17px}
+  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:.2s;z-index:35}
+  .backdrop.on{opacity:1;pointer-events:auto}
+
+  /* lexicon table */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:9px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+  th{color:var(--dim2);font-weight:500;font-size:12px;text-transform:uppercase;letter-spacing:.4px}
+  td.he{color:var(--he);font-size:19px;direction:rtl;text-align:right}
+  td.rootc{color:var(--root);direction:rtl;text-align:right;font-size:15px}
+  tr.dup{opacity:.5}
+  .badge{background:rgba(123,216,143,.16);color:var(--acc2);border-radius:999px;padding:2px 8px;font-size:11px}
+  input[type=checkbox]{width:17px;height:17px;accent-color:var(--acc)}
+
+  /* practice */
+  .stage{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:30px 26px;text-align:center;min-height:320px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:18px}
+  .qhe{font-size:46px;color:var(--he);direction:rtl}
+  .qru{font-size:30px}
+  .opts{display:flex;flex-direction:column;gap:10px;width:100%;max-width:440px}
+  .opt{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:14px;font-size:18px;transition:.12s}
+  .opt:hover{border-color:var(--acc)}
+  .opt.he{color:var(--he);direction:rtl;font-size:24px}
+  .opt.ok{background:rgba(123,216,143,.28);border-color:var(--acc2)}
+  .opt.no{background:rgba(200,60,60,.28);border-color:var(--bad)}
+  .flip{font-size:16px;color:var(--dim)}
+  .tiles{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;direction:rtl}
+  .tile{background:var(--card2);border:1px solid var(--line);border-radius:10px;min-width:44px;height:52px;font-size:26px;color:var(--he);display:flex;align-items:center;justify-content:center}
+  .tile:hover{border-color:var(--acc)}
+  .slots{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;direction:rtl;min-height:52px}
+  .slot{min-width:40px;height:52px;border-bottom:2px solid var(--line);font-size:26px;color:var(--he);display:flex;align-items:center;justify-content:center}
+  .slot.filled{border-color:var(--acc2)}
+  .progress{color:var(--dim2);font-size:13px}
+  .modec{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+  .modeb{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;text-align:center;font-size:15px}
+  .modeb:hover{border-color:var(--acc);background:var(--card2)}
+  .modeb b{display:block;font-size:22px;margin-bottom:6px}
+
+  /* modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}
+  .modal.on{display:flex}
+  .mbox{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto}
+  textarea{width:100%;min-height:220px;background:var(--bg2);color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:12px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;direction:ltr}
+  .hint{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px 14px;font-size:13px;color:var(--dim);margin:12px 0}
+  code{background:#0c1120;padding:1px 6px;border-radius:5px;color:var(--acc2);font-size:12px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--acc2);color:#07160c;padding:12px 20px;border-radius:10px;font-weight:600;z-index:60;transition:.25s;opacity:0}
+  .toast.on{transform:translateX(-50%);opacity:1}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hwrap">
+    <div class="brand">📖 Разбор текстов<small>иврит · подстрочник · словарь</small></div>
+    <nav>
+      <button class="tab active" data-view="lib">📚 Библиотека</button>
+      <button class="tab" data-view="read">📖 Читалка</button>
+      <button class="tab" data-view="lex">📝 Лексика</button>
+      <button class="tab" data-view="play">🎮 Практика</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <!-- LIBRARY -->
+  <section id="v-lib">
+    <div class="row" style="margin-bottom:16px">
+      <div><h2>Мои тексты</h2><div class="sub">Загружай новый текст → разбирай по словам → добавляй в словарь</div></div>
+      <div class="spacer"></div>
+      <button class="btn primary" id="new-btn">＋ Новый текст</button>
+    </div>
+    <div id="lib-list"></div>
+  </section>
+
+  <!-- READER -->
+  <section id="v-read" style="display:none"></section>
+
+  <!-- LEXICON -->
+  <section id="v-lex" style="display:none">
+    <div class="row" style="margin-bottom:14px">
+      <div><h2 id="lex-title">Лексика текста</h2><div class="sub" id="lex-sub"></div></div>
+    </div>
+    <div class="row" style="margin-bottom:14px">
+      <button class="btn sm" id="lex-all">☑ Все</button>
+      <button class="btn sm" id="lex-none">☐ Снять</button>
+      <button class="btn sm" id="lex-new">✦ Только новые</button>
+      <div class="spacer"></div>
+      <button class="btn sm good" id="lex-add">＋ В словарь (<span id="lex-cnt">0</span>)</button>
+      <button class="btn sm" id="lex-json">⤓ JSON для импорта</button>
+      <button class="btn sm" id="lex-copy">📋 Копировать</button>
+    </div>
+    <div class="hint" id="lex-hint">«＋ В словарь» пишет прямо в общий словарь (<code>hebrew-vocab-v1</code>) — работает, когда оба открыты через локальный сервер (start.bat). Если словарь открываешь двойным кликом — используй «JSON для импорта» и кнопку «Импорт» в словаре.</div>
+    <div style="overflow-x:auto"><table id="lex-table"></table></div>
+  </section>
+
+  <!-- PRACTICE -->
+  <section id="v-play" style="display:none">
+    <div class="row" style="margin-bottom:14px">
+      <div><h2>Практика по тексту</h2><div class="sub" id="play-sub"></div></div>
+      <div class="spacer"></div>
+      <button class="btn sm ghost" id="play-back" style="display:none">← режимы</button>
+    </div>
+    <div id="play-menu" class="modec"></div>
+    <div id="play-stage" style="display:none"></div>
+  </section>
+</main>
+
+<!-- word sheet -->
+<div class="backdrop" id="backdrop"></div>
+<aside class="sheet" id="sheet"></aside>
+
+<!-- new-text modal -->
+<div class="modal" id="modal">
+  <div class="mbox">
+    <div class="row"><h2 style="flex:1">Загрузить разбор текста</h2><button class="btn sm ghost" id="modal-x">✕</button></div>
+    <div class="hint">
+      Как получить разбор: пришли мне в чат фото / PDF / текст на иврите и попроси
+      «<b>разбери и дай JSON для читалки</b>». Я верну готовый JSON — вставь его сюда.
+    </div>
+    <textarea id="json-in" placeholder='{ "title": "...", "sentences": [ ... ] }'></textarea>
+    <div class="row" style="margin-top:12px">
+      <button class="btn sm ghost" id="schema-btn">Показать формат</button>
+      <div class="spacer"></div>
+      <button class="btn primary" id="load-btn">Загрузить</button>
+    </div>
+    <pre id="schema-box" style="display:none;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:12px;overflow-x:auto;margin-top:12px"></pre>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+const TEXTS_KEY="hebrew-texts-v1", VOCAB_KEY="hebrew-vocab-v1";
+const $=id=>document.getElementById(id);
+const esc=s=>(s==null?"":(""+s)).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const stripNikud=s=>(s||"").replace(/[֑-ׇ]/g,"").replace(/[^א-ת]/g,"");
+const uid=()=>Math.random().toString(36).slice(2,10)+Date.now().toString(36);
+function toast(m){const t=$("toast");t.textContent=m;t.classList.add("on");setTimeout(()=>t.classList.remove("on"),1900);}
+
+/* ---------- storage ---------- */
+function loadTexts(){try{const d=JSON.parse(localStorage.getItem(TEXTS_KEY));return Array.isArray(d)?d:[];}catch(e){return[];}}
+function saveTexts(){localStorage.setItem(TEXTS_KEY,JSON.stringify(texts));}
+let texts=loadTexts();
+let curId=null, view="lib";
+
+/* seed + migration of the built-in letter */
+const SEED_V=2;
+(function seedOrMigrate(){
+  const i=texts.findIndex(t=>t.id==="seed-letter");
+  if(i<0){ if(!texts.length){texts=[SEED()];saveTexts();} return; }
+  if((texts[i]._v||1)<SEED_V){ texts[i]=SEED(); saveTexts(); }
+})();
+function curText(){return texts.find(t=>t.id===curId)||null;}
+
+/* ---------- TTS ---------- */
+let heVoice=null;
+function pickVoice(){const vs=speechSynthesis.getVoices();heVoice=vs.find(v=>/he(-|_)?IL/i.test(v.lang))||vs.find(v=>/hebrew/i.test(v.name))||null;}
+if("speechSynthesis"in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice;}
+function say(text){if(!("speechSynthesis"in window))return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(stripNikudKeepSpace(text));u.lang="he-IL";if(heVoice)u.voice=heVoice;u.rate=.9;speechSynthesis.speak(u);}catch(e){}}
+const stripNikudKeepSpace=s=>(s||"").replace(/[֑-ׇ]/g,"");
+
+/* ---------- nav ---------- */
+document.querySelectorAll("nav .tab").forEach(b=>b.onclick=()=>go(b.dataset.view));
+function go(v){
+  if((v==="read"||v==="lex"||v==="play")&&!curText()){toast("Сначала открой текст в Библиотеке");v="lib";}
+  view=v;
+  document.querySelectorAll("nav .tab").forEach(b=>b.classList.toggle("active",b.dataset.view===v));
+  ["lib","read","lex","play"].forEach(x=>$("v-"+x).style.display=x===v?"block":"none");
+  if(v==="lib")renderLib();
+  if(v==="read")renderReader();
+  if(v==="lex")renderLex();
+  if(v==="play")renderPlayMenu();
+}
+
+/* ---------- library ---------- */
+function allWords(t){const a=[];(t.sentences||[]).forEach(s=>(s.words||[]).forEach(w=>a.push(Object.assign({_ex:s.he},w))));(t.glossary||[]).forEach(w=>a.push(Object.assign({_ex:""},w)));return a.filter(w=>w&&w.he);}
+function renderLib(){
+  const box=$("lib-list");
+  if(!texts.length){box.innerHTML='<div class="empty">Пока нет текстов.<br>Нажми «＋ Новый текст» и вставь разбор.</div>';return;}
+  box.innerHTML=texts.map(t=>{
+    const ns=(t.sentences||[]).length, nw=allWords(t).length;
+    return `<div class="txtcard" data-id="${t.id}">
+      <div class="t rtl he">${esc(t.title||"Без названия")}</div>
+      <div class="m">${esc(t.date||"")}${t.source?" · "+esc(t.source):""}</div>
+      <div class="chips">
+        <span class="pill">${ns} предл.</span>
+        <span class="pill">${nw} слов</span>
+        <button class="btn sm" data-act="open">Открыть →</button>
+        <button class="btn sm ghost" data-act="exp">⤓ JSON</button>
+        <button class="btn sm ghost danger" data-act="del">Удалить</button>
+      </div></div>`;
+  }).join("");
+  box.querySelectorAll(".txtcard").forEach(c=>{
+    const id=c.dataset.id;
+    c.querySelectorAll("[data-act]").forEach(b=>b.onclick=e=>{e.stopPropagation();act(b.dataset.act,id);});
+    c.onclick=()=>{curId=id;go("read");};
+  });
+}
+function act(a,id){
+  const t=texts.find(x=>x.id===id);if(!t)return;
+  if(a==="open"){curId=id;go("read");}
+  if(a==="exp"){download((t.title||"text")+".json",JSON.stringify(t,null,2));}
+  if(a==="del"){if(confirm("Удалить текст «"+(t.title||"")+"»?")){texts=texts.filter(x=>x.id!==id);if(curId===id)curId=null;saveTexts();renderLib();}}
+}
+
+/* ---------- reader ---------- */
+function renderReader(){
+  const t=curText();if(!t){go("lib");return;}
+  const sents=(t.sentences||[]).map((s,si)=>{
+    const he=(s.words&&s.words.length)
+      ? s.words.map((w,wi)=>`<span class="w" data-si="${si}" data-wi="${wi}">${esc(w.he)}<span class="tl">${esc(w.tr||"")}</span></span>`).join(" ")
+      : esc(s.he);
+    return `<div class="sent" id="s${si}">
+      <div class="heline rtl">${he}</div>
+      <div class="ru">${esc(s.ru||"")}</div>
+      ${s.note?`<div class="note">💡 ${esc(s.note)}</div>`:""}
+      <div class="sctl">
+        <button class="btn sm ghost" data-play="${si}">▶ Озвучить</button>
+        <button class="btn sm ghost" data-ru="${si}">🇷🇺 Перевод</button>
+      </div></div>`;
+  }).join("");
+  $("v-read").innerHTML=`
+    <div class="row" style="margin-bottom:14px">
+      <button class="btn sm ghost" id="r-back">← Библиотека</button>
+      <div class="spacer"></div>
+      <button class="btn sm" id="r-tl">🔤 Транслит</button>
+      <button class="btn sm" id="r-ru">🇷🇺 Все переводы</button>
+    </div>
+    <div class="doc">
+      <div class="doc-head"><h2 class="rtl he">${esc(t.title||"")}</h2><div class="d">${esc(t.date||"")}${t.source?" · "+esc(t.source):""}</div></div>
+      ${sents||'<div class="muted">В этом тексте нет разобранных предложений.</div>'}
+    </div>`;
+  $("r-back").onclick=()=>go("lib");
+  let tlOn=true, ruOn=false;
+  const applyTL=()=>document.querySelectorAll("#v-read .tl").forEach(e=>e.style.display=tlOn?"block":"none");
+  $("r-tl").onclick=()=>{tlOn=!tlOn;applyTL();$("r-tl").classList.toggle("primary",tlOn);};
+  $("r-ru").onclick=()=>{ruOn=!ruOn;document.querySelectorAll("#v-read .sent").forEach(s=>s.classList.toggle("showru",ruOn));$("r-ru").classList.toggle("primary",ruOn);};
+  $("r-tl").classList.add("primary");applyTL();
+  $("v-read").querySelectorAll("[data-play]").forEach(b=>b.onclick=()=>say(t.sentences[+b.dataset.play].he));
+  $("v-read").querySelectorAll("[data-ru]").forEach(b=>b.onclick=()=>$("s"+b.dataset.ru).classList.toggle("showru"));
+  $("v-read").querySelectorAll(".w").forEach(el=>el.onclick=()=>{
+    document.querySelectorAll("#v-read .w.active").forEach(x=>x.classList.remove("active"));
+    el.classList.add("active");
+    openSheet(t.sentences[+el.dataset.si].words[+el.dataset.wi], t.sentences[+el.dataset.si].he);
+  });
+}
+
+/* ---------- word sheet ---------- */
+function openSheet(w, ex){
+  const rows=[];
+  const add=(k,v,cls)=>{if(v)rows.push(`<div class="k">${k}</div><div class="v ${cls||""}">${esc(v)}</div>`);};
+  add("Корень",w.root,"he");
+  add("Биньян",w.binyan);
+  add("Модель",w.model,"he");
+  add("Часть речи",w.pos);
+  add("Форма",w.form);
+  add("Заметка",w.note);
+  $("sheet").innerHTML=`
+    <button class="x" id="sheet-x">✕</button>
+    <div class="bighe">${esc(w.he)}</div>
+    <div class="btl rtl">${esc(w.tr||"")}</div>
+    <div class="ru">${esc(w.ru||"—")}</div>
+    <button class="btn sm" id="sheet-say">🔊 Произнести</button>
+    <div class="kv">${rows.join("")}</div>
+    <button class="btn good" id="sheet-add" style="width:100%">＋ Добавить в словарь</button>`;
+  $("sheet").classList.add("open");$("backdrop").classList.add("on");
+  $("sheet-x").onclick=closeSheet;$("backdrop").onclick=closeSheet;
+  $("sheet-say").onclick=()=>say(w.he);
+  $("sheet-add").onclick=()=>{addToVocab([Object.assign({_ex:ex},w)]);};
+}
+function closeSheet(){$("sheet").classList.remove("open");$("backdrop").classList.remove("on");document.querySelectorAll("#v-read .w.active").forEach(x=>x.classList.remove("active"));}
+
+/* ---------- lexicon ---------- */
+function vocabList(){try{const d=JSON.parse(localStorage.getItem(VOCAB_KEY));return Array.isArray(d)?d:[];}catch(e){return[];}}
+function existingSet(){return new Set(vocabList().map(w=>stripNikud(w.he)));}
+function renderLex(){
+  const t=curText();if(!t){go("lib");return;}
+  $("lex-title").textContent="Лексика: "+(t.title||"");
+  const words=dedupe(allWords(t)), have=existingSet();
+  $("lex-sub").textContent=words.length+" слов · в словаре уже "+words.filter(w=>have.has(stripNikud(w.he))).length;
+  $("lex-table").innerHTML=`<thead><tr><th style="width:34px"></th><th>Слово</th><th>Транслит</th><th>Перевод</th><th>Корень</th><th>Биньян</th><th></th></tr></thead><tbody>${
+    words.map((w,i)=>{const dup=have.has(stripNikud(w.he));
+      return `<tr class="${dup?"dup":""}" data-i="${i}">
+        <td><input type="checkbox" ${dup?"":"checked"} data-i="${i}"></td>
+        <td class="he">${esc(w.he)}</td>
+        <td>${esc(w.tr||"")}</td>
+        <td>${esc(w.ru||"")}</td>
+        <td class="rootc">${esc(w.root||"")}</td>
+        <td>${esc(w.binyan||"")}</td>
+        <td>${dup?'<span class="badge">в словаре</span>':""}</td>
+      </tr>`;}).join("")}</tbody>`;
+  window._lexWords=words;
+  updLexCount();
+  $("lex-table").querySelectorAll("input").forEach(c=>c.onchange=updLexCount);
+}
+function dedupe(ws){const seen=new Set(),out=[];ws.forEach(w=>{const k=stripNikud(w.he);if(k&&!seen.has(k)){seen.add(k);out.push(w);}});return out;}
+function checkedLex(){const idx=[...$("lex-table").querySelectorAll("input:checked")].map(c=>+c.dataset.i);return idx.map(i=>window._lexWords[i]);}
+function updLexCount(){$("lex-cnt").textContent=checkedLex().length;}
+$("lex-all").onclick=()=>{$("lex-table").querySelectorAll("input").forEach(c=>c.checked=true);updLexCount();};
+$("lex-none").onclick=()=>{$("lex-table").querySelectorAll("input").forEach(c=>c.checked=false);updLexCount();};
+$("lex-new").onclick=()=>{const have=existingSet();$("lex-table").querySelectorAll("input").forEach(c=>c.checked=!have.has(stripNikud(window._lexWords[+c.dataset.i].he)));updLexCount();};
+$("lex-add").onclick=()=>addToVocab(checkedLex());
+$("lex-json").onclick=()=>{const t=curText();download((t.title||"vocab")+"-словарь.json",JSON.stringify(toVocabObjs(checkedLex()),null,2));};
+$("lex-copy").onclick=()=>{navigator.clipboard.writeText(JSON.stringify(toVocabObjs(checkedLex()),null,2)).then(()=>toast("JSON скопирован"),()=>toast("Не удалось скопировать"));};
+
+function toVocabObjs(ws){
+  return ws.map(w=>({
+    id:uid(), he:w.he||"", tr:w.tr||"", root:w.root||"", pos:w.pos||"",
+    ru:w.ru||"", ex:w._ex||"", mnem:"",
+    note:[w.binyan,w.form,w.note].filter(Boolean).join(" · "),
+    learned:false, box:0, due:0, reps:0, created:Date.now()
+  }));
+}
+function addToVocab(ws){
+  ws=dedupe(ws);if(!ws.length){toast("Ничего не выбрано");return;}
+  const cur=vocabList(), have=new Set(cur.map(w=>stripNikud(w.he)));
+  const fresh=toVocabObjs(ws).filter(w=>!have.has(stripNikud(w.he)));
+  if(!fresh.length){toast("Все выбранные уже в словаре");return;}
+  localStorage.setItem(VOCAB_KEY,JSON.stringify(cur.concat(fresh)));
+  toast("В словарь добавлено: "+fresh.length);
+  if(view==="lex")renderLex();
+  closeSheet();
+}
+
+/* ---------- practice ---------- */
+const MODES=[
+  {k:"card",t:"Карточки",e:"🃏",d:"вспомни сам"},
+  {k:"h2r",t:"Иврит → рус",e:"🔤",d:"выбери перевод"},
+  {k:"r2h",t:"Рус → иврит",e:"🇷🇺",d:"выбери слово"},
+  {k:"build",t:"Собрать слово",e:"🧩",d:"из букв"},
+  {k:"cloze",t:"Пропуск",e:"✏️",d:"в предложение"},
+];
+function playPool(){const t=curText();return dedupe(allWords(t)).filter(w=>w.he&&w.ru);}
+function renderPlayMenu(){
+  const t=curText();if(!t){go("lib");return;}
+  $("play-sub").textContent=(t.title||"")+" · "+playPool().length+" слов";
+  $("play-back").style.display="none";$("play-stage").style.display="none";$("play-menu").style.display="grid";
+  $("play-menu").innerHTML=MODES.map(m=>`<button class="modeb" data-k="${m.k}"><b>${m.e}</b>${m.t}<div class="sub">${m.d}</div></button>`).join("");
+  $("play-menu").querySelectorAll(".modeb").forEach(b=>b.onclick=()=>startPlay(b.dataset.k));
+}
+$("play-back").onclick=renderPlayMenu;
+let deck=[],di=0,pmode="";
+function startPlay(mode){
+  let pool=playPool().slice();
+  if(mode==="build")pool=pool.filter(w=>{const t=stripNikud(w.he);return t.length>=2&&!/\s/.test((w.he||"").trim());});
+  if(mode==="cloze")pool=pool.filter(w=>w._ex&&stripNikud(w._ex).indexOf(stripNikud(w.he))>=0);
+  if(pool.length<(mode==="h2r"||mode==="r2h"?2:1)){toast("Мало подходящих слов для этого режима");return;}
+  pmode=mode;deck=shuffle(pool);di=0;
+  $("play-menu").style.display="none";$("play-stage").style.display="block";$("play-back").style.display="inline-block";
+  nextCard();
+}
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function nextCard(){
+  if(di>=deck.length){$("play-stage").innerHTML=`<div class="stage"><div class="qru">✅ Готово!</div><div class="muted">${deck.length} слов пройдено</div><button class="btn primary" onclick="renderPlayMenu()">К режимам</button></div>`;return;}
+  const w=deck[di], prog=`<div class="progress">${di+1} / ${deck.length}</div>`;
+  if(pmode==="card")cardMode(w,prog);
+  else if(pmode==="h2r")choiceMode(w,prog,"h2r");
+  else if(pmode==="r2h")choiceMode(w,prog,"r2h");
+  else if(pmode==="build")buildMode(w,prog);
+  else if(pmode==="cloze")clozeMode(w,prog);
+}
+function advance(){di++;nextCard();}
+function cardMode(w,prog){
+  $("play-stage").innerHTML=`<div class="stage">${prog}<div class="qhe rtl">${esc(w.he)}</div><div id="rev" style="display:none"><div class="qru">${esc(w.ru)}</div><div class="muted rtl">${esc(w.tr||"")}</div></div>
+    <button class="btn" id="say">🔊</button>
+    <div class="opts"><button class="btn primary" id="show">Показать перевод</button></div></div>`;
+  $("say").onclick=()=>say(w.he);
+  $("show").onclick=()=>{$("rev").style.display="block";$("show").outerHTML=`<button class="btn good" id="nx">Дальше →</button>`;$("nx").onclick=advance;say(w.he);};
+}
+function choiceMode(w,prog,dir){
+  const pool=playPool();
+  const wrong=shuffle(pool.filter(x=>stripNikud(x.he)!==stripNikud(w.he))).slice(0,3);
+  const opts=shuffle([w,...wrong]);
+  const q=dir==="h2r"?`<div class="qhe rtl">${esc(w.he)}</div>`:`<div class="qru">${esc(w.ru)}</div>`;
+  $("play-stage").innerHTML=`<div class="stage">${prog}${q}<button class="btn sm" id="say">🔊</button>
+    <div class="opts">${opts.map((o,i)=>`<button class="opt ${dir==="r2h"?"he rtl":""}" data-i="${i}">${dir==="h2r"?esc(o.ru):esc(o.he)}</button>`).join("")}</div></div>`;
+  $("say").onclick=()=>say(w.he);
+  $("play-stage").querySelectorAll(".opt").forEach((b,i)=>b.onclick=()=>{
+    const chosen=opts[i], ok=stripNikud(chosen.he)===stripNikud(w.he);
+    b.classList.add(ok?"ok":"no");
+    if(ok){say(w.he);setTimeout(advance,900);}
+    else{$("play-stage").querySelectorAll(".opt").forEach((x,j)=>{if(stripNikud(opts[j].he)===stripNikud(w.he))x.classList.add("ok");});
+      const nx=document.createElement("button");nx.className="btn good";nx.textContent="Дальше →";nx.onclick=advance;$("play-stage").querySelector(".stage").appendChild(nx);}
+  });
+}
+function buildMode(w,prog){
+  const letters=stripNikudKeepSpace(w.he).replace(/\s/g,"").split("");
+  const tiles=shuffle(letters);let built=[];
+  const draw=()=>{
+    $("play-stage").innerHTML=`<div class="stage">${prog}<div class="qru">${esc(w.ru)}</div>
+      <div class="slots">${letters.map((_,i)=>`<div class="slot ${built[i]?"filled":""}">${esc(built[i]||"")}</div>`).join("")}</div>
+      <div class="tiles">${tiles.map((c,i)=>`<button class="tile" data-i="${i}" ${built.includes(i)?"disabled style=opacity:.25":""}>${esc(c)}</button>`).join("")}</div>
+      <div class="row"><button class="btn sm" id="say">🔊</button><button class="btn sm ghost" id="clr">Сброс</button></div></div>`;
+    $("say").onclick=()=>say(w.he);
+    $("clr").onclick=()=>{built=[];draw();};
+    $("play-stage").querySelectorAll(".tile").forEach(b=>b.onclick=()=>{
+      const i=+b.dataset.i, pos=built.length;
+      if(tiles[i]===letters[pos]){built.push(i);
+        if(built.length===letters.length){draw();say(w.he);const s=$("play-stage").querySelector(".stage");const nx=document.createElement("button");nx.className="btn good";nx.textContent="Дальше →";nx.onclick=advance;s.appendChild(nx);}
+        else draw();
+      }else{b.classList.add("no");setTimeout(()=>b.classList.remove("no"),350);}
+    });
+  };
+  draw();
+}
+function clozeMode(w,prog){
+  const bare=stripNikud(w.he);
+  const gap=stripNikudKeepSpace(w._ex).replace(new RegExp(stripNikudKeepSpace(w.he).replace(/[.*+?^${}()|[\]\\]/g,"\\$&")),"______");
+  const pool=playPool();
+  const wrong=shuffle(pool.filter(x=>stripNikud(x.he)!==bare)).slice(0,3);
+  const opts=shuffle([w,...wrong]);
+  $("play-stage").innerHTML=`<div class="stage">${prog}<div class="qru rtl he" style="font-size:24px">${esc(gap)}</div>
+    <div class="opts">${opts.map((o,i)=>`<button class="opt he rtl" data-i="${i}">${esc(o.he)}</button>`).join("")}</div></div>`;
+  $("play-stage").querySelectorAll(".opt").forEach((b,i)=>b.onclick=()=>{
+    const ok=stripNikud(opts[i].he)===bare;b.classList.add(ok?"ok":"no");
+    if(ok){say(w.he);setTimeout(advance,900);}
+    else{$("play-stage").querySelectorAll(".opt").forEach((x,j)=>{if(stripNikud(opts[j].he)===bare)x.classList.add("ok");});
+      const nx=document.createElement("button");nx.className="btn good";nx.textContent="Дальше →";nx.onclick=advance;$("play-stage").querySelector(".stage").appendChild(nx);}
+  });
+}
+
+/* ---------- new text modal ---------- */
+$("new-btn").onclick=()=>{$("json-in").value="";$("modal").classList.add("on");};
+$("modal-x").onclick=()=>$("modal").classList.remove("on");
+$("schema-btn").onclick=()=>{const b=$("schema-box");b.style.display=b.style.display==="none"?"block":"none";b.textContent=SCHEMA;};
+$("load-btn").onclick=()=>{
+  let d;try{d=JSON.parse($("json-in").value);}catch(e){toast("Ошибка JSON: "+e.message);return;}
+  const arr=Array.isArray(d)?d:[d];let n=0;
+  arr.forEach(o=>{if(o&&(o.sentences||o.glossary)){texts.unshift(normalizeText(o));n++;}});
+  if(!n){toast("Нет полей sentences/glossary");return;}
+  saveTexts();$("modal").classList.remove("on");go("lib");toast("Загружено текстов: "+n);
+};
+function normalizeText(o){
+  return {id:o.id||uid(),title:o.title||"Без названия",date:o.date||"",source:o.source||"",note:o.note||"",
+    sentences:(o.sentences||[]).map(s=>({he:s.he||"",tr:s.tr||"",ru:s.ru||"",note:s.note||"",
+      words:(s.words||[]).map(w=>({he:w.he||"",tr:w.tr||"",ru:w.ru||"",root:w.root||"",binyan:w.binyan||"",model:w.model||"",pos:w.pos||"",form:w.form||"",note:w.note||""}))})),
+    glossary:(o.glossary||[]).map(w=>({he:w.he||"",tr:w.tr||"",ru:w.ru||"",root:w.root||"",binyan:w.binyan||"",model:w.model||"",pos:w.pos||"",form:w.form||"",note:w.note||""})),
+    created:o.created||Date.now()};
+}
+function download(name,text){const b=new Blob([text],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;a.click();}
+
+const SCHEMA=`{
+  "title": "מכתב לאודסה",         // заголовок (иврит)
+  "date": "22.12.03",
+  "source": "להצליח בעברית ג",
+  "sentences": [
+    {
+      "he": "וָאדים הַיָּקָר,",       // предложение целиком (с огласовками)
+      "ru": "Дорогой Вадим,",       // перевод предложения
+      "note": "обращение",          // грам. комментарий (необяз.)
+      "words": [
+        {
+          "he": "הַיָּקָר",           // слово с огласовками
+          "tr": "hайакАр",          // транслит (рус.)
+          "ru": "дорогой",          // перевод
+          "root": "י - ק - ר",       // корень
+          "binyan": "",             // биньян (для глаголов)
+          "model": "",              // модель/лемма (инфинитив)
+          "pos": "прил.",           // часть речи
+          "form": "м.р., ед.ч.",    // форма
+          "note": ""
+        }
+      ]
+    }
+  ],
+  "glossary": [ /* доп. слова урока — та же структура, что words */ ]
+}`;
+
+/* ---------- SEED: письмо ---------- */
+function SEED(){
+  const W=(he,tr,ru,root,pos,binyan,form,model,note)=>({he,tr,ru,root:root||"",pos:pos||"",binyan:binyan||"",form:form||"",model:model||"",note:note||""});
+  const t=normalizeText({
+    id:"seed-letter", title:"מִכְתָּב לְאוֹדֶסָה", date:"22.12.03", source:"להצליח בעברית ג׳ (стр. 8)",
+    note:"Письмо Ларисы из Хайфы другу детства Вадиму в Одессу.",
+    sentences:[
+      {he:"וָאדים הַיָּקָר,", ru:"Дорогой Вадим,", note:"Обращение в начале письма.",
+        words:[W("וָאדים","Вадим","Вадим","","имя собств."), W("הַיָּקָר","hайакАр","дорогой","י - ק - ר","прил.","","м.р., ед.ч., опр.")]},
+      {he:"מֵהַיּוֹם שֶׁנִּפְרַדְנוּ, עָבְרָה כְּבָר שָׁנָה.", ru:"С того дня, как мы расстались, прошёл уже год.",
+        note:"נִפְרַדְנוּ — нифаль, прош. вр., 1 л. мн.ч.",
+        words:[
+          W("מֵהַיּוֹם","меhайОм","со дня","י - ו - ם","предлог+сущ.","","","","מ + היום"),
+          W("שֶׁנִּפְרַדְנוּ","шенифрАдну","как мы расстались","פ - ר - ד","глагол","נִפְעַל (нифаль)","прош., 1 л. мн.ч.","לְהִיפָּרֵד"),
+          W("עָבְרָה","авра","прошла","ע - ב - ר","глагол","פָּעַל (пааль)","прош., 3 л. ж.р.","לַעֲבוֹר"),
+          W("כְּבָר","квар","уже","","наречие"),
+          W("שָׁנָה","шанА","год","ש - נ - ה","сущ.","","ж.р., ед.ч.")]},
+      {he:"אֲני פֹּה, בְּחֵיפָה, וְאַתָּה רָחוֹק - בְּאוֹדֶסָה.", ru:"Я здесь, в Хайфе, а ты далеко — в Одессе.",
+        words:[
+          W("אֲני","анИ","я","","местоим."),
+          W("פֹּה","по","здесь","","наречие"),
+          W("בְּחֵיפָה","беХейфа","в Хайфе","","предлог+сущ.","","","","ב + חיפה"),
+          W("וְאַתָּה","веатА","а ты","","союз+местоим."),
+          W("רָחוֹק","рахОк","далеко, далёкий","ר - ח - ק","прил./нареч."),
+          W("בְּאוֹדֶסָה","беОдеса","в Одессе","","предлог+сущ.","","","","ב + אודסה")]},
+      {he:"אֲני מִתְגַּעְגַּעַת אֵלֶיךָ, וָאדים.", ru:"Я скучаю по тебе, Вадим.",
+        note:"לְהִתְגַּעְגֵּעַ + לְ — скучать по кому-то. Биньян hитпаэль.",
+        words:[
+          W("אֲני","анИ","я","","местоим."),
+          W("מִתְגַּעְגַּעַת","митгаагАат","скучаю","ג - ע - ג - ע","глагол","הִתְפַּעֵל (hитпаэль)","наст., ж.р., ед.ч.","לְהִתְגַּעְגֵּעַ"),
+          W("אֵלֶיךָ","элЕха","по тебе, к тебе","","предлог+местоим.","","","","אל + ך")]},
+      {he:"אֲני זוֹכֶרֶת שֶׁרָצִיתָ לַעֲלוֹת לָאָרֶץ תּוֹךְ זְמַן קָצָר, וְעַד הַיּוֹם לֹא בָּאתָ.",
+        ru:"Я помню, что ты хотел репатриироваться в короткий срок, но до сих пор так и не приехал.",
+        note:"לַעֲלוֹת — «подниматься», в значении «репатриироваться в Израиль». בָּאתָ — от לָבוֹא, прош., 2 л. м.р.",
+        words:[
+          W("זוֹכֶרֶת","зохЕрет","помню","ז - כ - ר","глагол","פָּעַל (пааль)","наст., ж.р., ед.ч.","לִזְכּוֹר"),
+          W("שֶׁרָצִיתָ","шерацИта","что ты хотел","ר - צ - ה","глагол","פָּעַל (пааль)","прош., 2 л. м.р.","לִרְצוֹת"),
+          W("לַעֲלוֹת","лаалОт","репатриироваться, подниматься","ע - ל - ה","глагол","פָּעַל (пааль)","инфинитив","לַעֲלוֹת"),
+          W("לָאָרֶץ","лаАрец","в Страну (Израиль)","א - ר - ץ","предлог+сущ.","","","","ל + הארץ"),
+          W("תּוֹךְ זְמַן קָצָר","тох зман кацАр","в короткий срок","","словосоч."),
+          W("וְעַד הַיּוֹם","веад hайОм","и до сегодня","","словосоч."),
+          W("בָּאתָ","бАта","(ты) приехал","ב - ו - א","глагол","פָּעַל (пааль)","прош., 2 л. м.р.","לָבוֹא")]},
+
+      {he:"אֲני גָּרָה עַכְשָׁיו עִם חֲבֵרָה בְּדִירָה שְׂכוּרָה, לוֹמֶדֶת עִבְרִית בְּאוּלְפַּן עֶרֶב וּמִתְקַדֶּמֶת יָפֶה.",
+        ru:"Сейчас я живу с подругой в съёмной квартире, учу иврит в вечернем ульпане и хорошо продвигаюсь.",
+        note:"אולפן — курсы иврита для репатриантов. מתקדמת — hитпаэль.",
+        words:[
+          W("אֲני","анИ","я","","местоим."),
+          W("גָּרָה","гарА","живу","ג - ו - ר","глагол","פָּעַל (пааль)","наст., ж.р.","לָגוּר"),
+          W("עַכְשָׁיו","ахшАв","сейчас","","наречие"),
+          W("עִם","им","с","","предлог"),
+          W("חֲבֵרָה","хаверА","подруга","ח - ב - ר","сущ.","","ж.р."),
+          W("בְּדִירָה","бедирА","в квартире","ד - ו - ר","предлог+сущ.","","","","ב + דירה"),
+          W("שְׂכוּרָה","схурА","съёмной","ש - כ - ר","прил.","","ж.р."),
+          W("לוֹמֶדֶת","ломЕдет","учу","ל - מ - ד","глагол","פָּעַל (пааль)","наст., ж.р.","לִלְמוֹד"),
+          W("עִבְרִית","иврИт","иврит","","сущ."),
+          W("בְּאוּלְפַּן","беульпАн","в ульпане","א - ל - פ","предлог+сущ.","","","","ב + אולפן"),
+          W("עֶרֶב","Эрев","вечер","ע - ר - ב","сущ.","","","","אולפן ערב — вечерний ульпан"),
+          W("וּמִתְקַדֶּמֶת","умиткадЕмет","и продвигаюсь","ק - ד - ם","глагол","הִתְפַּעֵל (hитпаэль)","наст., ж.р.","לְהִתְקַדֵּם"),
+          W("יָפֶה","йафЭ","хорошо, красиво","י - פ - ה","наречие")]},
+      {he:"הַחַיִּים כָּאן יוֹתֵר טוֹבִים מֵאֲשֶׁר בְּאוֹדֶסָה.",
+        ru:"Жизнь здесь лучше, чем в Одессе.",
+        note:"יותר … מאשר — конструкция сравнения «больше…, чем».",
+        words:[
+          W("הַחַיִּים","hахайИм","жизнь","ח - י - ה","сущ.","","мн.ч."),
+          W("כָּאן","кан","здесь","","наречие"),
+          W("יוֹתֵר","йотЭр","более","","наречие"),
+          W("טוֹבִים","товИм","хорошие","ט - ו - ב","прил.","","м.р. мн.ч."),
+          W("מֵאֲשֶׁר","меашЕр","чем","","союз"),
+          W("בְּאוֹדֶסָה","беОдеса","в Одессе","","предлог+сущ.")]},
+      {he:"אֲני אוֹהֶבֶת אֶת הַחוֹפֶשׁ וְאֶת קֶצֶב הַחַיִּים בָּאָרֶץ, וַאֲני בְּטוּחָה שֶׁגַּם אַתָּה תֹּאהַב זֹאת.",
+        ru:"Я люблю свободу и темп жизни в Стране, и уверена, что и ты это полюбишь.",
+        words:[
+          W("אֲני","анИ","я","","местоим."),
+          W("אוֹהֶבֶת","оhЕвет","люблю","א - ה - ב","глагол","פָּעַל (пааль)","наст., ж.р.","לֶאֱהוֹב"),
+          W("אֶת","эт","(вин. падеж)","","предлог"),
+          W("הַחוֹפֶשׁ","hахОфеш","свобода","ח - פ - ש","сущ."),
+          W("וְאֶת","веЭт","и (вин.)","","союз+предлог"),
+          W("קֶצֶב","кЕцев","темп","ק - צ - ב","сущ.","","","","קצב החיים — темп жизни"),
+          W("הַחַיִּים","hахайИм","жизни","ח - י - ה","сущ."),
+          W("בָּאָרֶץ","баАрец","в Стране","א - ר - ץ","сущ.","","","","הארץ = Израиль"),
+          W("וַאֲני","ваанИ","и я","","союз+местоим."),
+          W("בְּטוּחָה","бетухА","уверена","ב - ט - ח","прил.","","ж.р."),
+          W("שֶׁגַּם","шегАм","что также","","союз"),
+          W("אַתָּה","атА","ты","","местоим."),
+          W("תֹּאהַב","тоhАв","полюбишь","א - ה - ב","глагол","פָּעַל (пааль)","буд., 2 л. м.р.","לֶאֱהוֹב"),
+          W("זֹאת","зот","это","","местоим.")]},
+      {he:"פֹּה כּוּלָּם מִסְתַּדְּרִים בְּסוֹפוֹ שֶׁל דָּבָר.",
+        ru:"Здесь в конце концов все устраиваются.",
+        note:"בסופו של דבר — устойчивое выражение «в конце концов».",
+        words:[
+          W("פֹּה","по","здесь","","наречие"),
+          W("כּוּלָּם","кулАм","все","כ - ל - ל","местоим."),
+          W("מִסְתַּדְּרִים","мистадрИм","устраиваются","ס - ד - ר","глагол","הִתְפַּעֵל (hитпаэль)","наст., м.р. мн.ч.","לְהִסְתַּדֵּר"),
+          W("בְּסוֹפוֹ","бесофО","в конце его","ס - ו - ף","предлог+сущ."),
+          W("שֶׁל","шель","(принадлежность)","","предлог"),
+          W("דָּבָר","давАр","дело, вещь","ד - ב - ר","сущ.")]},
+      {he:"רַק הַהַתְחָלָה הִיא קָשָׁה.",
+        ru:"Только начало трудное.",
+        words:[
+          W("רַק","рак","только","","наречие"),
+          W("הַהַתְחָלָה","hаhатхалА","начало","ת - ח - ל","сущ.","","ж.р."),
+          W("הִיא","hи","она (есть)","","местоим."),
+          W("קָשָׁה","кашА","трудная","ק - ש - ה","прил.","","ж.р.")]},
+
+      {he:"אֲני יוֹדַעַת שֶׁהַמַּצָּב אֶצְלְכֶם לֹא קַל מִבְּחִינָה כַּלְכָּלִית.",
+        ru:"Я знаю, что положение у вас непростое в экономическом плане.",
+        note:"מבחינה + прил. — «с точки зрения…».",
+        words:[
+          W("אֲני","анИ","я","","местоим."),
+          W("יוֹדַעַת","йодАат","знаю","י - ד - ע","глагол","פָּעַל (пааль)","наст., ж.р.","לָדַעַת"),
+          W("שֶׁהַמַּצָּב","шеhамацАв","что положение","י - צ - ב","союз+сущ.","","","","מצב — положение"),
+          W("אֶצְלְכֶם","эцлехЕм","у вас","","предлог+местоим.","","","","אצל + כם"),
+          W("לֹא","ло","не","","отрицание"),
+          W("קַל","каль","лёгкий","ק - ל - ל","прил."),
+          W("מִבְּחִינָה","мибхинА","с точки зрения","ב - ח - נ","предлог+сущ."),
+          W("כַּלְכָּלִית","калкалИт","экономической","כ - ל - כ - ל","прил.","","ж.р.")]},
+      {he:"הַאִם אַתָּה עוֹבֵד?",
+        ru:"Работаешь ли ты?",
+        note:"האם — частица, вводящая общий вопрос (да/нет).",
+        words:[
+          W("הַאִם","hаИм","ли","","вопрос. частица"),
+          W("אַתָּה","атА","ты","","местоим."),
+          W("עוֹבֵד","овЭд","работаешь","ע - ב - ד","глагол","פָּעַל (пааль)","наст., м.р.","לַעֲבוֹד")]},
+      {he:"לִפְנֵי שֶׁעָלִיתִי לָאָרֶץ, סִיפַּרְתָּ לִי שֶׁאַתָּה תַּפְסִיק בְּקָרוֹב אֶת עֲבוֹדָתְךָ, וְתַגִּיעַ לָאָרֶץ אַחֲרַיי.",
+        ru:"Перед тем как я репатриировалась, ты рассказывал мне, что скоро оставишь работу и приедешь в Страну вслед за мной.",
+        note:"תפסיק (hифиль) и תגיע (hифиль) — будущее время.",
+        words:[
+          W("לִפְנֵי","лифнЭй","перед","פ - נ - ה","предлог"),
+          W("שֶׁעָלִיתִי","шеалИти","как я репатриировалась","ע - ל - ה","глагол","פָּעַל (пааль)","прош., 1 л.","לַעֲלוֹת"),
+          W("לָאָרֶץ","лаАрец","в Страну","א - ר - ץ","сущ."),
+          W("סִיפַּרְתָּ","сипАрта","ты рассказал","ס - פ - ר","глагол","פִּיעֵל (пиэль)","прош., 2 л. м.р.","לְסַפֵּר"),
+          W("לִי","ли","мне","","предлог+местоим."),
+          W("שֶׁאַתָּה","шеатА","что ты","","союз+местоим."),
+          W("תַּפְסִיק","тафсИк","прекратишь","פ - ס - ק","глагол","הִפְעִיל (hифиль)","буд., 2 л. м.р.","לְהַפְסִיק"),
+          W("בְּקָרוֹב","бекарОв","скоро","ק - ר - ב","наречие"),
+          W("אֶת","эт","(вин. падеж)","","предлог"),
+          W("עֲבוֹדָתְךָ","аводатхА","свою работу","ע - ב - ד","сущ.+местоим.","","","","עבודה + ך"),
+          W("וְתַגִּיעַ","ветагИа","и приедешь","נ - ג - ע","глагол","הִפְעִיל (hифиль)","буд., 2 л. м.р.","לְהַגִּיעַ"),
+          W("לָאָרֶץ","лаАрец","в Страну","א - ר - ץ","сущ."),
+          W("אַחֲרַיי","ахарАй","за мной","א - ח - ר","предлог+местоим.","","","","אחרי + י")]},
+
+      {he:"וָאדים, כְּבָר חוֹדֶשׁ לֹא כָּתַבְתָּ לִי.",
+        ru:"Вадим, ты уже месяц не пишешь мне.",
+        words:[
+          W("וָאדים","Вадим","Вадим","","имя собств."),
+          W("כְּבָר","квар","уже","","наречие"),
+          W("חוֹדֶשׁ","хОдеш","месяц","ח - ד - ש","сущ."),
+          W("לֹא","ло","не","","отрицание"),
+          W("כָּתַבְתָּ","катАвта","ты писал","כ - ת - ב","глагол","פָּעַל (пааль)","прош., 2 л. м.р.","לִכְתּוֹב"),
+          W("לִי","ли","мне","","предлог+местоим.")]},
+      {he:"אוּלַי שָׁלַחְתָּ מִכְתָּב, וְהוּא לֹא הִגִּיעַ?",
+        ru:"Может, ты послал письмо, а оно не дошло?",
+        words:[
+          W("אוּלַי","улАй","может быть","","наречие"),
+          W("שָׁלַחְתָּ","шалАхта","ты послал","ש - ל - ח","глагол","פָּעַל (пааль)","прош., 2 л. м.р.","לִשְׁלוֹחַ"),
+          W("מִכְתָּב","михтАв","письмо","כ - ת - ב","сущ."),
+          W("וְהוּא","веhУ","и оно","","союз+местоим."),
+          W("לֹא","ло","не","","отрицание"),
+          W("הִגִּיעַ","hигИа","дошло, прибыло","נ - ג - ע","глагол","הִפְעִיל (hифиль)","прош., 3 л. м.р.","לְהַגִּיעַ")]},
+      {he:"זֶה קוֹרֶה לִפְעָמִים.",
+        ru:"Такое иногда случается.",
+        words:[
+          W("זֶה","зэ","это","","местоим."),
+          W("קוֹרֶה","корЭ","случается","ק - ר - ה","глагол","פָּעַל (пааль)","наст., м.р.","לִקְרוֹת"),
+          W("לִפְעָמִים","лифъамИм","иногда","פ - ע - מ","наречие")]},
+      {he:"סַפֵּר מָה קוֹרֶה אֶצְלְךָ.",
+        ru:"Расскажи, что у тебя происходит.",
+        note:"ספר — повелительное наклонение от לְסַפֵּר (пиэль).",
+        words:[
+          W("סַפֵּר","сапЭр","расскажи","ס - פ - ר","глагол","פִּיעֵל (пиэль)","повел., м.р.","לְסַפֵּר"),
+          W("מָה","ма","что","","местоим."),
+          W("קוֹרֶה","корЭ","происходит","ק - ר - ה","глагол","פָּעַל (пааль)","наст., м.р.","לִקְרוֹת"),
+          W("אֶצְלְךָ","эцлехА","у тебя","","предлог+местоим.","","","","אצל + ך")]},
+      {he:"מָה שְׁלוֹם הוֹרֶיךָ?",
+        ru:"Как поживают твои родители?",
+        note:"מה שלום…? — «как поживает / как здоровье…?».",
+        words:[
+          W("מָה","ма","как","","местоим."),
+          W("שְׁלוֹם","шлом","благополучие","ש - ל - מ","сущ."),
+          W("הוֹרֶיךָ","hорЭха","твои родители","ה - ו - ר","сущ.+местоим.","","мн.ч.","","הורים + ך")]},
+      {he:"הַאִם מַצָּבָם מוֹנֵעַ מִמְּךָ לְהַגִּיעַ אֵלַיי?",
+        ru:"Мешает ли их положение тебе приехать ко мне?",
+        note:"לִמְנוֹעַ מ־ + инфинитив — «мешать (кому-то) сделать что-то».",
+        words:[
+          W("הַאִם","hаИм","ли","","вопрос. частица"),
+          W("מַצָּבָם","мацавАм","их положение","י - צ - ב","сущ.+местоим.","","","","מצב + ם"),
+          W("מוֹנֵעַ","монЭа","мешает","מ - נ - ע","глагол","פָּעַל (пааль)","наст., м.р.","לִמְנוֹעַ"),
+          W("מִמְּךָ","мимхА","тебе (от тебя)","","предлог+местоим.","","","","מן + ך"),
+          W("לְהַגִּיעַ","леhагИа","приехать","נ - ג - ע","глагол","הִפְעִיל (hифиль)","инфинитив","לְהַגִּיעַ"),
+          W("אֵלַיי","элАй","ко мне","","предлог+местоим.","","","","אל + י")]},
+      {he:"בְּמִכְתָּב הָאַחֲרוֹן סִיפַּרְתָּ לִי, שֶׁאָבִיךָ חוֹלֶה מְאוֹד.",
+        ru:"В последнем письме ты рассказал мне, что твой отец очень болен.",
+        words:[
+          W("בְּמִכְתָּב","бемихтАв","в письме","כ - ת - ב","предлог+сущ."),
+          W("הָאַחֲרוֹן","hаахарОн","последнем","א - ח - ר","прил."),
+          W("סִיפַּרְתָּ","сипАрта","ты рассказал","ס - פ - ר","глагол","פִּיעֵל (пиэль)","прош., 2 л. м.р.","לְסַפֵּר"),
+          W("לִי","ли","мне","","предлог+местоим."),
+          W("שֶׁאָבִיךָ","шеавИха","что твой отец","א - ב","союз+сущ.+местоим.","","","","אב + ך"),
+          W("חוֹלֶה","холЭ","болен","ח - ל - ה","прил."),
+          W("מְאוֹד","меОд","очень","","наречие")]},
+      {he:"מָה מַצָּבוֹ עַכְשָׁיו?",
+        ru:"Каково его состояние сейчас?",
+        words:[
+          W("מָה","ма","какое","","местоим."),
+          W("מַצָּבוֹ","мацавО","его положение","י - צ - ב","сущ.+местоим.","","","","מצב + ו"),
+          W("עַכְשָׁיו","ахшАв","сейчас","","наречие")]},
+      {he:"אֲני זוֹכֶרֶת אוֹתוֹ כְּאִישׁ חָכָם, דִּינָמִי וּמָלֵא שִׂמְחַת חַיִּים.",
+        ru:"Я помню его умным, энергичным человеком, полным жизнерадостности.",
+        note:"שמחת חיים — смихут (сопряжённое сочетание): «радость жизни».",
+        words:[
+          W("אֲני","анИ","я","","местоим."),
+          W("זוֹכֶרֶת","зохЕрет","помню","ז - כ - ר","глагол","פָּעַל (пааль)","наст., ж.р.","לִזְכּוֹר"),
+          W("אוֹתוֹ","отО","его","","предлог+местоим.","","","","את + ו"),
+          W("כְּאִישׁ","кеИш","как человека","א - י - ש","предлог+сущ."),
+          W("חָכָם","хахАм","умного","ח - כ - מ","прил."),
+          W("דִּינָמִי","динАми","энергичного","","прил."),
+          W("וּמָלֵא","умалЭ","и полного","מ - ל - א","прил."),
+          W("שִׂמְחַת","симхАт","радости","ש - מ - ח","сущ.","","сопряж. форма"),
+          W("חַיִּים","хайИм","жизни","ח - י - ה","сущ.")]},
+      {he:"מָה שְׁלוֹם יוּלִיָה אֲחוֹתְךָ?",
+        ru:"Как поживает Юлия, твоя сестра?",
+        words:[
+          W("מָה","ма","как","","местоим."),
+          W("שְׁלוֹם","шлом","благополучие","ש - ל - מ","сущ."),
+          W("יוּלִיָה","Юлия","Юлия","","имя собств."),
+          W("אֲחוֹתְךָ","ахотхА","твоя сестра","א - ח","сущ.+местоим.","","","","אחות + ך")]},
+      {he:"הַאִם הִיא סִיְּימָה כְּבָר אֶת הַלִּימּוּדִים בָּאוּנִיבֶרְסִיטָה?",
+        ru:"Закончила ли она уже учёбу в университете?",
+        words:[
+          W("הַאִם","hаИм","ли","","вопрос. частица"),
+          W("הִיא","hи","она","","местоим."),
+          W("סִיְּימָה","сиймА","закончила","ס - י - מ","глагол","פִּיעֵל (пиэль)","прош., 3 л. ж.р.","לְסַיֵּים"),
+          W("כְּבָר","квар","уже","","наречие"),
+          W("אֶת","эт","(вин. падеж)","","предлог"),
+          W("הַלִּימּוּדִים","hалимудИм","учёбу","ל - מ - ד","сущ.","","мн.ч."),
+          W("בָּאוּנִיבֶרְסִיטָה","баунивЕрсита","в университете","","сущ.")]},
+      {he:"מָה הִשְׁתַּנָּה בְּאוֹדֶסָה, מֵאָז שֶׁעָזַבְתִּי אוֹתָהּ?",
+        ru:"Что изменилось в Одессе с тех пор, как я её покинула?",
+        note:"הִשְׁתַּנָּה — hитпаэль. מאז ש… — «с тех пор как».",
+        words:[
+          W("מָה","ма","что","","местоим."),
+          W("הִשְׁתַּנָּה","hиштанА","изменилось","ש - נ - ה","глагол","הִתְפַּעֵל (hитпаэль)","прош., 3 л. м.р.","לְהִשְׁתַּנּוֹת"),
+          W("בְּאוֹדֶסָה","беОдеса","в Одессе","","предлог+сущ."),
+          W("מֵאָז","меАз","с тех пор","","наречие"),
+          W("שֶׁעָזַבְתִּי","шеазАвти","как я покинула","ע - ז - ב","глагол","פָּעַל (пааль)","прош., 1 л.","לַעֲזוֹב"),
+          W("אוֹתָהּ","отА","её","","предлог+местоим.","","","","את + ה")]},
+      {he:"אֲני קוֹרֵאת פֹּה עִיתּוֹנִים בְּרוּסִית, וְרוֹאָה בְּעֶזְרַת הַלַּוְויין חֲדָשׁוֹת בְּרוּסִית.",
+        ru:"Здесь я читаю газеты на русском и смотрю с помощью спутника новости на русском.",
+        note:"בעזרת — «при помощи». לוויין — спутник (спутниковое ТВ).",
+        words:[
+          W("אֲני","анИ","я","","местоим."),
+          W("קוֹרֵאת","корЭт","читаю","ק - ר - א","глагол","פָּעַל (пааль)","наст., ж.р.","לִקְרוֹא"),
+          W("פֹּה","по","здесь","","наречие"),
+          W("עִיתּוֹנִים","итонИм","газеты","ע - ת","сущ.","","мн.ч.","","עיתון"),
+          W("בְּרוּסִית","берусИт","на русском","","сущ./наречие"),
+          W("וְרוֹאָה","вероА","и вижу, смотрю","ר - א - ה","глагол","פָּעַל (пааль)","наст., ж.р.","לִרְאוֹת"),
+          W("בְּעֶזְרַת","беэзрАт","с помощью","ע - ז - ר","предлог+сущ."),
+          W("הַלַּוְויין","hалавйИн","спутника","ל - ו - ה","сущ."),
+          W("חֲדָשׁוֹת","хадашОт","новости","ח - ד - ש","сущ.","","мн.ч."),
+          W("בְּרוּסִית","берусИт","на русском","","сущ./наречие")]},
+      {he:"אֲבָל אֲני רוֹצָה לִשְׁמוֹעַ מִמְּךָ, מָה הַמַּצָּב שָׁם, וּבְעִיקָּר מַהוּ מַצָּבְךָ הָאִישִׁי.",
+        ru:"Но я хочу услышать от тебя, какое там положение, и главное — каково твоё личное положение.",
+        words:[
+          W("אֲבָל","авАл","но","","союз"),
+          W("אֲני","анИ","я","","местоим."),
+          W("רוֹצָה","роцА","хочу","ר - צ - ה","глагол","פָּעַל (пааль)","наст., ж.р.","לִרְצוֹת"),
+          W("לִשְׁמוֹעַ","лишмОа","услышать","ש - מ - ע","глагол","פָּעַל (пааль)","инфинитив","לִשְׁמוֹעַ"),
+          W("מִמְּךָ","мимхА","от тебя","","предлог+местоим.","","","","מן + ך"),
+          W("מָה","ма","какое","","местоим."),
+          W("הַמַּצָּב","hамацАв","положение","י - צ - ב","сущ."),
+          W("שָׁם","шам","там","","наречие"),
+          W("וּבְעִיקָּר","увъикАр","и в особенности","ע - ק - ר","наречие"),
+          W("מַהוּ","маhУ","каково","","местоим.","","","","מה + הוא"),
+          W("מַצָּבְךָ","мацавхА","твоё положение","י - צ - ב","сущ.+местоим.","","","","מצב + ך"),
+          W("הָאִישִׁי","hаишИ","личное","א - י - ש","прил.")]},
+      {he:"אַל תִּכְעַס עָלַיי, אֲבָל אֲני מְקַוָּה שֶׁאֵין לְךָ חֲבֵרָה חֲדָשָׁה...",
+        ru:"Не сердись на меня, но я надеюсь, что у тебя нет новой девушки…",
+        note:"אל תכעס — отрицательный императив (запрет). לכעוס על — «сердиться на».",
+        words:[
+          W("אַל","аль","не (запрет)","","частица"),
+          W("תִּכְעַס","тихъАс","сердись","כ - ע - ס","глагол","פָּעַל (пааль)","буд., 2 л. м.р.","לִכְעוֹס"),
+          W("עָלַיי","алАй","на меня","","предлог+местоим.","","","","על + י"),
+          W("אֲבָל","авАл","но","","союз"),
+          W("אֲני","анИ","я","","местоим."),
+          W("מְקַוָּה","мекавА","надеюсь","ק - ו - ה","глагол","פִּיעֵל (пиэль)","наст., ж.р.","לְקַווֹת"),
+          W("שֶׁאֵין","шеЭйн","что нет","","союз+частица"),
+          W("לְךָ","лехА","у тебя","","предлог+местоим."),
+          W("חֲבֵרָה","хаверА","подруги, девушки","ח - ב - ר","сущ."),
+          W("חֲדָשָׁה","хадашА","новой","ח - ד - ש","прил.","","ж.р.")]},
+
+      {he:"וָאדים, אַתָּה וַאֲני חֲבֵרִים מִיַּלְדוּת.",
+        ru:"Вадим, мы с тобой друзья с детства.",
+        words:[
+          W("וָאדים","Вадим","Вадим","","имя собств."),
+          W("אַתָּה","атА","ты","","местоим."),
+          W("וַאֲני","ваанИ","и я","","союз+местоим."),
+          W("חֲבֵרִים","хаверИм","друзья","ח - ב - ר","сущ.","","мн.ч."),
+          W("מִיַּלְדוּת","мийалдУт","с детства","י - ל - ד","предлог+сущ.","","","","ילדות — детство")]},
+      {he:"יַחַד לָמַדְנוּ בְּבֵית הַסֵּפֶר.",
+        ru:"Мы вместе учились в школе.",
+        note:"בית ספר — «школа» (букв. «дом книги»), сопряжённое сочетание.",
+        words:[
+          W("יַחַד","йАхад","вместе","","наречие"),
+          W("לָמַדְנוּ","ламАдну","мы учились","ל - מ - ד","глагол","פָּעַל (пааль)","прош., 1 л. мн.ч.","לִלְמוֹד"),
+          W("בְּבֵית","бевЭт","в доме","ב - י - ת","предлог+сущ."),
+          W("הַסֵּפֶר","hасЭфер","книги","ס - פ - ר","сущ.","","","","בית הספר — школа")]},
+      {he:"הַזִּיכָּרוֹן יָקָר לִי.",
+        ru:"Это воспоминание мне дорого.",
+        words:[
+          W("הַזִּיכָּרוֹן","hазикарОн","воспоминание, память","ז - כ - ר","сущ."),
+          W("יָקָר","йакАр","дорого","י - ק - ר","прил."),
+          W("לִי","ли","мне","","предлог+местоим.")]},
+      {he:"תָּמִיד הָיִיתָ שָׁקֵט, אֲבָל חָרוּץ וּמַצְלִיחַ בַּלִּימּוּדִים.",
+        ru:"Ты всегда был тихим, но прилежным и успешным в учёбе.",
+        words:[
+          W("תָּמִיד","тамИд","всегда","","наречие"),
+          W("הָיִיתָ","hайИта","ты был","ה - י - ה","глагол","פָּעַל (пааль)","прош., 2 л. м.р.","לִהְיוֹת"),
+          W("שָׁקֵט","шакЭт","тихий","ש - ק - ט","прил."),
+          W("אֲבָל","авАл","но","","союз"),
+          W("חָרוּץ","харУц","прилежный","ח - ר - ץ","прил."),
+          W("וּמַצְלִיחַ","умацлИах","и успешный","צ - ל - ח","прич.","הִפְעִיל (hифиль)","м.р.","לְהַצְלִיחַ"),
+          W("בַּלִּימּוּדִים","балимудИм","в учёбе","ל - מ - ד","сущ.","","мн.ч.")]},
+      {he:"יָשַׁבְנוּ הַרְבֵּה בַּסִּפְרִייָה, בִּילִּינוּ יַחַד בַּמְּסִיבּוֹת.",
+        ru:"Мы много сидели в библиотеке, вместе проводили время на вечеринках.",
+        note:"לְבַלּוֹת ב־ — «проводить время, развлекаться где-то».",
+        words:[
+          W("יָשַׁבְנוּ","йашАвну","мы сидели","י - ש - ב","глагол","פָּעַל (пааль)","прош., 1 л. мн.ч.","לָשֶׁבֶת"),
+          W("הַרְבֵּה","hарбЭ","много","","наречие"),
+          W("בַּסִּפְרִייָה","басифрийА","в библиотеке","ס - פ - ר","сущ."),
+          W("בִּילִּינוּ","билИну","мы проводили время","ב - ל - ה","глагол","פִּיעֵל (пиэль)","прош., 1 л. мн.ч.","לְבַלּוֹת"),
+          W("יַחַד","йАхад","вместе","","наречие"),
+          W("בַּמְּסִיבּוֹת","бамесибОт","на вечеринках","ס - ב - ב","сущ.","","мн.ч.","","מסיבה — вечеринка")]},
+      {he:"אֲני שׁוֹמֶרֶת אֶת הַשִּׁיר הַיָּפֶה, שֶׁכָּתַבְתָּ לִי לְיוֹם הוּלַדְתִּי, וּמְחַכָּה כְּבָר לְיוֹם הַהוּלֶדֶת הַבָּא...",
+        ru:"Я храню то красивое стихотворение, что ты написал мне на день рождения, и уже жду следующего дня рождения…",
+        note:"יום הולדת — день рождения.",
+        words:[
+          W("אֲני","анИ","я","","местоим."),
+          W("שׁוֹמֶרֶת","шомЕрет","храню","ש - מ - ר","глагол","פָּעַל (пааль)","наст., ж.р.","לִשְׁמוֹר"),
+          W("אֶת","эт","(вин. падеж)","","предлог"),
+          W("הַשִּׁיר","hашИр","песню, стихотворение","ש - י - ר","сущ."),
+          W("הַיָּפֶה","hайафЭ","красивое","י - פ - ה","прил."),
+          W("שֶׁכָּתַבְתָּ","шекатАвта","что ты написал","כ - ת - ב","глагол","פָּעַל (пааль)","прош., 2 л. м.р.","לִכְתּוֹב"),
+          W("לִי","ли","мне","","предлог+местоим."),
+          W("לְיוֹם","лейОм","на день","י - ו - ם","предлог+сущ."),
+          W("הוּלַדְתִּי","hуладтИ","моего рождения","י - ל - ד","сущ.+местоим.","","","","יום הולדת"),
+          W("וּמְחַכָּה","умехакА","и жду","ח - כ - ה","глагол","פִּיעֵל (пиэль)","наст., ж.р.","לְחַכּוֹת"),
+          W("כְּבָר","квар","уже","","наречие"),
+          W("לְיוֹם","лейОм","ко дню","י - ו - ם","предлог+сущ."),
+          W("הַהוּלֶדֶת","hаhулЕдет","рождения","י - ל - ד","сущ."),
+          W("הַבָּא","hабА","следующему","ב - ו - א","прил.")]},
+      {he:"בֵּינְתַיִים אֲני שׁוֹלַחַת לְךָ מַשֶּׁהוּ קָטָן, שֶׁאוּלַי יְשַׂמַּח אוֹתְךָ; תַּצְלוּם חָדָשׁ שֶׁלִּי.",
+        ru:"А пока я посылаю тебе кое-что маленькое, что, может быть, тебя порадует, — свою новую фотографию.",
+        words:[
+          W("בֵּינְתַיִים","бейнтАйим","тем временем","","наречие"),
+          W("אֲני","анИ","я","","местоим."),
+          W("שׁוֹלַחַת","шолАхат","посылаю","ש - ל - ח","глагол","פָּעַל (пааль)","наст., ж.р.","לִשְׁלוֹחַ"),
+          W("לְךָ","лехА","тебе","","предлог+местоим."),
+          W("מַשֶּׁהוּ","мАшеhу","что-то","","местоим."),
+          W("קָטָן","катАн","маленькое","ק - ט - ן","прил."),
+          W("שֶׁאוּלַי","шеулАй","что, может быть","","союз+наречие"),
+          W("יְשַׂמַּח","йесамАх","обрадует","ש - מ - ח","глагол","פִּיעֵל (пиэль)","буд., 3 л. м.р.","לְשַׂמֵּחַ"),
+          W("אוֹתְךָ","отхА","тебя","","предлог+местоим.","","","","את + ך"),
+          W("תַּצְלוּם","тацлУм","фотоснимок","צ - ל - ם","сущ."),
+          W("חָדָשׁ","хадАш","новый","ח - ד - ש","прил."),
+          W("שֶׁלִּי","шелИ","мой","","предлог+местоим.")]},
+      {he:"הִצְטַלַּמְתִּי אֶתְמוֹל בַּיָּם.",
+        ru:"Вчера я сфотографировалась у моря.",
+        note:"לְהִצְטַלֵּם — hитпаэль от צ-ל-ם: «фотографироваться».",
+        words:[
+          W("הִצְטַלַּמְתִּי","hицталАмти","я сфотографировалась","צ - ל - ם","глагол","הִתְפַּעֵל (hитпаэль)","прош., 1 л.","לְהִצְטַלֵּם"),
+          W("אֶתְמוֹל","этмОл","вчера","","наречие"),
+          W("בַּיָּם","байАм","у моря","י - מ","предлог+сущ.","","","","ים — море")]},
+      {he:"גַּם פֹּה יֵשׁ יָם, הַיָּם הַתִּיכוֹן.",
+        ru:"Здесь тоже есть море — Средиземное море.",
+        words:[
+          W("גַּם","гам","тоже","","наречие"),
+          W("פֹּה","по","здесь","","наречие"),
+          W("יֵשׁ","йеш","есть","","частица наличия"),
+          W("יָם","йам","море","י - מ","сущ."),
+          W("הַיָּם","hайАм","море","י - מ","сущ."),
+          W("הַתִּיכוֹן","hатихОн","Средиземное","ת - ו - כ","прил.","","","","הים התיכון — Средиземное море")]},
+      {he:"זוֹכֵר, אֵיךְ פַּעַם טִיַּילְנוּ עַל חוֹף הַיָּם הַשָּׁחוֹר, וְחָשַׁבְנוּ עַל עָתִיד מְשׁוּתָּף?",
+        ru:"Помнишь, как когда-то мы гуляли по берегу Чёрного моря и думали об общем будущем?",
+        words:[
+          W("זוֹכֵר","зохЭр","помнишь","ז - כ - ר","глагол","פָּעַל (пааль)","наст., м.р.","לִזְכּוֹר"),
+          W("אֵיךְ","эйх","как","","наречие"),
+          W("פַּעַם","пАам","однажды, когда-то","פ - ע - מ","сущ."),
+          W("טִיַּילְנוּ","тийАльну","мы гуляли","ט - י - ל","глагол","פִּיעֵל (пиэль)","прош., 1 л. мн.ч.","לְטַיֵּיל"),
+          W("עַל","аль","на, по","","предлог"),
+          W("חוֹף","хоф","берег","ח - ו - ף","сущ."),
+          W("הַיָּם","hайАм","моря","י - מ","сущ."),
+          W("הַשָּׁחוֹר","hашахОр","Чёрного","ש - ח - ר","прил.","","","","הים השחור — Чёрное море"),
+          W("וְחָשַׁבְנוּ","вехашАвну","и думали","ח - ש - ב","глагол","פָּעַל (пааль)","прош., 1 л. мн.ч.","לַחְשׁוֹב"),
+          W("עַל","аль","о","","предлог"),
+          W("עָתִיד","атИд","будущем","ע - ת - ד","сущ."),
+          W("מְשׁוּתָּף","мешутАф","общем","ש - ת - ף","прил.")]},
+      {he:"בֵּינְתַיִים עָתִיד לְחוּד וּמְצִיאוּת לְחוּד.",
+        ru:"А пока будущее само по себе, а реальность сама по себе.",
+        note:"X לחוד ו-Y לחוד — «X отдельно, Y отдельно» (одно с другим не совпадает).",
+        words:[
+          W("בֵּינְתַיִים","бейнтАйим","пока, тем временем","","наречие"),
+          W("עָתִיד","атИд","будущее","ע - ת - ד","сущ."),
+          W("לְחוּד","лехУд","отдельно","","наречие"),
+          W("וּמְצִיאוּת","умцийУт","а реальность","מ - צ - א","сущ."),
+          W("לְחוּד","лехУд","отдельно","","наречие")]},
+      {he:"שָׁאַלְתָּ אוֹתִי, הַאִם אָבוֹא לְבַקֵּר אוֹתְךָ בְּאוֹדֶסָה?",
+        ru:"Ты спрашивал меня, приеду ли я навестить тебя в Одессу?",
+        words:[
+          W("שָׁאַלְתָּ","шаАльта","ты спросил","ש - א - ל","глагол","פָּעַל (пааль)","прош., 2 л. м.р.","לִשְׁאוֹל"),
+          W("אוֹתִי","отИ","меня","","предлог+местоим.","","","","את + י"),
+          W("הַאִם","hаИм","ли","","вопрос. частица"),
+          W("אָבוֹא","авО","приеду","ב - ו - א","глагол","פָּעַל (пааль)","буд., 1 л.","לָבוֹא"),
+          W("לְבַקֵּר","левакЭр","навестить","ב - ק - ר","глагол","פִּיעֵל (пиэль)","инфинитив","לְבַקֵּר"),
+          W("אוֹתְךָ","отхА","тебя","","предлог+местоим.","","","","את + ך"),
+          W("בְּאוֹדֶסָה","беОдеса","в Одессу","","предлог+сущ.")]},
+      {he:"רַק עַכְשָׁיו הִתְחַלְתִּי עֲבוֹדָה חֲדָשָׁה, וְאֵין לִי מַסְפִּיק כֶּסֶף לִנְסִיעָה.",
+        ru:"Я только сейчас начала новую работу, и у меня нет достаточно денег на поездку.",
+        words:[
+          W("רַק","рак","только","","наречие"),
+          W("עַכְשָׁיו","ахшАв","сейчас","","наречие"),
+          W("הִתְחַלְתִּי","hитхАльти","я начала","ת - ח - ל","глагол","הִפְעִיל (hифиль)","прош., 1 л.","לְהַתְחִיל"),
+          W("עֲבוֹדָה","аводА","работу","ע - ב - ד","сущ."),
+          W("חֲדָשָׁה","хадашА","новую","ח - ד - ש","прил.","","ж.р."),
+          W("וְאֵין","веЭйн","и нет","","союз+частица"),
+          W("לִי","ли","у меня","","предлог+местоим."),
+          W("מַסְפִּיק","маспИк","достаточно","ס - פ - ק","наречие"),
+          W("כֶּסֶף","кЕсеф","денег","כ - ס - ף","сущ."),
+          W("לִנְסִיעָה","линсиА","на поездку","נ - ס - ע","предлог+сущ.","","","","נסיעה — поездка")]},
+
+      {he:"מָצָאתִי עֲבוֹדָה חֲדָשָׁה כְּמְהַנְדֶּסֶת מַחְשְׁבִים, וַאֲני דַּי מְרוּצָה.",
+        ru:"Я нашла новую работу инженером-программистом и вполне довольна.",
+        note:"מהנדסת מחשבים — инженер по компьютерам (программист).",
+        words:[
+          W("מָצָאתִי","мацАти","я нашла","מ - צ - א","глагол","פָּעַל (пааль)","прош., 1 л.","לִמְצוֹא"),
+          W("עֲבוֹדָה","аводА","работу","ע - ב - ד","сущ."),
+          W("חֲדָשָׁה","хадашА","новую","ח - ד - ש","прил.","","ж.р."),
+          W("כְּמְהַנְדֶּסֶת","кемеhандЕсет","инженером (ж.р.)","ה - נ - ד - ס","предлог+сущ.","","ж.р."),
+          W("מַחְשְׁבִים","махшевИм","компьютеров","ח - ש - ב","сущ.","","мн.ч.","","מחשב — компьютер"),
+          W("וַאֲני","ваанИ","и я","","союз+местоим."),
+          W("דַּי","дай","довольно, вполне","","наречие"),
+          W("מְרוּצָה","меруцА","довольна","ר - צ - ה","прил.","","ж.р.")]},
+      {he:"אֲבָל חֲסֵרִים לִי כָּאן סְפָרִים וּסְרָטִים בְּרוּסִית, אַף-עַל-פִּי שֶׁאֶפְשָׁר לִקְנוֹת אוֹתָם בְּחֲנוּיוֹת סְפָרִים בְּרוּסִית.",
+        ru:"Но мне здесь не хватает книг и фильмов на русском, хотя их можно купить в русских книжных магазинах.",
+        note:"חסר לי — «мне не хватает». אף על פי ש… — «несмотря на то, что…».",
+        words:[
+          W("אֲבָל","авАл","но","","союз"),
+          W("חֲסֵרִים","хасерИм","не хватает","ח - ס - ר","прил.","","м.р. мн.ч.","","חסר לי — мне не хватает"),
+          W("לִי","ли","мне","","предлог+местоим."),
+          W("כָּאן","кан","здесь","","наречие"),
+          W("סְפָרִים","сфарИм","книг","ס - פ - ר","сущ.","","мн.ч."),
+          W("וּסְרָטִים","усратИм","и фильмов","ס - ר - ט","сущ.","","мн.ч.","","סרט — фильм"),
+          W("בְּרוּסִית","берусИт","на русском","","сущ./наречие"),
+          W("אַף-עַל-פִּי","аф-аль-пИ","несмотря на","","оборот"),
+          W("שֶׁאֶפְשָׁר","шеэфшАр","что можно","","союз+наречие"),
+          W("לִקְנוֹת","ликнОт","купить","ק - נ - ה","глагол","פָּעַל (пааль)","инфинитив","לִקְנוֹת"),
+          W("אוֹתָם","отАм","их","","предлог+местоим.","","","","את + ם"),
+          W("בְּחֲנוּיוֹת","бехануйОт","в магазинах","ח - נ - ה","сущ.","","мн.ч.","","חנות — магазин"),
+          W("סְפָרִים","сфарИм","книжных","ס - פ - ר","сущ."),
+          W("בְּרוּסִית","берусИт","на русском","","сущ./наречие")]},
+      {he:"הַבְּעָיָה הִיא שֶׁכָּאן הַכֹּל יָקָר יוֹתֵר מֵאֲשֶׁר בְּאוֹדֶסָה, וְהַמִּבְחָר אֵינוֹ גָּדוֹל.",
+        ru:"Проблема в том, что здесь всё дороже, чем в Одессе, а выбор невелик.",
+        words:[
+          W("הַבְּעָיָה","hабеайА","проблема","ב - ע - ה","сущ."),
+          W("הִיא","hи","(есть)","","местоим.-связка"),
+          W("שֶׁכָּאן","шекАн","что здесь","","союз+наречие"),
+          W("הַכֹּל","hакОль","всё","כ - ל - ל","местоим."),
+          W("יָקָר","йакАр","дорого","י - ק - ר","прил."),
+          W("יוֹתֵר","йотЭр","более","","наречие"),
+          W("מֵאֲשֶׁר","меашЕр","чем","","союз"),
+          W("בְּאוֹדֶסָה","беОдеса","в Одессе","","предлог+сущ."),
+          W("וְהַמִּבְחָר","веhамивхАр","а выбор, ассортимент","ב - ח - ר","сущ."),
+          W("אֵינוֹ","эйнО","не является","","отрицание-связка","","","","אין + ו"),
+          W("גָּדוֹל","гадОль","большой","ג - ד - ל","прил.")]},
+      {he:"אַתָּה חָסֵר לִי ואדים.",
+        ru:"Мне тебя не хватает, Вадим.",
+        note:"אתה חסר לי — «мне тебя не хватает / я по тебе скучаю».",
+        words:[
+          W("אַתָּה","атА","ты","","местоим."),
+          W("חָסֵר","хасЭр","не хватает","ח - ס - ר","прил."),
+          W("לִי","ли","мне","","предлог+местоим."),
+          W("ואדים","Вадим","Вадим","","имя собств.")]},
+      {he:"וְהָעִיקָּר -",
+        ru:"А главное —",
+        words:[
+          W("וְהָעִיקָּר","веhаикАр","а главное","ע - ק - ר","сущ.")]},
+
+      {he:"וָאדים, יוֹם הַהוּלֶדֶת שֶׁלְּךָ הוּא בְּעוֹד חוֹדְשַׁיִים, בְּדִיוּק בְּרֹאשׁ הַשָּׁנָה...",
+        ru:"Вадим, твой день рождения через два месяца, как раз на Рош ха-Шана (Новый год)…",
+        note:"ראש השנה — еврейский Новый год (букв. «голова года»).",
+        words:[
+          W("וָאדים","Вадим","Вадим","","имя собств."),
+          W("יוֹם","йом","день","י - ו - ם","сущ."),
+          W("הַהוּלֶדֶת","hаhулЕдет","рождения","י - ל - ד","сущ.","","","","יום ההולדת — день рождения"),
+          W("שֶׁלְּךָ","шелхА","твой","","предлог+местоим."),
+          W("הוּא","hу","(есть)","","местоим.-связка"),
+          W("בְּעוֹד","беОд","через (ещё)","","предлог"),
+          W("חוֹדְשַׁיִים","ходшАйим","два месяца","ח - ד - ש","сущ.","","дв.ч."),
+          W("בְּדִיוּק","бедийУк","точно, как раз","ד - ו - ק","наречие"),
+          W("בְּרֹאשׁ","берОш","в начале","ר - א - ש","предлог+сущ."),
+          W("הַשָּׁנָה","hашанА","года","ש - נ - ה","сущ.","","","","ראש השנה — Новый год")]},
+      {he:"הַאִם יֵשׁ סִיכּוּי שֶׁנַּחְגּוֹג אוֹתוֹ כָּאן בְּיַחַד?",
+        ru:"Есть ли шанс отпраздновать его здесь вместе?",
+        note:"לַחְגּוֹג את — «праздновать, отмечать что-то».",
+        words:[
+          W("הַאִם","hаИм","ли","","вопрос. частица"),
+          W("יֵשׁ","йеш","есть","","частица наличия"),
+          W("סִיכּוּי","сикУй","шанс","ס - כ - ה","сущ."),
+          W("שֶׁנַּחְגּוֹג","шенахгОг","что мы отпразднуем","ח - ג - ג","глагол","פָּעַל (пааль)","буд., 1 л. мн.ч.","לַחְגּוֹג"),
+          W("אוֹתוֹ","отО","его","","предлог+местоим.","","","","את + ו"),
+          W("כָּאן","кан","здесь","","наречие"),
+          W("בְּיַחַד","бейАхад","вместе","","наречие")]},
+      {he:"מָה דַּעְתְּךָ?",
+        ru:"Что ты думаешь? / Как ты считаешь?",
+        note:"מה דעתך? — устойчивый вопрос «каково твоё мнение?».",
+        words:[
+          W("מָה","ма","что, какое","","местоим."),
+          W("דַּעְתְּךָ","даътехА","твоё мнение","י - ד - ע","сущ.+местоим.","","","","דעה — мнение")]},
+      {he:"זֹאת תִּהְיֶה הַתְחָלָה טוֹבָה שֶׁל פֶּרֶק חָדָשׁ בַּחַיִּים.",
+        ru:"Это было бы хорошим началом новой главы в жизни.",
+        words:[
+          W("זֹאת","зот","это","","местоим."),
+          W("תִּהְיֶה","тиhйЭ","будет","ה - י - ה","глагол","פָּעַל (пааль)","буд., 3 л. ж.р.","לִהְיוֹת"),
+          W("הַתְחָלָה","hатхалА","начало","ת - ח - ל","сущ."),
+          W("טוֹבָה","товА","хорошее","ט - ו - ב","прил.","","ж.р."),
+          W("שֶׁל","шель","(принадлежность)","","предлог"),
+          W("פֶּרֶק","пЭрек","глава","פ - ר - ק","сущ."),
+          W("חָדָשׁ","хадАш","новой","ח - ד - ש","прил."),
+          W("בַּחַיִּים","бахайИм","в жизни","ח - י - ה","сущ.")]},
+      {he:"כְּתוֹב לִי בְּכָל מִקְרֶה, מָה הַמַּצָּב אֶצְלְךָ.",
+        ru:"В любом случае напиши мне, как у тебя дела.",
+        note:"בכל מקרה — «в любом случае».",
+        words:[
+          W("כְּתוֹב","ктов","напиши","כ - ת - ב","глагол","פָּעַל (пааль)","повел., м.р.","לִכְתּוֹב"),
+          W("לִי","ли","мне","","предлог+местоим."),
+          W("בְּכָל","бехОль","в любом","כ - ל - ל","предлог+местоим."),
+          W("מִקְרֶה","микрЭ","случае","ק - ר - ה","сущ."),
+          W("מָה","ма","какое","","местоим."),
+          W("הַמַּצָּב","hамацАв","положение","י - צ - ב","сущ."),
+          W("אֶצְלְךָ","эцлехА","у тебя","","предлог+местоим.","","","","אצל + ך")]},
+      {he:"מְחַכָּה לִתְשׁוּבָה מְהִירָה מִמְּךָ.",
+        ru:"Жду от тебя быстрого ответа.",
+        words:[
+          W("מְחַכָּה","мехакА","жду","ח - כ - ה","глагол","פִּיעֵל (пиэль)","наст., ж.р.","לְחַכּוֹת"),
+          W("לִתְשׁוּבָה","летшувА","ответа","ש - ו - ב","предлог+сущ.","","","","תשובה — ответ"),
+          W("מְהִירָה","меhирА","быстрого","מ - ה - ר","прил.","","ж.р."),
+          W("מִמְּךָ","мимхА","от тебя","","предлог+местоим.","","","","מן + ך")]},
+      {he:"דְּרִישַׁת שָׁלוֹם חַמָּה לְכוּלָּם.",
+        ru:"Тёплый привет всем.",
+        note:"דרישת שלום — «привет, пожелание здоровья» (д\"ш).",
+        words:[
+          W("דְּרִישַׁת","дришАт","привет, пожелание","ד - ר - ש","сущ.","","сопряж. форма"),
+          W("שָׁלוֹם","шалОм","мира, здоровья","ש - ל - מ","сущ."),
+          W("חַמָּה","хамА","тёплый","ח - מ - מ","прил.","","ж.р."),
+          W("לְכוּלָּם","лехулАм","всем","כ - ל - ל","предлог+местоим.")]},
+      {he:"שֶׁלָּךְ, לָרִיסָה",
+        ru:"Твоя, Лариса",
+        note:"שלך — «твоя» (подпись). Автор письма — Лариса (לריסה).",
+        words:[
+          W("שֶׁלָּךְ","шелАх","твоя","","предлог+местоим."),
+          W("לָרִיסָה","Лариса","Лариса","","имя собств.")]}
+    ],
+    glossary:[
+      W("שָׂכוּר / שְׂכוּרָה","сахУр / схурА","снятый в аренду","ש - כ - ר","прил.","","","","דירה שכורה — съёмная квартира"),
+      W("חָרוּץ","харУц","прилежный, усердный","ח - ר - ץ","прил."),
+      W("לְחוּד","лехУд","отдельно, порознь","","наречие"),
+      W("מְרוּצֶה","меруцЭ","довольный","ר - צ - ה","прил."),
+      W("קֶצֶב הַחַיִּים","кЕцев hахайИм","темп жизни","","словосоч."),
+      W("צִילוּם","цилУм","фотоснимок, фотографирование","צ - ל - ם","сущ."),
+      W("סִיכּוּי","сикУй","шанс, возможность","","сущ."),
+      W("לְהִתְגַּעְגֵּעַ","леhитгаагЕа","скучать по (+ לְ)","ג - ע - ג - ע","глагол","הִתְפַּעֵל (hитпаэль)","инфинитив","","מתגעגעת אליך"),
+      W("לִמְנוֹעַ","лимнОа","мешать, препятствовать (+ מִ)","מ - נ - ע","глагол","פָּעַל (пааль)","инфинитив","","מונע ממך"),
+      W("לִכְעוֹס","лихОс","сердиться (+ עַל)","כ - ע - ס","глагол","פָּעַל (пааль)","инфинитив","","אל תכעס עליי"),
+      W("לְבַלּוֹת","левалОт","проводить время (+ בְּ)","ב - ל - ה","глагол","פִּיעֵל (пиэль)","инфинитив","","בילינו יחד"),
+      W("לְהִצְטַלֵּם","леhицталЕм","фотографироваться (+ בְּ)","צ - ל - ם","глагол","הִתְפַּעֵל (hитпаэль)","инфинитив","","הצטלמתי"),
+      W("לַחְגּוֹג","лахгОг","праздновать (+ אֶת)","ח - ג - ג","глагол","פָּעַל (пааль)","инфинитив","","נחגוג את יום ההולדת")
+    ]
+  });
+  t._v=SEED_V; return t;
+}
+
+/* ---------- init ---------- */
+go("lib");
+
+/* ---------- автозагрузка встроенных текстов (онлайн) ---------- */
+(async function bootstrapBundled(){
+  try{
+    if(location.protocol==="file:")return;            // локально — только встроенный seed
+    const list=await fetch("texts/index.json").then(r=>r.ok?r.json():[]).catch(()=>[]);
+    if(!Array.isArray(list)||!list.length)return;
+    let added=0;
+    for(const fn of list){
+      try{
+        const o=await fetch("texts/"+fn).then(r=>r.ok?r.json():null);
+        if(o&&(o.sentences||o.glossary)){
+          const id=o.id||fn;
+          if(!texts.some(t=>t.id===id)){texts.push(normalizeText(Object.assign({id},o)));added++;}
+        }
+      }catch(e){}
+    }
+    if(added){saveTexts();if(view==="lib")renderLib();}
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
